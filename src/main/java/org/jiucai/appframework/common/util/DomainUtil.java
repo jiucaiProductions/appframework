@@ -181,7 +181,7 @@ public class DomainUtil extends BaseUtil {
 	 * 获取 url 中的域名部分
 	 * 
 	 * @param url
-	 * @return String
+	 * @return 域名字符串
 	 */
 	public synchronized static String getDomain(final String url) {
 		String domain = url;
@@ -256,7 +256,7 @@ public class DomainUtil extends BaseUtil {
 	 * 去掉域名中的协议字符串，比如 http://
 	 * 
 	 * @param domain
-	 * @return
+	 * @return 去掉域名中的协议字符串
 	 */
 	private synchronized static String replaceProtocol(String domain) {
 
@@ -290,7 +290,7 @@ public class DomainUtil extends BaseUtil {
 	 * </pre>
 	 * 
 	 * @param domain
-	 * @return
+	 * @return 替换中括号后IPV6
 	 */
 	private synchronized static String replaceIpV6(String domain) {
 
@@ -309,7 +309,7 @@ public class DomainUtil extends BaseUtil {
 	 * 
 	 * @param hexStr
 	 *            16进制字符串
-	 * @return
+	 * @return byte array
 	 */
 	private synchronized static byte[] hex2Byte(String hexStr) {
 		if (hexStr.length() < 1)

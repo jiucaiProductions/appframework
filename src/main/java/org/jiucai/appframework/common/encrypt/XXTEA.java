@@ -97,7 +97,7 @@ public final class XXTEA {
      *
      * @param v
      * @param k
-     * @return
+     * @return decrypt data
      */
     private static final int[] decrypt(int[] v, int[] k) {
         int n = v.length - 1;
@@ -133,7 +133,7 @@ public final class XXTEA {
      *
      * @param data
      * @param includeLength
-     * @return
+     * @return array data
      */
     private static final int[] toIntArray(byte[] data, boolean includeLength) {
         int n = (((data.length & 3) == 0)
@@ -160,7 +160,7 @@ public final class XXTEA {
      *
      * @param data
      * @param includeLength
-     * @return
+     * @return array data
      */
     private static final byte[] toByteArray(int[] data, boolean includeLength) {
         int n = data.length << 2;

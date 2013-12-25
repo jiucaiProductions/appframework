@@ -161,7 +161,7 @@ public class SwfUtil extends BaseUtil {
 	 * test this with desktop Java.
 	 * 
 	 * @param rdr
-	 * @return
+	 * @return decodeRect data
 	 */
 	private static int[] decodeRect(BitReader rdr) {
 		int[] dims = new int[4];
