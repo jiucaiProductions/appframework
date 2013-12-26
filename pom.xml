@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
@@ -8,15 +9,15 @@
 
 	<groupId>org.jiucai</groupId>
 	<artifactId>appframework</artifactId>
-	<version>1.2.0</version>
+	<version>1.1.6-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>appframework</name>
 	<description>java application framework based spring 3.2</description>
 	<url>http://appframework.jiucai.org</url>
-	
-	
-	
+
+
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring.version>3.2.6.RELEASE</spring.version>
@@ -25,8 +26,8 @@
 		<bonecp.version>0.8.0.RELEASE</bonecp.version>
 		<jackson.version>1.9.13</jackson.version>
 	</properties>
-	
-	
+
+
 
 	<licenses>
 		<license>
@@ -37,18 +38,14 @@
 		</license>
 	</licenses>
 
-<!-- 	<scm> -->
-<!-- 		<connection>scm:svn:https://appframework.googlecode.com/svn/trunk</connection> -->
-<!-- 		<developerConnection>scm:svn:https://appframework.googlecode.com/svn/trunk</developerConnection> -->
-<!-- 		<url>https://appframework.googlecode.com/svn/trunk</url> -->
-<!-- 	</scm> -->
-
 	<scm>
-		<connection>scm:git:git@github.com:jiucai/appframework.git</connection>
-		<developerConnection>scm:git:git@github.com:jiucai/appframework.git</developerConnection>
-		<url>git@github.com:jiucai/appframework.git</url>
+		<connection>scm:svn:https://appframework.googlecode.com/svn/trunk</connection>
+		<developerConnection>scm:svn:https://appframework.googlecode.com/svn/trunk</developerConnection>
+		<url>https://appframework.googlecode.com/svn/trunk</url>
 	</scm>
-
+	<!-- <scm> <connection>scm:git:git@github.com:jiucai/appframework.git</connection> 
+		<developerConnection>scm:git:git@github.com:jiucai/appframework.git</developerConnection> 
+		<url>git@github.com:jiucai/appframework.git</url> </scm> -->
 
 	<!-- <distributionManagement> <repository> <id>sonatype-nexus-staging</id> 
 		<name>Nexus Staging Repository</name> <url>https://oss.sonatype.org/content/repositories/snapshots</url> 
@@ -58,6 +55,38 @@
 	<reporting>
 		<outputDirectory>target/site</outputDirectory>
 	</reporting>
+
+	<repositories>
+		<repository>
+			<id>172.16.16.132</id>
+			<url>http://172.16.16.132:8081/nexus/content/groups/public</url>
+		</repository>
+		<repository>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<id>springsource-repo</id>
+			<name>SpringSource Repository</name>
+			<url>http://repo.springsource.org/release</url>
+		</repository>
+		<repository>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<id>bonecp-repo</id>
+			<name>BoneCP Repository</name>
+			<url>http://jolbox.com/bonecp/downloads/maven</url>
+		</repository>
+		<repository>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<id>codehaus-repo</id>
+			<name>Codehaus Repository</name>
+			<url>http://repository.codehaus.org</url>
+		</repository>
+	</repositories>
+
 
 
 	<build>
@@ -79,25 +108,28 @@
 					</dependency>
 				</dependencies>
 			</plugin>
-						<plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
 				<version>2.2</version>
 				<executions>
 					<execution>
-<!-- 						<phase>package</phase> -->
-<!-- 						<goals> -->
-<!-- 							<goal>shade</goal> -->
-<!-- 						</goals> -->
+						<!-- <phase>package</phase> -->
+						<!-- <goals> -->
+						<!-- <goal>shade</goal> -->
+						<!-- </goals> -->
 						<configuration>
 							<transformers>
-								<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 									<resource>META-INF/spring.handlers</resource>
 								</transformer>
-								<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 									<resource>META-INF/spring.schemas</resource>
 								</transformer>
-								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 									<mainClass>com.emarbox.o2m.main.MigrateDataTool</mainClass>
 								</transformer>
 							</transformers>
@@ -105,7 +137,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-gpg-plugin</artifactId> 
 				<version>1.4</version> <executions> <execution> <id>sign-artifacts</id> <phase>verify</phase> 
 				<goals> <goal>sign</goal> </goals> </execution> </executions> </plugin> -->
@@ -123,40 +155,6 @@
 			<url>http://blog.jiucai.org</url>
 		</developer>
 	</developers>
-
-
-
-
-<!-- 	<repositories> -->
-<!-- 		<repository> -->
-<!-- 			<id>172.16.16.132</id> -->
-<!-- 			<url>http://172.16.16.132:8081/nexus/content/groups/public</url> -->
-<!-- 		</repository> -->
-<!-- 		<repository> -->
-<!-- 			<releases> -->
-<!-- 				<enabled>true</enabled> -->
-<!-- 			</releases> -->
-<!-- 			<id>springsource-repo</id> -->
-<!-- 			<name>SpringSource Repository</name> -->
-<!-- 			<url>http://repo.springsource.org/release</url> -->
-<!-- 		</repository> -->
-<!-- 		<repository> -->
-<!-- 			<releases> -->
-<!-- 				<enabled>true</enabled> -->
-<!-- 			</releases> -->
-<!-- 			<id>bonecp-repo</id> -->
-<!-- 			<name>BoneCP Repository</name> -->
-<!-- 			<url>http://jolbox.com/bonecp/downloads/maven</url> -->
-<!-- 		</repository> -->
-<!-- 		<repository> -->
-<!-- 			<releases> -->
-<!-- 				<enabled>true</enabled> -->
-<!-- 			</releases> -->
-<!-- 			<id>codehaus-repo</id> -->
-<!-- 			<name>Codehaus Repository</name> -->
-<!-- 			<url>http://repository.codehaus.org</url> -->
-<!-- 		</repository> -->
-<!-- 	</repositories> -->
 
 	<dependencies>
 
