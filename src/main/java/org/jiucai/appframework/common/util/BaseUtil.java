@@ -1,6 +1,7 @@
 package org.jiucai.appframework.common.util;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
@@ -20,8 +21,8 @@ public abstract class BaseUtil {
 	public static String convertMapValue(Object val) {
 		String result = "";
 
-		if (val instanceof Long || val instanceof Integer
-				|| val instanceof String || val instanceof Character) {
+		if (val instanceof Long || val instanceof Integer ||  val instanceof BigInteger
+				|| val instanceof String || val instanceof Character || val instanceof Short ) {
 
 			result = String.valueOf(val);
 
@@ -48,7 +49,7 @@ public abstract class BaseUtil {
 
 			result = tempValue.toString();
 
-		} else if (val instanceof BigDecimal) {
+		} else if (val instanceof BigDecimal ) {
 
 			// BigDecimal scale 属性是小数位数，有则说明是小数，否则可能是整型
 

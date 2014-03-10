@@ -13,7 +13,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,7 +49,7 @@ public class XHRController extends BaseController {
 			Header userAgent = new BasicHeader("User-Agent", "Mozilla/7.0");
 			req.setHeader(userAgent);
 
-			HttpClient client = new DefaultHttpClient();
+			HttpClient client = HttpClients.createDefault();
 
 			HttpResponse res = client.execute(req);
 			InputStream inputStream = res.getEntity().getContent();

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+     http://www.springframework.org/schema/beans/spring-beans-3.2.xsd  
+     http://www.springframework.org/schema/context  
+     http://www.springframework.org/schema/context/spring-context-3.2.xsd  
+     http://www.springframework.org/schema/tx  
+     http://www.springframework.org/schema/tx/spring-tx-3.2.xsd  
+     http://www.springframework.org/schema/jdbc  
+     http://www.springframework.org/schema/jdbc/spring-jdbc-3.2.xsd 
+     http://www.springframework.org/schema/mvc 
+	 http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+
+
+
+
+	<!-- 对模型视图名称的解析，在请求时模型视图名称添加前后缀 -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<!-- 解析文件上传 -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver"
+		p:defaultEncoding="utf-8" />
+
+	<!-- Configures a handler for serving static resources such as images, js, 
+		and, css files with cache headers optimized for efficient loading in a web 
+		browser. Allows resources to be served out of any path that is reachable 
+		via Spring's Resource handling. -->
+	<mvc:default-servlet-handler />
+	<mvc:resources mapping="/theme/**" location="/theme/" />
+	<mvc:resources mapping="/js/**" location="/js/" />
+	<mvc:resources mapping="/test/**" location="/test/" />
+	<mvc:resources mapping="/*.ico" location="/" />
+
+
+<!-- 	<bean id="appInterceptorAdapter" -->
+<!-- 		class="org.jiucai.appframework.base.spring.adapter.AppInterceptorAdapter"></bean> -->
+<!-- 	<bean -->
+<!-- 		class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"> -->
+<!-- 		<property name="interceptors"> -->
+<!-- 			<list> -->
+<!-- 				<ref bean="appInterceptorAdapter" /> -->
+<!-- 			</list> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
+
+
+	<mvc:interceptors>
+		<mvc:interceptor>
+<!-- 		<mvc:mapping path="/**"/> -->
+		<mvc:mapping path="/**/*.htm"/>
+		<bean class="org.jiucai.appframework.base.spring.interceptor.AppDefaultInterceptor"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+	
+<!-- 	<mvc:interceptors> -->
+<!-- 		<bean class="org.jiucai.appframework.base.spring.adapter.AppInterceptorAdapter"></bean> -->
+<!-- 	</mvc:interceptors> -->
+
+
+	<!-- This tag registers the DefaultAnnotationHandlerMapping and AnnotationMethodHandlerAdapter 
+		beans -->
+	<!-- that are required for Spring MVC to dispatch requests to @Controllers. 
+		The tag configures those two beans with sensible defaults based on what is 
+		present in your classpath. -->
+	<!-- Support for reading and writing XML, if JAXB is present on the classpath. -->
+	<!-- Support for reading and writing JSON, if Jackson is present on the 
+		classpath. -->
+	<mvc:annotation-driven />
+
+	<!-- 这两个 context 必须放在 此文件中，否则web容器无法加载识别 controller 的 url 映射 -->
+	<!-- <context:annotation-config /> -->
+
+	<!-- Scans the classpath for annotated components that will be auto-registered 
+		as Spring beans. -->
+	<!-- By default, the Spring-provided @Component, @Repository, @Service, -->
+	<!-- and @Controller stereotypes will be detected. -->
+
+	<!-- <context:component-scan base-package="app.base.*" /> -->
+	<!-- <context:component-scan base-package="com.emarbox.*" /> -->
+	<!-- 测试类 -->
+	<!-- <context:component-scan base-package="test.*" /> -->
+
+
+
+	<import resource="classpath:spring/applicationContext.xml" />
+
+
+
+
+	<!-- Creates the JSR-303 Validator -->
+	<!-- <bean id="validator" -->
+	<!-- class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" 
+		/> -->
+<!---->
+	<!-- <bean -->
+	<!-- class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"> -->
+	<!-- <property name="webBindingInitializer"> -->
+	<!-- Configures Spring MVC DataBinder instances -->
+	<!-- <bean -->
+	<!-- class="org.springframework.web.bind.support.ConfigurableWebBindingInitializer"> -->
+	<!-- <property name="validator" ref="validator" /> -->
+	<!-- </bean> -->
+	<!-- </property> -->
+	<!-- </bean> -->
+
+	<!-- Exception Resolver -->
+	<!-- <bean id="exceptionResolver" -->
+	<!-- class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver"> -->
+	<!-- <property name="defaultErrorView"> -->
+	<!-- <value>error/error_run</value> -->
+	<!-- </property> -->
+	<!-- <property name="exceptionMappings"> -->
+	<!-- <props> -->
+	<!-- <prop key="oracle.net.ns.NetException">error/error_db</prop> -->
+	<!-- <prop key="java.net.ConnectException">error/error_db</prop> -->
+	<!-- <prop key="org.springframework.jdbc.CannotGetJdbcConnectionException">error/error_db</prop> -->
+	<!-- <prop key="org.springframework.core.NestedRuntimeException">error/error_run</prop> -->
+	<!-- <prop key="java.sql.SQLException">error/error_run</prop> -->
+	<!-- <prop key="java.lang.RuntimeException">error/error_run</prop> -->
+
+	<!-- </props> -->
+	<!-- </property> -->
+	<!-- </bean> -->
+
+</beans>

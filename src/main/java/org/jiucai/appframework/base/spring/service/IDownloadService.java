@@ -9,22 +9,27 @@ import java.util.Map;
  * 实现类 serviceId 命名规则 xxxDownloadService
  * 
  * @author zhaidw
- * 
+ * @deprecated 已过时，请使用 {@link org.jiucai.appframework.base.service.DownloadService} 
  */
+@Deprecated
 public interface IDownloadService {
 
 	/**
 	 * 
 	 * @param param  请求参数map，里面包含所有的 request pararamter 参数，多个重名的参数取出后需要转换为List使用
 	 * @param out ServletOutputStream 输出流
+	 * @deprecated 已过时，请使用 {@link org.jiucai.appframework.base.service.DownloadService.handleRequest} 
 	 */
+	@Deprecated
 	public abstract void handleRequest(Map<String, Object> param, OutputStream out);
 
 	/***
 	 * 返回数据 ContentType
 	 * 
 	 * @return String
+	 * @deprecated 已过时，请使用 {@link org.jiucai.appframework.base.service.DownloadService.getContentType} 
 	 */
+	@Deprecated
 	public abstract String getContentType(Map<String, Object> param);
 	
 	/**
@@ -36,14 +41,18 @@ public interface IDownloadService {
 	 * </p>
 	 * 
 	 * @return 浏览器下载对话框显示文件名
+	 * @deprecated 已过时，请使用 {@link org.jiucai.appframework.base.service.DownloadService.getFileName} 
 	 */
+	@Deprecated
 	public abstract String getFileName(Map<String, Object> param);
 	
 	/**
 	 * 返回要下载的文件是否存在
 	 * @param param
 	 * @return Boolean
+	 * @deprecated 已过时，请使用 {@link org.jiucai.appframework.base.service.DownloadService.fileExists} 
 	 */
+	@Deprecated
 	public abstract Boolean fileExists(Map<String, Object> param);
 	
 	

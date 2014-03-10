@@ -1,37 +1,22 @@
 package test.base;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import org.jiucai.appframework.common.util.LogUtil;
 import org.jiucai.appframework.common.util.Logs;
+import org.junit.Test;
 
-public class TestLog extends TestCase {
+public class TestLog extends BaseTest {
 
 	protected static Logs logger = LogUtil.getLog(TestLog.class);
 
-	protected Logs log = LogUtil.getLog(getClass());
-
-	public static Test suite() {
-		return new TestSuite(TestLog.class);
-	}
-
+	@Test
 	public void testLog() {
-		log.info("method testLog.");
+		log.info("test log");
 	}
 
-	public static void testLogger() {
-		logger.info("method testLogger.");
+	@Test
+	public void testLogger() {
+		logger.info("test logger");
 	}
 
-	public static void main(String[] args) {
-
-		testLogger();
-
-		TestLog t1 = new TestLog();
-
-		t1.testLog();
-	}
 
 }

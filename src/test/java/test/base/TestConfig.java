@@ -1,25 +1,16 @@
 package test.base;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 import org.jiucai.appframework.base.util.ConfigUtil;
+import org.junit.Test;
 
-public class TestConfig extends TestCase {
+public class TestConfig extends BaseTest {
 
-	public static Test suite() {
-		return new TestSuite(TestConfig.class);
-	}
-
-	public static void test() {
+	@Test
+	public  void test() {
 		ConfigUtil.addConfig("config");
 		String value = ConfigUtil.getString("common.app.env.timestamp");
-
-		System.out.println(value);
+		log.info("common.app.env.timestamp: " + value);
 	}
 
-	public static void main(String[] args) {
-		test();
-	}
 }
