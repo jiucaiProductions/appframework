@@ -70,9 +70,13 @@ Feel free to improve the [documentation](http://code.google.com/p/appframework/w
 #History
 
 1.1.6 Stable Release based spring-framework 3.2.8
+
 1.1.5 Stable Release based spring-framework 3.2.6
+
 1.1.4 Stable Release based spring-framework 3.2.3
+
 1.0.1 Stable Release based spring-framework 3.0.7
+
 
 #Author and copyright
 
