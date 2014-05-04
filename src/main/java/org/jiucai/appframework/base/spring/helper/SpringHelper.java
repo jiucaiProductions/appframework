@@ -28,13 +28,10 @@ public class SpringHelper implements ApplicationContextAware {
 	 * @param request
 	 * @return ApplicationContext
 	 */
-	public static ApplicationContext getApplicationContext(
-			HttpServletRequest request) {
+	public static ApplicationContext getApplicationContext(HttpServletRequest request) {
 
-		ServletContext servletContext = request.getSession()
-				.getServletContext();
-		ApplicationContext context = WebApplicationContextUtils
-				.getWebApplicationContext(servletContext);
+		ServletContext servletContext = request.getSession().getServletContext();
+		ApplicationContext context = WebApplicationContextUtils.getWebApplicationContext(servletContext);
 
 		return context;
 
@@ -61,7 +58,7 @@ public class SpringHelper implements ApplicationContextAware {
 	public void setApplicationContext(ApplicationContext applicationContext)
 			throws BeansException {
 		context = applicationContext;
-		log.info("通过web容器得到applicationContext: " + applicationContext);
+		log.info("ApplicationContext[" + applicationContext.getClass().getName() + "] inited: " + applicationContext);
 	}
 
 }

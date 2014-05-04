@@ -7,24 +7,22 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.jiucai.appframework.base.executor.AppExecutorServiceFactory;
-import org.jiucai.appframework.common.util.LogUtil;
-import org.jiucai.appframework.common.util.Logs;
 
 /**
  * ServletContextShutDownListener
  * @author zhaidw
  *
  */
-public class AppShutDownListener implements ServletContextListener {
+public class AppShutDownListener extends AbstractBaseListener implements ServletContextListener {
 
-	protected static Logs logger = LogUtil.getLog(AppShutDownListener.class);
+
 	
 	/* (non-Javadoc)
 	 * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)
 	 */
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
-		
+		log.info("AppShutDownListener inited.");
 	}
 
 	/* (non-Javadoc)
@@ -33,11 +31,11 @@ public class AppShutDownListener implements ServletContextListener {
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
 
-		logger.info("接收到停止信号,停止所有线程池...");
+		log.info("接收到停止信号,停止所有线程池...");
 		
 		AppExecutorServiceFactory.shutdown();
 		
-		logger.info("停止所有线程池成功.");
+		log.info("停止所有线程池成功.");
 
 	}
 

@@ -54,7 +54,7 @@ public class DefaultExecutorService {
 	 * 获取 ExecutorService 单例对象
 	 * @return ExecutorService 单例对象
 	 */
-	public ExecutorService getExecutorService() {
+	public static ExecutorService getExecutorService() {
 		if (null == executorService) {
 			synchronized (DefaultExecutorService.class) {
 				if (null == executorService) {

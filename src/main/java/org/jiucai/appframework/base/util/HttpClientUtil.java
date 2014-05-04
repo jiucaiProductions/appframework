@@ -70,7 +70,12 @@ public class HttpClientUtil {
 			HttpEntity entity = response.getEntity();
 			if (entity != null) {
 				Charset charset = ContentType.getOrDefault(entity).getCharset();
-				return new String(EntityUtils.toByteArray(entity), charset);
+				if(null != charset){
+					return new String(EntityUtils.toByteArray(entity), charset);
+				}else{
+					return new String(EntityUtils.toByteArray(entity));
+				}
+				
 			} else {
 				return null;
 			}

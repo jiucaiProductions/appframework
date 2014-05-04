@@ -7,16 +7,12 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
-import org.jiucai.appframework.common.util.LogUtil;
-import org.jiucai.appframework.common.util.Logs;
-
-public class AppSessionListener implements HttpSessionListener {
+public class AppSessionListener extends AbstractBaseListener implements HttpSessionListener {
 	
 	private static Long sessionCount = 0L;
 	
 	
 	protected static Map<String, Object> sessionMap = new HashMap<String, Object>(); // 存放session的集合类
-	protected Logs log = LogUtil.getLog(getClass()); 
 	
 	public AppSessionListener() {
 		log.info("AppSessionListener inited.");

@@ -312,7 +312,7 @@ public class ZipFileUtil {
 		try {
 			zf = new ZipFile(new File(zipFile), encoding);
 
-			@SuppressWarnings("unchecked")
+
 			Enumeration<ZipEntry> entries = (Enumeration<ZipEntry>) zf
 					.getEntries();
 

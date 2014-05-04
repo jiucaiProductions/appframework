@@ -5,8 +5,6 @@ import javax.servlet.ServletRequestListener;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jiucai.appframework.base.util.RequestHolder;
-import org.jiucai.appframework.common.util.LogUtil;
-import org.jiucai.appframework.common.util.Logs;
 
 /***
  * 请求监听器，把 request 对象放在静态类中供java类调用
@@ -14,9 +12,7 @@ import org.jiucai.appframework.common.util.Logs;
  * @author zhaidw
  * 
  */
-public abstract class AbstractRequestListener implements ServletRequestListener {
-
-	protected Logs log = LogUtil.getLog(getClass());
+public abstract class AbstractRequestListener extends AbstractBaseListener implements ServletRequestListener {
 
 	public AbstractRequestListener() {
 		super();

@@ -69,7 +69,7 @@ public abstract class BaseUtil {
 
 			DateTime d = new DateTime(dt.getTime());
 
-			if (d.getHourOfDay() == 0 && d.getMinuteOfHour() == 0) {
+			if (d.getHourOfDay() == 0 && d.getMinuteOfHour() == 0 && d.getSecondOfMinute() == 0) {
 				result = FastDateFormat.getInstance("yyyy-MM-dd").format(dt);
 			} else {
 				result = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss")

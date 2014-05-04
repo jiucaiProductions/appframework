@@ -5,36 +5,50 @@ appframework is a java web application framework based [spring-framework](http:/
 appframework is for the Java programming language.
 
 appframework features:
- * all dao and service class has its parent class1.
+ * all dao and service class has its parent class.
+
  * all http request param is wrapped in Map
+
  * provides asynchronous calls of service/dao for http request
+
  * provides page/data/download/upload interface to light your code
+
  * provides listeners wrapped for you to filter http request
+
  * supports html/xml/json result for ajax request
+
  * provides basic encode and encrypt methods, such as MD5,base64,zip
+
  * provides wrapped log for log4j and common-logging
+
  * provides common utils , such as DateTimeUtil, ConfigUtil, IpUtil, EscapeUtil, DomainUtil, SwfUtil ...
+
  * provides [fusioncharts](http://www.fusioncharts.com/) java bean wrapped classes
 
 
 #Requirements
 
 appframework requires:
- * Java 6 or higher.
- * spring-framework
+
+ * Java 6 or higher
+
+ * spring-framework 3.2.*
+
  * other jars in the central repository
+
 
 ##Develop Requirements
 
-Eclispe 3.6+ with [m2eclipse plugins](http://www.eclipse.org/m2e/download/) 
+Eclispe 3.6+ with [m2eclipse plugins](http://www.eclipse.org/m2e/download/)
 
 #Download and Installation
 
 Releases are available in the central repository.
+
 The current stable release of appframework: *1.1.6*
 
 ##Download links:
-source: http://code.google.com/p/appframework/source/browse/
+source: http://hg.jiucai.org/appframework/src
 
 JAR package: http://repo2.maven.org/maven2/org/jiucai/appframework/1.1.6/appframework-1.1.6.jar
 
@@ -55,17 +69,19 @@ Edit your project pom.xml and add :
 
 #Development and bug reports
 
-You may check out the appframework source code from appframework [SVN repository](http://code.google.com/p/appframework/source/checkout).
+You may check out the appframework source code from appframework [HG repository](https://bitbucket.org/jiucai/appframework).
 
-You may also [browse](http://code.google.com/p/appframework/source/browse/) the appframework source code.
+You may also [browse](http://hg.jiucai.org/appframework/src) the lastest appframework source code.
 
-If you find a bug in appframework, please [report a bug](http://code.google.com/p/appframework/issues/entry). 
+If you find a bug in appframework, please [report a bug](http://hg.jiucai.org/appframework/issues/new).
 
-You may review open bugs through [the list of open issues](http://code.google.com/p/appframework/issues/list).
+You may review open bugs through [the list of open issues](http://hg.jiucai.org/appframework/issues?status=new&status=open).
 
 
 Feel free to improve the [documentation](http://code.google.com/p/appframework/w/list) .
 
+
+And you can [contact me on weibo.com](http://weibo.com/forcer521)
 
 #History
 
@@ -76,7 +92,6 @@ Feel free to improve the [documentation](http://code.google.com/p/appframework/w
 1.1.4 Stable Release based spring-framework 3.2.3
 
 1.0.1 Stable Release based spring-framework 3.0.7
-
 
 #Author and copyright
 

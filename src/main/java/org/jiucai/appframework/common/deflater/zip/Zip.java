@@ -84,6 +84,7 @@ public class Zip {
 
 		if (!srcFile.exists()
 				|| (srcFile.isDirectory() && srcFile.list().length == 0)) {
+			out.close();
 			throw new FileNotFoundException(
 					"File must exist and  ZIP file must have at least one entry.");
 		}
@@ -124,7 +125,7 @@ public class Zip {
 		InputStream in = null;
 		ZipFile zf = new ZipFile(archive, encoding);// 支持中文
 
-		@SuppressWarnings("unchecked")
+		
 		Enumeration<ZipEntry> e = zf.getEntries();
 
 		while (e.hasMoreElements()) {
@@ -159,7 +160,7 @@ public class Zip {
 
 		ZipFile zf = new ZipFile(archive, encoding);// 支持中文
 
-		@SuppressWarnings("unchecked")
+		
 		Enumeration<ZipEntry> e = zf.getEntries();
 		while (e.hasMoreElements()) {
 			ZipEntry ze = e.nextElement();

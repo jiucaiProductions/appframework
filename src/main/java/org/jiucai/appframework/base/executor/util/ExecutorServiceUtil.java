@@ -20,11 +20,12 @@ public class ExecutorServiceUtil {
 	}
 	
 	public static ExecutorService getExecutorService(){
-		return DefaultExecutorService.setParam("test", 2).getExecutorService();
+		return DefaultExecutorService.getExecutorService();
 	}
 	
 	public static ExecutorService getExecutorService(final String name, final int maxThreads){
-		return DefaultExecutorService.setParam(name, maxThreads).getExecutorService();
+		DefaultExecutorService.setParam(name, maxThreads);
+		return DefaultExecutorService.getExecutorService();
 	}
 	
 	public static void shutdown(){

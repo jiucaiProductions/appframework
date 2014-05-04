@@ -5,15 +5,12 @@ import javax.servlet.ServletRequestListener;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jiucai.appframework.base.util.IpUtil;
-import org.jiucai.appframework.common.util.LogUtil;
-import org.jiucai.appframework.common.util.Logs;
 import org.slf4j.impl.Log4jMDCAdapter;
 import org.slf4j.spi.MDCAdapter;
 
-public class AppLogListener implements ServletRequestListener {
+public class AppLogListener extends AbstractBaseListener implements ServletRequestListener {
 
 	protected MDCAdapter adapter;
-	protected Logs log = LogUtil.getLog(getClass());
 
 	public AppLogListener() {
 		super();
