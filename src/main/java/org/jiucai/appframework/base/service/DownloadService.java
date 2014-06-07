@@ -18,14 +18,14 @@ public interface DownloadService {
 	 * @param param  请求参数map，里面包含所有的 request pararamter 参数，多个重名的参数取出后需要转换为List使用
 	 * @param out ServletOutputStream 输出流
 	 */
-	public abstract void handleRequest(Map<String, Object> param, OutputStream out);
+	public abstract void handleRequest(Map<String, String> param, OutputStream out);
 
 	/***
 	 * 返回数据 ContentType
 	 * 
 	 * @return String
 	 */
-	public abstract String getContentType(Map<String, Object> param);
+	public abstract String getContentType(Map<String, String> param);
 	
 	/**
 	 * 浏览器下载对话框显示文件名，建议不超过 17 个汉字。
@@ -37,12 +37,12 @@ public interface DownloadService {
 	 * 
 	 * @return 浏览器下载对话框显示文件名
 	 */
-	public abstract String getFileName(Map<String, Object> param);
+	public abstract String getFileName(Map<String, String> param);
 	
 	/**
 	 * 返回要下载的文件是否存在
 	 * @param param
 	 * @return Boolean
 	 */
-	public abstract Boolean fileExists(Map<String, Object> param);
+	public abstract Boolean fileExists(Map<String, String> param);
 }

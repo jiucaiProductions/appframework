@@ -7,7 +7,7 @@ appframework is for the Java programming language.
 appframework features:
  * all dao and service class has its parent class.
 
- * all http request param is wrapped in Map
+ * all http request param is wrapped in Map<String,String>
 
  * provides asynchronous calls of service/dao for http request
 
@@ -34,6 +34,8 @@ appframework requires:
 
  * spring-framework 3.2.*
 
+ * servlet 3.0 + , tomcat7+
+
  * other jars in the central repository
 
 
@@ -45,12 +47,12 @@ Eclispe 3.6+ with [m2eclipse plugins](http://www.eclipse.org/m2e/download/)
 
 Releases are available in the central repository.
 
-The current stable release of appframework: *1.1.6*
+The current stable release of appframework: *1.1.7*
 
 ##Download links:
 source: http://hg.jiucai.org/appframework/src
 
-JAR package: http://repo2.maven.org/maven2/org/jiucai/appframework/1.1.6/appframework-1.1.6.jar
+JAR package: http://repo2.maven.org/maven2/org/jiucai/appframework/1.1.7/appframework-1.1.7.jar
 
 Repository: http://search.maven.org/#search|ga|1|org.jiucai
 
@@ -63,7 +65,7 @@ Edit your project pom.xml and add :
     <dependency>
         <groupId>org.jiucai</groupId>
         <artifactId>appframework</artifactId>
-        <version>1.1.6</version>
+        <version>1.1.7</version>
     </dependency>
 ```
 
@@ -78,12 +80,14 @@ If you find a bug in appframework, please [report a bug](http://hg.jiucai.org/ap
 You may review open bugs through [the list of open issues](http://hg.jiucai.org/appframework/issues?status=new&status=open).
 
 
-Feel free to improve the [documentation](http://code.google.com/p/appframework/w/list) .
+Feel free to improve the [documentation](http://hg.jiucai.org/appframework/wiki) .
 
 
 And you can [contact me on weibo.com](http://weibo.com/forcer521)
 
 #History
+
+1.1.7 Stable Release based spring-framework 3.2.9 (*Recommand upgrade to this version*)
 
 1.1.6 Stable Release based spring-framework 3.2.8
 

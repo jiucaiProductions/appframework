@@ -1,11 +1,11 @@
 package org.jiucai.appframework.base.listener;
 
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;
 
 import javax.servlet.ServletRequestEvent;
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
 
 /***
  * 请求监听器，对 request 所有参数进行安全处理
@@ -52,30 +52,33 @@ public abstract class AbstractSecureRequestListener extends AbstractRequestListe
 		Enumeration<String> paramNames = (Enumeration<String>) request.getParameterNames();
 
 		if (null != paramNames) {
-			String paramName, paramValue;
+			String paramName;
 			String[] paramValues;
-			List<String> tempValues;
 			while (paramNames.hasMoreElements()) {
 				paramName = paramNames.nextElement();
 
 				paramValues = request.getParameterValues(paramName);
 
 				if (null != paramValues && paramValues.length > 0) {
+					
+					if(paramValues.length >  1){
 
-					tempValues = new ArrayList<String>();
-
-					for (int i = 0; i < paramValues.length; i++) {
-						if (null != paramValues[i]) {
-							paramValue = paramValues[i].trim();
-							
-							tempValues.add(paramValue);
+				        StringBuffer b = new StringBuffer();
+				        for (int i = 0; i< paramValues.length; i++) {
+				        	String tempVal = StringUtils.isBlank(paramValues[i]) ? "" : paramValues[i].trim();
+				            b.append(tempVal);
+				            if(i !=paramValues.length - 1){
+				            	 b.append(",");
+				            }
+				        }
+						request.setAttribute(getReqPrefix() + paramName,b.toString());
+					}else{
+						if(StringUtils.isNotBlank(paramValues[0])){
+							request.setAttribute(getReqPrefix() + paramName,paramValues[0].trim());
+						}else{
+							request.setAttribute(getReqPrefix() + paramName,"");
 						}
-					}
-
-					if (paramValues.length == 1) {
-						request.setAttribute(getReqPrefix() + paramName,tempValues.get(0));
-					} else {
-						request.setAttribute(getReqPrefix() + paramName,tempValues);
+						
 					}
 
 				}

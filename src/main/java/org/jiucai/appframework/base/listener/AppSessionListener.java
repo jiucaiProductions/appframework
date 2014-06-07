@@ -3,10 +3,12 @@ package org.jiucai.appframework.base.listener;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
+@WebListener("a listener to save visitor count")
 public class AppSessionListener extends AbstractBaseListener implements HttpSessionListener {
 	
 	private static Long sessionCount = 0L;

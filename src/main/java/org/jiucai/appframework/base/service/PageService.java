@@ -17,5 +17,5 @@ public interface PageService {
 	 * @param view 视图数据容器
 	 * @return 视图文件路径
 	 */
-	public abstract String handleRequest(Map<String, Object> param, Map<String, Object> view);
+	public abstract String handleRequest(Map<String, String> param, Map<String, Object> view);
 }

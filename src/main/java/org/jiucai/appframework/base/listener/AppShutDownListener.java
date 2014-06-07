@@ -5,6 +5,7 @@ package org.jiucai.appframework.base.listener;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 
 import org.jiucai.appframework.base.executor.AppExecutorServiceFactory;
 
@@ -13,6 +14,7 @@ import org.jiucai.appframework.base.executor.AppExecutorServiceFactory;
  * @author zhaidw
  *
  */
+@WebListener("a listener to to close all executorService")
 public class AppShutDownListener extends AbstractBaseListener implements ServletContextListener {
 
 
