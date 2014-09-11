@@ -22,7 +22,7 @@
 	-->
 	<context:annotation-config />
 	
-	<bean class="org.jiucai.appframework.base.spring.helper.SpringHelper"></bean>
+	<bean class="org.jiucai.appframework.base.helper.SpringHelper"></bean>
 	
 	<!--
 	
@@ -31,6 +31,7 @@
 	
  	-->
 	<context:component-scan base-package="org.jiucai.appframework.base.*" />
+	<context:component-scan base-package="org.jiucai.test.*" />
 	<context:component-scan base-package="test.*" />
 	
 	<context:property-placeholder location="classpath:config.properties,classpath:db_app.properties" />

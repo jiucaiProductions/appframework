@@ -26,17 +26,6 @@ public class ValueFormatUtil extends BaseUtil {
 	public static String nullValue = "-";
 
 	/**
-	 * 格式化百分比；如果有小数，则保留 doubleFormater 指定的位数
-	 * @deprecated use  {@link #getPersentString }
-	 * @param val
-	 * @return String 
-	 */
-	@Deprecated
-	public static String formatPercentString(final Object val) {
-		return getPersentString(val);
-	}
-
-	/**
 	 * 格式化数字；如果有小数，则保留 doubleFormater 指定的位数
 	 * 
 	 * @param val
@@ -136,6 +125,12 @@ public class ValueFormatUtil extends BaseUtil {
 		}
 	}
 
+	/**
+	 * 格式化百分比；如果有小数，则保留 doubleFormater 指定的位数
+	 * @deprecated use  {@link #getPersentString }
+	 * @param data
+	 * @return String 
+	 */
 	public static String getPersentString(Object data) {
 		String result = convertMapValue(data);
 		if (StringUtils.isNotBlank(result)) {

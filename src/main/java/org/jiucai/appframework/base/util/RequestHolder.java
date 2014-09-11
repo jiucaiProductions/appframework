@@ -1,39 +1,14 @@
 package org.jiucai.appframework.base.util;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import org.jiucai.appframework.base.helper.AppRequestHolder;
 
 /**
  * 应用的 HttpServletRequest ThreadLocal
  * 
  * @author zhaidw
- * 
+ * @deprecated 已过时，请使用 {@link org.jiucai.appframework.base.helper.AppRequestHolder} 
  */
-public class RequestHolder {
-
-	private static final ThreadLocal<HttpServletRequest> requestHolder = new ThreadLocal<HttpServletRequest>();
-
-	public static HttpServletRequest getRequest() {
-		return requestHolder.get();
-	}
-
-	public static HttpSession getSession() {
-		HttpSession session = null;
-		HttpServletRequest request = requestHolder.get();
-
-		if (null != request) {
-			session = request.getSession(true);
-		}
-
-		return session;
-	}
-
-	public static void setRequest(HttpServletRequest request) {
-		requestHolder.set(request);
-	}
-
-	public static ThreadLocal<HttpServletRequest> getRequestHolder() {
-		return requestHolder;
-	}
+@Deprecated
+public class RequestHolder extends AppRequestHolder{
 
 }

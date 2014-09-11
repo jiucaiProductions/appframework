@@ -10,25 +10,17 @@ import org.jiucai.appframework.common.encode.MD5;
  * @author zhaidw
  * 
  */
-public class EncryptUtil {
+public class EncryptUtil  extends AbstractEncryptor  {
 
 	/**
+	 * 加密字符串
+	 * 
 	 * DES key size must be equal to 56 DESede(TripleDES) key size must be equal
 	 * to 112 or 168 AES key size must be equal to 128, 192 or 256,but 192 and
 	 * 256 bits may not be available Blowfish key size must be multiple of 8,
 	 * and can only range from 32 to 448 (inclusive) RC2 key size must be
 	 * between 40 and 1024 bits RC4(ARCFOUR) key size must be between 40 and
 	 * 1024 bits
-	 **/
-
-	/**
-	 * 
-	 */
-	private static final String charsetName = "UTF-8";
-
-	/**
-	 * 加密字符串
-	 * 
 	 * @param msg
 	 *            字符串
 	 * @param key
@@ -70,43 +62,6 @@ public class EncryptUtil {
 
 		return decodeMsg;
 
-	}
-
-	/**
-	 * 将二进制转换成16进制
-	 * 
-	 * @param buf
-	 * @return String
-	 */
-	public static String byte2Hex(byte[] buf) {
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < buf.length; i++) {
-			String hex = Integer.toHexString(buf[i] & 0xFF);
-			if (hex.length() == 1) {
-				hex = '0' + hex;
-			}
-			sb.append(hex.toUpperCase());
-		}
-		return sb.toString();
-	}
-
-	/**
-	 * 将16进制转换为二进制
-	 * 
-	 * @param hexStr
-	 * @return byte[]
-	 */
-	public static byte[] hex2Byte(String hexStr) {
-		if (hexStr.length() < 1)
-			return null;
-		byte[] result = new byte[hexStr.length() / 2];
-		for (int i = 0; i < hexStr.length() / 2; i++) {
-			int high = Integer.parseInt(hexStr.substring(i * 2, i * 2 + 1), 16);
-			int low = Integer.parseInt(hexStr.substring(i * 2 + 1, i * 2 + 2),
-					16);
-			result[i] = (byte) (high * 16 + low);
-		}
-		return result;
 	}
 
 }

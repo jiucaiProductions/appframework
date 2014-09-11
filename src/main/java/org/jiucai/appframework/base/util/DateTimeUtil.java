@@ -111,7 +111,7 @@ public class DateTimeUtil extends BaseUtil  {
 	 * 返回指定日期的字符串
 	 * 
 	 * @param date 指定的日期对象
-	 * @param pattern 格式字符串，可选，默认 yyyy-mm-dd
+	 * @param pattern 格式字符串，可选，默认 yyyy-MM-dd
 	 * @return String
 	 */
 	public static String getFormatedDate(Date date, String pattern){
@@ -124,7 +124,7 @@ public class DateTimeUtil extends BaseUtil  {
 	 * 返回指定日期的字符串
 	 * 
 	 * @param days 日期相差的天数
-	 * @param pattern 格式字符串，可选，默认 yyyy-mm-dd
+	 * @param pattern 格式字符串，可选，默认 yyyy-MM-dd
 	 * @return String
 	 */
 	public static String getFormatedDate(int days, String pattern) {
@@ -144,7 +144,7 @@ public class DateTimeUtil extends BaseUtil  {
 	 * 获取指定日期的年月
 	 * 
 	 * @param date 日期对象
-	 * @return 格式, yyyymm, 示例值 200908
+	 * @return 格式, yyyyMM, 示例值 200908
 	 */
 	public static String getYearMonth(Date date){
 
@@ -155,7 +155,7 @@ public class DateTimeUtil extends BaseUtil  {
 	 * 获取指定日期的年周
 	 * 
 	 * @param date 日期对象
-	 * @return 格式, yyyyww, 示例值 200953
+	 * @return 格式, xxxxww, 示例值 200953
 	 */
 	public static String getYearWeek(Date date){
 		
@@ -184,8 +184,14 @@ public class DateTimeUtil extends BaseUtil  {
 	public static String getCurrentTime() {
 		return DateTimeUtil.getFormatedDate(new Date(), "yyyy-MM-dd HH:mm:ss");
 	}
-
-
 	
+	
+	public static Date getCurrentDate() {
+		return DateTime.now().toDate();
+	}
+	
+	public static DateTime getCurrentDateTime() {
+		return DateTime.now();
+	}
 	
 }

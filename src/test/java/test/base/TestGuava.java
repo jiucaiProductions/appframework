@@ -9,8 +9,9 @@ public class TestGuava {
 	 */
 	public static void main(String[] args) {
 		ImmutableList<Integer> list = ImmutableList.of(1, 2, 3);
+
 		
-		list.add(1);
+		System.out.println("list size: "  + list.size());
 
 	}
 

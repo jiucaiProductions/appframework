@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+     http://www.springframework.org/schema/beans/spring-beans.xsd  
+     http://www.springframework.org/schema/context  
+     http://www.springframework.org/schema/context/spring-context.xsd  
+     http://www.springframework.org/schema/tx  
+     http://www.springframework.org/schema/tx/spring-tx.xsd  
+     http://www.springframework.org/schema/jdbc  
+     http://www.springframework.org/schema/jdbc/spring-jdbc.xsd 
+     http://www.springframework.org/schema/aop 
+     http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+
+	<bean id="hbnSessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mappingLocations">
+<!-- 			<value>classpath:org/jiucai/test/domain/*.hbm.xml </value> -->
+			<value>classpath:hbn/*.hbm.xml</value>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.autoReconnect">true</prop>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.format_sql">true</prop>
+			</props>
+		</property>
+		<property name="packagesToScan">
+			<list>
+<!-- 				<value>com.jiucai.test.domain</value> -->
+				<value>test.domain</value>
+			</list>
+		</property>
+	</bean>
+	
+	
+	
+<!-- 	<bean id="hbnSessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"> -->
+<!-- 		<property name="dataSource" ref="dataSource" /> -->
+<!-- 		<property name="mappingLocations"> -->
+<!-- 			<value>classpath:hbn/*.hbm.xml</value> -->
+<!-- 		</property> -->
+<!-- 		<property name="configurationClass" value="org.hibernate.cfg.Configuration" /> -->
+<!-- 		<property name="hibernateProperties"> -->
+<!-- 			<props> -->
+<!-- 				<prop key="hibernate.autoReconnect">true</prop> -->
+<!-- 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop> -->
+<!-- 				<prop key="hibernate.show_sql">false</prop> -->
+<!-- 				<prop key="hibernate.format_sql">true</prop> -->
+<!-- 			</props> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
+	
+	
+	
+	<bean id="hbnTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+		<property name="sessionFactory" ref="hbnSessionFactory" />
+	</bean>
+		
+		
+	<bean id="hbnTransactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="hbnSessionFactory" />
+<!-- 		<property name="dataSource" ref="dataSource" /> -->
+	</bean>
+	
+	<!-- 配置事务的传播特性 -->
+	<tx:advice id="hbnTxAdvice" transaction-manager="hbnTransactionManager">
+		<tx:attributes>
+			<tx:method name="test*" propagation="REQUIRED" />
+<!-- 			<tx:method name="create*" propagation="REQUIRED" /> -->
+<!-- 			<tx:method name="update*" propagation="REQUIRED" /> -->
+<!-- 			<tx:method name="delete*" propagation="REQUIRED" /> -->
+<!-- 			<tx:method name="increase*" propagation="REQUIRED" /> -->
+<!-- 			<tx:method name="set*" propagation="REQUIRED" /> -->
+<!-- 			<tx:method name="create*" rollback-for="DatabaseException" /> -->
+<!-- 			<tx:method name="update*" rollback-for="DatabaseException" /> -->
+<!-- 			<tx:method name="import*" rollback-for="DatabaseException" /> -->
+<!-- 			<tx:method name="delete*" rollback-for="DatabaseException" /> -->
+<!-- 			<tx:method name="increase*" rollback-for="DatabaseException" /> -->
+<!-- 			<tx:method name="set*" rollback-for="DatabaseException" /> -->
+<!-- 			<tx:method name="*" propagation="SUPPORTS" read-only="true" /> -->
+<!-- 			<tx:method name="*" propagation="NEVER" /> -->
+		</tx:attributes>
+	</tx:advice>
+
+
+	<!-- 那些类的哪些方法参与事务 --> 
+	<aop:config>
+<!-- 		<aop:pointcut id="facade" expression="execution(* org.jiucai.test.service.*Manager*.*(..))" /> -->
+<!-- 		<aop:advisor advice-ref="hbnTxAdvice" pointcut-ref="facade" /> -->
+
+		<aop:advisor advice-ref="hbnTxAdvice" pointcut="execution(* test.hbn.*Dao*.*(..))" />
+	</aop:config>
+	
+
+</beans>

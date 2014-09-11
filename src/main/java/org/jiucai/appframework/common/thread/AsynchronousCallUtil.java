@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.jiucai.appframework.base.util.RequestHolder;
+import org.jiucai.appframework.base.helper.AppRequestHolder;
 import org.jiucai.appframework.common.util.BaseUtil;
 
 /**
@@ -166,12 +166,12 @@ class AsynchronousTask implements Callable<Object> {
 		this.method = method;
 		this.instance = instance;
 		this.args = args;
-		this.request = RequestHolder.getRequest();//获取调用线程的上下文
+		this.request = AppRequestHolder.getRequest();//获取调用线程的上下文
 	}
 
 	@Override
 	public Object call() throws Exception {
-		RequestHolder.setRequest(request);//设置当前上下文
+		AppRequestHolder.setRequest(request);//设置当前上下文
 		return method.invoke(instance, args);
 	}
 

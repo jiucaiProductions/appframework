@@ -29,7 +29,7 @@
 	<!-- 解析文件上传 -->
 	<bean id="multipartResolver"
 		class="org.springframework.web.multipart.commons.CommonsMultipartResolver"
-		p:defaultEncoding="utf-8" />
+		p:defaultEncoding="UTF-8" />
 
 	<!-- Configures a handler for serving static resources such as images, js, 
 		and, css files with cache headers optimized for efficient loading in a web 
@@ -58,7 +58,7 @@
 		<mvc:interceptor>
 <!-- 		<mvc:mapping path="/**"/> -->
 		<mvc:mapping path="/**/*.htm"/>
-		<bean class="org.jiucai.appframework.base.spring.interceptor.AppDefaultInterceptor"></bean>
+		<bean id="appContextInterceptor" class="org.jiucai.appframework.base.interceptor.AppContextInterceptor"></bean>
 		</mvc:interceptor>
 	</mvc:interceptors>
 	

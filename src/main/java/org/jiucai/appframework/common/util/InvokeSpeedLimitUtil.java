@@ -51,7 +51,7 @@ public class InvokeSpeedLimitUtil {
 	}
 	
 	/**
-	 * @description 限制调用速度
+	 * 限制调用速度
 	 * @param updateCount 传入本次调用的条数
 	 */
 	public static synchronized  void limitSpeed(int updateCount){

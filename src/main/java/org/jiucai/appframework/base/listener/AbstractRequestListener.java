@@ -4,7 +4,7 @@ import javax.servlet.ServletRequestEvent;
 import javax.servlet.ServletRequestListener;
 import javax.servlet.http.HttpServletRequest;
 
-import org.jiucai.appframework.base.util.RequestHolder;
+import org.jiucai.appframework.base.helper.AppRequestHolder;
 
 /***
  * 请求监听器，把 request 对象放在静态类中供java类调用
@@ -26,14 +26,14 @@ public abstract class AbstractRequestListener extends AbstractBaseListener imple
 		HttpServletRequest request = (HttpServletRequest) event
 				.getServletRequest();
 
-		RequestHolder.setRequest(request);
+		AppRequestHolder.setRequest(request);
 
 	}
 
 	@Override
 	public void requestDestroyed(ServletRequestEvent event) {
 
-		RequestHolder.getRequestHolder().remove();
+		AppRequestHolder.getRequestHolder().remove();
 
 	}
 

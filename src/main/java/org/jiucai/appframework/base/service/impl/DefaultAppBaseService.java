@@ -1,15 +1,14 @@
 package org.jiucai.appframework.base.service.impl;
 
-import java.util.Map;
-
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.jiucai.appframework.base.spring.web.render.JsonRender;
-import org.jiucai.appframework.base.spring.web.render.XmlRender;
 import org.jiucai.appframework.base.util.ConfigUtil;
+import org.jiucai.appframework.base.web.BaseController;
+import org.jiucai.appframework.base.web.render.JsonRender;
+import org.jiucai.appframework.base.web.render.XmlRender;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class DefaultAppBaseService  extends AbstractBaseService {
@@ -17,7 +16,7 @@ public abstract class DefaultAppBaseService  extends AbstractBaseService {
 	/**
 	 * xml 或 json 响应的默认编码
 	 */
-	protected static String encoding = "UTF-8";
+	protected static String encoding = BaseController.CHARSET;
 
 	/**
 	 * XML 字符串生成器
@@ -51,7 +50,7 @@ public abstract class DefaultAppBaseService  extends AbstractBaseService {
 	/**
 	 * 返回转换 xml 的工具对象
 	 * 
-	 * @return
+	 * @return XmlRender
 	 */
 	public XmlRender getXmlRender() {
 		xmlRender.setEncoding(encoding);
@@ -61,7 +60,7 @@ public abstract class DefaultAppBaseService  extends AbstractBaseService {
 	/**
 	 * 返回转换 json 工具对象
 	 * 
-	 * @return
+	 * @return JsonRender
 	 */
 	public JsonRender getJsonRender() {
 		jsonRender.setEncoding(encoding);
@@ -91,7 +90,7 @@ public abstract class DefaultAppBaseService  extends AbstractBaseService {
 	 * @param isSuccess
 	 *            true 表示成功消息 false 表示错误消息
 	 * @param msg
-	 * @return
+	 * @return json string
 	 */
 	protected String getJsonMsg(Boolean isSuccess, String msg) {
 		StringBuffer result = new StringBuffer("");
@@ -117,7 +116,7 @@ public abstract class DefaultAppBaseService  extends AbstractBaseService {
 	 * @param isSuccess
 	 *            true 表示成功消息 false 表示错误消息
 	 * @param msg
-	 * @return
+	 * @return xml string
 	 */
 	protected String getXmlMsg(Boolean isSuccess, String msg) {
 
@@ -142,7 +141,7 @@ public abstract class DefaultAppBaseService  extends AbstractBaseService {
 	
 	
 	@Override
-	public String getContentType(Map<String, String> param) {
+	public String getContentType() {
 		return getJsonRender().getContentType();
 	}
 	

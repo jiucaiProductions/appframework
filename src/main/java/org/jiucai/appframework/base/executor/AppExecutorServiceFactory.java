@@ -52,9 +52,9 @@ public class AppExecutorServiceFactory {
 
 		for (AppExecutorService s : getInstance().getCommandList()) {
 			if(null != s){
-				logger.info("尝试停止 ExecutorService from command: " + s.getClass().getName());
+				logger.info("try to shutdown ExecutorService from command: " + s.getClass().getName());
 				s.shutdown();
-				logger.info("成功停止 ExecutorService: " + s.getName());
+				logger.info("shutdown ExecutorService: " + s.getName());
 			}
 		}
 		

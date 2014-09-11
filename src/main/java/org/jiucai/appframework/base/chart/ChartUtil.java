@@ -12,7 +12,7 @@ import org.jiucai.appframework.base.chart.bean.ChartStyle;
 import org.jiucai.appframework.base.chart.bean.ChartStyles;
 import org.jiucai.appframework.base.chart.fc.MultiChart;
 import org.jiucai.appframework.base.chart.fc.SingleChart;
-import org.jiucai.appframework.base.spring.web.render.XmlRender;
+import org.jiucai.appframework.base.web.render.XmlRender;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -90,8 +90,7 @@ public class ChartUtil {
 
 	}
 
-	public static String chartData(XmlRender xmlRender, MultiChart chart)
-			throws Exception {
+	public static String chartData(XmlRender xmlRender, MultiChart chart){
 
 		XStream x = xmlRender.getXStream();
 

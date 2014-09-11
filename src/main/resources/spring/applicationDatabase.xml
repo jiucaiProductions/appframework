@@ -41,7 +41,7 @@
 		<!-- 在做keep-alive的时候的SQL语句 -->
 		<property name="connectionTestStatement" value="select 1 from dual" />
 		<!-- 在每次到数据库取连接的时候执行的SQL语句，只执行一次 -->
-		<property name="initSQL" value="elect 1 from dual" />
+		<property name="initSQL" value="select 1 from dual" />
 	</bean>
 
 
@@ -64,31 +64,71 @@
 	<bean id="appJdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
 		<constructor-arg ref="jdbcTemplate" />
 	</bean>
+	
+	
 
+	
+	<!-- 使用annotation注解方式配置 事务 默认为 transactionManager , 使用注解 @Transactional("transactionManager ID") 需要显示声明使用拿个，否则会冲突 -->
 
-	<!-- 配置mybatis的SqlSessionFactoryBean -->
-	<bean id="appSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="dataSource" />
-		<property name="configLocation" value="classpath:mybatis/mybatis.xml" />
-	</bean>
-	<!-- 配置SqlSessionTemplate -->
-	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
-		<constructor-arg ref="appSqlSessionFactory" />
-	</bean>
+	<tx:annotation-driven transaction-manager="transactionManager" order="0" />
+	
+	<!-- hibernate 事务管理器,具体定义在 applicationHibernate.xml  -->
+	<tx:annotation-driven transaction-manager="hbnTransactionManager" />
 
-
-
-
-	<!-- Transaction manager for a single JDBC DataSource -->
-	<bean id="transactionManager"
-		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	<!-- 默认的事务管理器，只和数据源相关， 这个事务管理器可以支持spring的 jdbc 和 MyBatis 事务， hibernate需要单独声明和使用  -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 	<bean id="transactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
 		<property name="transactionManager" ref="transactionManager" />
 	</bean>
+	
+	
+<!-- 	<bean id="transactionInterceptor" class="org.springframework.transaction.interceptor.TransactionInterceptor"> -->
+<!-- 	   <property name="transactionManager" ref="transactionManager"/> -->
+<!-- 	   <property name="transactionAttributes"> -->
+<!-- 	    <props> -->
+<!-- 	     <prop key="*">PROPAGATION_REQUIRED</prop> -->
+<!-- 	     <prop key="get*">PROPAGATION_REQUIRED,readOnly</prop> -->
+<!-- 	     <prop key="find*">PROPAGATION_REQUIRED,readOnly</prop> -->
+<!-- 	     <prop key="request*">PROPAGATION_REQUIRED,readOnly</prop> -->
+<!-- 	    </props> -->
+<!-- 	   </property> -->
+<!-- 	</bean> -->
+	
+<!-- 	<bean class="org.springframework.transaction.interceptor.TransactionAttributeSourceAdvisor"> -->
+<!-- 	   <property name="transactionInterceptor" ref="transactionInterceptor"/> -->
+<!-- 	</bean> -->
+	
+<!-- 	<bean class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator"> -->
+<!-- 	   <property name="beanNames"> -->
+<!-- 	    <value>*Jdbc</value> -->
+<!-- 	   </property> -->
+<!-- 	   <property name="interceptorNames"> -->
+<!-- 	   	<list> -->
+<!-- 	    	<value>transactionInterceptor</value> -->
+<!-- 	    </list> -->
+<!-- 	   </property> -->
+<!-- 	</bean> -->
+	
 
-	<!-- 使用annotation注解方式配置 事务 -->
-	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	
+<!-- 	 <tx:advice id="appTxAdvice" transaction-manager="transactionManager"> -->
+<!--         <tx:attributes> -->
+<!--             <tx:method name="add*" propagation="REQUIRED" /> -->
+<!--             <tx:method name="insert*" propagation="REQUIRED" /> -->
+<!--             <tx:method name="delete*" propagation="REQUIRED" /> -->
+<!--             <tx:method name="update*" propagation="REQUIRED" /> -->
+<!--             <tx:method name="test*" propagation="REQUIRED" /> -->
+<!--             <tx:method name="*" propagation="true" /> -->
+<!--         </tx:attributes> -->
+<!--     </tx:advice> -->
+
+<!--     <aop:config> -->
+<!--         <aop:advisor advice-ref="appTxAdvice" pointcut="execution(* test.jdbc.*.*(..))" /> -->
+<!--     </aop:config> -->
+    
+	
 
 </beans>

@@ -1,7 +1,7 @@
 package org.jiucai.appframework.base.executor.impl;
 
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -19,10 +19,10 @@ public class DefaultExecutorService {
 	protected static Logs logger = LogUtil.getLog(DefaultExecutorService.class);
 	
 	//线程池名称
-	private static String name ="默认";
+	private static String name ="Default";
 	
 	//线程池大小
-	private static int maxThreads = 50;
+	private static int maxThreads = 20;
 	
 	private volatile static DefaultExecutorService uniqueInstance;
 	
@@ -59,18 +59,23 @@ public class DefaultExecutorService {
 			synchronized (DefaultExecutorService.class) {
 				if (null == executorService) {
 					
-					logger.info("使用 " + maxThreads + " 个线程初始化 " + name + " 线程池" );
-
-					executorService = new ThreadPoolExecutor(1, // 主线程数
-							maxThreads, // 最大线程数
-							1, // 等待时间
-							TimeUnit.SECONDS,// 时间单位
-							new ArrayBlockingQueue<Runnable>(1),// 队列数，为防止线程启动问题，统一修改为1
-							new ThreadPoolExecutor.CallerRunsPolicy());// 超出队列后的操作（队列满时在当前线程执行任务）
+					logger.info("try to create executorService[name=" + name + "] with " + maxThreads + " threads ..." );
 					
+					//使用这个线程过程最大线程数时，超出的不会被执行
+//					executorService = Executors.newFixedThreadPool(maxThreads);
+					
+					executorService = new ThreadPoolExecutor(maxThreads, // 主线程数
+							maxThreads, // 最大线程数
+							0, // 等待时间
+							TimeUnit.SECONDS,// 时间单位
+							new LinkedBlockingQueue<Runnable>(1),// 队列数，为防止线程启动问题，统一修改为1
+							new ThreadPoolExecutor.CallerRunsPolicy());// 超出队列后的操作（队列满时在当前线程执行任务）
+	
 					
 					//注册到全局服务类
 					AppExecutorServiceFactory.add(executorService);
+					
+					logger.info("executorService[name=" + name + "] with " + maxThreads + " threads created" );
 				}
 			}
 		}
@@ -99,11 +104,11 @@ public class DefaultExecutorService {
 	 * 关闭 下载数据生成 线程池
 	 */
 	public void shutdown() {
-		logger.info("尝试停止线程池 " + name + " ... ");
+		logger.info("try to shutdown executorService: " + name + " ... ");
 		
 		if (executorService != null) {
 			executorService.shutdownNow();
-			logger.info("成功停止线程池 " + name);
+			logger.info("shutdown executorService: " + name);
 		}
 	}
 

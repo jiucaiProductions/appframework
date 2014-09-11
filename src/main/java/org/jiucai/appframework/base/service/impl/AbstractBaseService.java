@@ -3,6 +3,7 @@ package org.jiucai.appframework.base.service.impl;
 import java.io.OutputStream;
 import java.util.Map;
 
+import org.jiucai.appframework.base.mapper.ParameterMapper;
 import org.jiucai.appframework.base.service.BinaryService;
 import org.jiucai.appframework.base.service.DataService;
 import org.jiucai.appframework.base.service.DownloadService;
@@ -22,56 +23,49 @@ public abstract class AbstractBaseService implements PageService, DataService, U
 
 	protected Logs log = LogUtil.getLog(getClass());
 	
-	protected static String EXCEPTION_MSG = "not implements yet";
+	protected static String EXCEPTION_MSG = "abstract service is NOT allowed be invoked directly.";
 
 	@Override
-	public String handleRequest(Map<String, String> param,
+	public String handleRequest(ParameterMapper paramMapper,
 			Map<String, Object> view) {
-		preProcess(param);
-		throw new RuntimeException(EXCEPTION_MSG);
-	}
-
-	@Override
-	public String handleRequest(Map<String, String> param) {
-		preProcess(param);
-		throw new RuntimeException(EXCEPTION_MSG);
-	}
-
-	@Override
-	public String getContentType(Map<String, String> param) {
 
 		throw new RuntimeException(EXCEPTION_MSG);
 	}
 
 	@Override
-	public String handleRequest(Map<String, String> param,
+	public String handleRequest(ParameterMapper paramMapper) {
+		throw new RuntimeException(EXCEPTION_MSG);
+	}
+
+	@Override
+	public String getContentType() {
+
+		throw new RuntimeException(EXCEPTION_MSG);
+	}
+
+	@Override
+	public String handleRequest(ParameterMapper paramMapper,
 			MultipartHttpServletRequest request) {
-		preProcess(param);
+
 		throw new RuntimeException(EXCEPTION_MSG);
 	}
 
 	@Override
-	public void handleRequest(Map<String, String> param, OutputStream out) {
-		preProcess(param);
+	public void handleRequest(ParameterMapper paramMapper, OutputStream out) {
+
 		throw new RuntimeException(EXCEPTION_MSG);
 	}
 
 	@Override
-	public String getFileName(Map<String, String> param) {
+	public String getFileName(ParameterMapper paramMapper) {
 		throw new RuntimeException(EXCEPTION_MSG);
 	}
 	
 	@Override
-	public Boolean fileExists(Map<String, String> param) {
+	public Boolean fileExists(ParameterMapper paramMapper) {
 
 		throw new RuntimeException(EXCEPTION_MSG);
 	}
-	
-	/**
-	 * 请求预处理
-	 * @param param
-	 */
-	public  abstract void preProcess(Map<String, String> param);
 
 
 

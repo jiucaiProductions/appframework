@@ -1,7 +1,8 @@
 package org.jiucai.appframework.base.service;
 
 import java.io.OutputStream;
-import java.util.Map;
+
+import org.jiucai.appframework.base.mapper.ParameterMapper;
 
 /**
  * 文件下载服务接口
@@ -14,18 +15,17 @@ import java.util.Map;
 public interface DownloadService {
 
 	/**
-	 * 
-	 * @param param  请求参数map，里面包含所有的 request pararamter 参数，多个重名的参数取出后需要转换为List使用
+	 * 处理下载请求
+	 * @param paramMapper 请求参数映射器，支持参数map和baen，里面包含所有的 request pararamter 参数，多个重名的参数获取到的是使用英文逗号分隔的字符串
 	 * @param out ServletOutputStream 输出流
 	 */
-	public abstract void handleRequest(Map<String, String> param, OutputStream out);
+	public abstract void handleRequest(ParameterMapper paramMapper, OutputStream out);
 
 	/***
 	 * 返回数据 ContentType
-	 * 
-	 * @return String
+	 * @return String ContentType
 	 */
-	public abstract String getContentType(Map<String, String> param);
+	public abstract String getContentType();
 	
 	/**
 	 * 浏览器下载对话框显示文件名，建议不超过 17 个汉字。
@@ -34,15 +34,15 @@ public interface DownloadService {
 	 * 原因可能是IE在处理 Response Header 的时候，对header的长度限制在150字节左右。
 	 * 而一个汉字编码成UTF-8是9个字节，那么17个字便是153个字节，所以会报错。
 	 * </p>
-	 * 
+	 * @param paramMapper 请求参数映射器，支持参数 map 和 bean，里面包含所有的 request pararamter 参数，多个重名的参数获取到的是使用英文逗号分隔的字符串
 	 * @return 浏览器下载对话框显示文件名
 	 */
-	public abstract String getFileName(Map<String, String> param);
+	public abstract String getFileName(ParameterMapper paramMapper);
 	
 	/**
 	 * 返回要下载的文件是否存在
-	 * @param param
-	 * @return Boolean
+	 * @param paramMapper 请求参数映射器，支持参数 map 和 bean，里面包含所有的 request pararamter 参数，多个重名的参数获取到的是使用英文逗号分隔的字符串
+	 * @return Boolean 文件是否存在
 	 */
-	public abstract Boolean fileExists(Map<String, String> param);
+	public abstract Boolean fileExists(ParameterMapper paramMapper);
 }
