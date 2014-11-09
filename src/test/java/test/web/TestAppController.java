@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.jiucai.appframework.base.web.AbstractBaseController;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -16,47 +17,56 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 @RequestMapping("/testapp")
 public class TestAppController extends AbstractBaseController {
 
-	public static final String REQ_PREFIX = "_test_app_";
-	public static final String DEFAULT_MAPPER_ID = "testDefault";
-	
-	@Override
-	public String getReqPrefix() {
-		return REQ_PREFIX;
-	}
-	
-    public  String getDefaultMapperId(){
-    	return DEFAULT_MAPPER_ID;
+    public static final String REQ_PREFIX = "_test_app_";
+    public static final String DEFAULT_MAPPER_ID = "testDefault";
+
+    @Override
+    @RequestMapping("/binary/{serviceId}")
+    public void binary(@PathVariable("serviceId") String serviceId, HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
+        super.binary(serviceId, request, response);
     }
 
-	@RequestMapping("/p")
-	public String page(Map<String, Object> model, HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		return super.page(model, request, response);
-	}
-	
-	@RequestMapping("/d")
-	public void data(Map<String, Object> model, HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		super.data(model, request, response);
-	}
-	
-	@RequestMapping("/upload")
-	public void upload(MultipartHttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException{
-		
-		super.upload(request, response);
-	}
-	
-	@RequestMapping("/download")
-	public void download(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		super.download(request, response);
-	
-	}
-	
-	@RequestMapping("/binary")
-	public void binary(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		super.binary(request, response);
-	}
+    @Override
+    @RequestMapping("/d/{serviceId}")
+    public void data(@PathVariable("serviceId") String serviceId, Map<String, Object> model,
+            HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
+        super.data(serviceId, model, request, response);
+    }
+
+    @Override
+    @RequestMapping("/download/{serviceId}")
+    public void download(@PathVariable("serviceId") String serviceId, HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
+        super.download(serviceId, request, response);
+
+    }
+
+    @Override
+    public String getDefaultMapperId() {
+        return DEFAULT_MAPPER_ID;
+    }
+
+    @Override
+    public String getReqPrefix() {
+        return REQ_PREFIX;
+    }
+
+    @Override
+    @RequestMapping("/p/{serviceId}")
+    public String page(@PathVariable("serviceId") String serviceId, Map<String, Object> model,
+            HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
+        return super.page(serviceId, model, request, response);
+    }
+
+    @Override
+    @RequestMapping("/upload/{serviceId}")
+    public void upload(@PathVariable("serviceId") String serviceId,
+            MultipartHttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        super.upload(serviceId, request, response);
+    }
 }

@@ -6,53 +6,41 @@ import org.hibernate.SessionFactory;
 import org.jiucai.appframework.base.dao.BaseDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
-import org.springframework.orm.hibernate3.HibernateOperations;
 
 /**
  * your dao base class
+ * 
  * @author jiucai
  *
  */
 public abstract class TestBaseDao extends BaseDao {
 
+    // @Autowired
+    // protected SqlSessionFactory mbtSqlSessionFactory;
 
-//	@Autowired
-//	protected SqlSessionFactory mbtSqlSessionFactory;
+    @Autowired
+    private SqlSession mbtSqlSession;
 
-	@Autowired
-	private SqlSession  mbtSqlSession;
-	
-	@Autowired
-	private NamedParameterJdbcOperations appJdbcTemplate;
-	
-	@Autowired
-	private SessionFactory  hbnSessionFactory;
-	@Autowired
-	private HibernateOperations hbnTemplate;
-	
-	
-	
-	@Override
-	public SqlSession getSqlSession() {
-		return mbtSqlSession;
-//		return mbtSqlSessionFactory.openSession();
-	}
-	
-	@Override
-	public Session getSession() {
-		return hbnSessionFactory.getCurrentSession();
-	}
-	
-	public HibernateOperations getHbnSession() {
-		return hbnTemplate;
-	}
+    @Autowired
+    private NamedParameterJdbcOperations appJdbcTemplate;
 
-	@Override
-	public NamedParameterJdbcOperations getDao() {
-		return appJdbcTemplate;
-	}
-	
-	
-	
-    
+    // @Autowired
+    private SessionFactory hbnSessionFactory;
+
+    @Override
+    public NamedParameterJdbcOperations getDao() {
+        return appJdbcTemplate;
+    }
+
+    @Override
+    public Session getSession() {
+        return hbnSessionFactory.getCurrentSession();
+    }
+
+    @Override
+    public SqlSession getSqlSession() {
+        return mbtSqlSession;
+        // return mbtSqlSessionFactory.openSession();
+    }
+
 }

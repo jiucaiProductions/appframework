@@ -1,9 +1,10 @@
 package org.jiucai.appframework.base.web.render;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 
 @Service("jsonRender")
@@ -18,19 +19,19 @@ public class JsonRender extends BaseRender {
 		mapper = new ObjectMapper();
 
 		// /////// mapper 输出格式配置定义 /////////
-		mapper.configure(SerializationConfig.Feature.WRAP_ROOT_VALUE, false);
+		mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
 		
 		// 日期序列化需要 get方法加 @JsonSerialize(using=JsonDateSerializer.class)
-		mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS,false);
+		mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS,false);
 
 		// 格式化输出
-		mapper.configure(SerializationConfig.Feature.INDENT_OUTPUT, false);
+		mapper.configure(SerializationFeature.INDENT_OUTPUT, false);
 		
 		// 不输出null值
-		mapper.setSerializationInclusion(Inclusion.NON_NULL);
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
 		// 不输出 Map entries with null values 
-		mapper.configure(SerializationConfig.Feature.WRITE_NULL_MAP_VALUES,false);
+		mapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES,false);
 
 	}
 

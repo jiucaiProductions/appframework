@@ -35,6 +35,12 @@
 	<context:component-scan base-package="test.*" />
 	
 	<context:property-placeholder location="classpath:config.properties,classpath:db_app.properties" />
+	
+	
+	
+	<import resource="applicationDatabase.xml"/>
+	<import resource="applicationMybatis.xml"/>
+	<import resource="applicationWeb.xml"/>
 
 
 </beans>

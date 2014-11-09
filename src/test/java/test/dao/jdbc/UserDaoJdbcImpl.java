@@ -2,10 +2,9 @@ package test.dao.jdbc;
 
 import java.util.List;
 
-import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.core.simple.ParameterizedBeanPropertyRowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -54,9 +53,9 @@ public class UserDaoJdbcImpl  extends TestBaseDao implements UserDao {
 		
 		SqlParameterSource paramSource = new BeanPropertySqlParameterSource(query);
 		
-		RowMapper<User> rowMapper = ParameterizedBeanPropertyRowMapper.newInstance(User.class);
+//		RowMapper<User> rowMapper = ParameterizedBeanPropertyRowMapper.newInstance(User.class);
 		
-//	    BeanPropertyRowMapper<User> mapper = new BeanPropertyRowMapper<User>(User.class);
+	    BeanPropertyRowMapper<User> rowMapper = new BeanPropertyRowMapper<User>(User.class);
 		
 		return getDao().query(sql.toString(), paramSource, rowMapper);
 

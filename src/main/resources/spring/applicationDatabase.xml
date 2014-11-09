@@ -18,7 +18,8 @@
 	<!-- 数据源配置 -->
 
 	<!-- BoneCP configuration -->
-	<bean id="appDataSourceImpl" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+	<bean id="appDataSourceImpl" class="com.jolbox.bonecp.BoneCPDataSource"
+		destroy-method="close">
 		<property name="driverClass" value="${app.jdbc.driver}" />
 		<property name="jdbcUrl" value="${${db.config.app}.app.jdbc.url}" />
 		<property name="username" value="${${db.config.app}.app.jdbc.username}" />
@@ -53,7 +54,8 @@
 		<property name="targetDataSource" ref="appDataSourceImpl" />
 	</bean>
 
-	<bean id="dataSource" class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
 		<property name="targetDataSource" ref="appDataSourceImpl" />
 	</bean>
 
@@ -61,74 +63,93 @@
 		<constructor-arg ref="dataSource" />
 	</bean>
 
-	<bean id="appJdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
+	<bean id="appJdbcTemplate"
+		class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
 		<constructor-arg ref="jdbcTemplate" />
 	</bean>
-	
-	
 
-	
-	<!-- 使用annotation注解方式配置 事务 默认为 transactionManager , 使用注解 @Transactional("transactionManager ID") 需要显示声明使用拿个，否则会冲突 -->
 
-	<tx:annotation-driven transaction-manager="transactionManager" order="0" />
-	
-	<!-- hibernate 事务管理器,具体定义在 applicationHibernate.xml  -->
-	<tx:annotation-driven transaction-manager="hbnTransactionManager" />
 
-	<!-- 默认的事务管理器，只和数据源相关， 这个事务管理器可以支持spring的 jdbc 和 MyBatis 事务， hibernate需要单独声明和使用  -->
-	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+
+	<!-- 使用annotation注解方式配置 事务 默认为 transactionManager , 使用注解 @Transactional("transactionManager 
+		ID") 需要显示声明使用拿个，否则会冲突 -->
+
+	<tx:annotation-driven transaction-manager="transactionManager"
+		order="0" />
+
+
+	<!-- 默认的事务管理器，只和数据源相关， 这个事务管理器可以支持spring的 jdbc 和 MyBatis 事务， hibernate需要单独声明和使用 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
-	<bean id="transactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+	<bean id="transactionTemplate"
+		class="org.springframework.transaction.support.TransactionTemplate">
 		<property name="transactionManager" ref="transactionManager" />
 	</bean>
-	
-	
-<!-- 	<bean id="transactionInterceptor" class="org.springframework.transaction.interceptor.TransactionInterceptor"> -->
-<!-- 	   <property name="transactionManager" ref="transactionManager"/> -->
-<!-- 	   <property name="transactionAttributes"> -->
-<!-- 	    <props> -->
-<!-- 	     <prop key="*">PROPAGATION_REQUIRED</prop> -->
-<!-- 	     <prop key="get*">PROPAGATION_REQUIRED,readOnly</prop> -->
-<!-- 	     <prop key="find*">PROPAGATION_REQUIRED,readOnly</prop> -->
-<!-- 	     <prop key="request*">PROPAGATION_REQUIRED,readOnly</prop> -->
-<!-- 	    </props> -->
-<!-- 	   </property> -->
+
+	<!-- <bean id="transactionProxy" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" 
+		abstract="true"> -->
+	<!-- <property name="transactionManager" ref="transactionManager"/> -->
+	<!-- <property name="transactionAttributes"> -->
+	<!-- <props> -->
+	<!-- <prop key="insert*">PROPAGATION_REQUIRED</prop> -->
+	<!-- <prop key="update*">PROPAGATION_REQUIRED</prop> -->
+	<!-- <prop key="save*">PROPAGATION_REQUIRED</prop> -->
+	<!-- <prop key="delete*">PROPAGATION_REQUIRED</prop> -->
+	<!-- <prop key="get*">PROPAGATION_REQUIRED,readOnly</prop> -->
+	<!-- <prop key="list*">PROPAGATION_REQUIRED,readOnly</prop> -->
+	<!-- </props> -->
+	<!-- </property> -->
+	<!-- </bean> -->
+
+<!-- 	<bean id="transactionInterceptor" -->
+<!-- 		class="org.springframework.transaction.interceptor.TransactionInterceptor"> -->
+<!-- 		<property name="transactionManager" ref="transactionManager" /> -->
+<!-- 		<property name="transactionAttributes"> -->
+<!-- 			<props> -->
+<!-- 				<prop key="insert*">PROPAGATION_REQUIRED</prop> -->
+<!-- 				<prop key="update*">PROPAGATION_REQUIRED</prop> -->
+<!-- 				<prop key="save*">PROPAGATION_REQUIRED</prop> -->
+<!-- 				<prop key="delete*">PROPAGATION_REQUIRED</prop> -->
+<!-- 				<prop key="get*">PROPAGATION_REQUIRED,readOnly</prop> -->
+<!-- 				<prop key="list*">PROPAGATION_REQUIRED,readOnly</prop> -->
+<!-- 			</props> -->
+<!-- 		</property> -->
 <!-- 	</bean> -->
-	
-<!-- 	<bean class="org.springframework.transaction.interceptor.TransactionAttributeSourceAdvisor"> -->
-<!-- 	   <property name="transactionInterceptor" ref="transactionInterceptor"/> -->
+
+<!-- 	<bean id="transactionAttributeSourceAdvisor" -->
+<!-- 		class="org.springframework.transaction.interceptor.TransactionAttributeSourceAdvisor"> -->
+<!-- 		<property name="transactionInterceptor" ref="transactionInterceptor" /> -->
 <!-- 	</bean> -->
-	
+
 <!-- 	<bean class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator"> -->
-<!-- 	   <property name="beanNames"> -->
-<!-- 	    <value>*Jdbc</value> -->
-<!-- 	   </property> -->
-<!-- 	   <property name="interceptorNames"> -->
-<!-- 	   	<list> -->
-<!-- 	    	<value>transactionInterceptor</value> -->
-<!-- 	    </list> -->
-<!-- 	   </property> -->
+<!-- 		<property name="beanNames"> -->
+<!-- 			<value>*Jdbc</value> -->
+<!-- 		</property> -->
+<!-- 		<property name="interceptorNames"> -->
+<!-- 			<list> -->
+<!-- 				<value>transactionInterceptor</value> -->
+<!-- 			</list> -->
+<!-- 		</property> -->
 <!-- 	</bean> -->
-	
 
 
-	
-<!-- 	 <tx:advice id="appTxAdvice" transaction-manager="transactionManager"> -->
-<!--         <tx:attributes> -->
-<!--             <tx:method name="add*" propagation="REQUIRED" /> -->
-<!--             <tx:method name="insert*" propagation="REQUIRED" /> -->
-<!--             <tx:method name="delete*" propagation="REQUIRED" /> -->
-<!--             <tx:method name="update*" propagation="REQUIRED" /> -->
-<!--             <tx:method name="test*" propagation="REQUIRED" /> -->
-<!--             <tx:method name="*" propagation="true" /> -->
-<!--         </tx:attributes> -->
-<!--     </tx:advice> -->
+<!-- 	<tx:advice id="appTxAdvice" transaction-manager="transactionManager"> -->
+<!-- 	<tx:attributes> -->
+<!-- 		<tx:method name="add*" propagation="REQUIRED" /> -->
+<!-- 		<tx:method name="insert*" propagation="REQUIRED" /> -->
+<!-- 		<tx:method name="delete*" propagation="REQUIRED" /> -->
+<!-- 		<tx:method name="update*" propagation="REQUIRED" /> -->
+<!-- 		<tx:method name="test*" propagation="REQUIRED" /> -->
+<!-- 		<tx:method name="*" propagation="NEVER" /> -->
+<!-- 	</tx:attributes> -->
+<!-- 	</tx:advice> -->
 
-<!--     <aop:config> -->
-<!--         <aop:advisor advice-ref="appTxAdvice" pointcut="execution(* test.jdbc.*.*(..))" /> -->
-<!--     </aop:config> -->
-    
-	
+<!-- 	<aop:config> -->
+<!-- 	   <aop:advisor advice-ref="appTxAdvice" pointcut="execution(* test.jdbc.*.*(..))"  /> -->
+<!-- 	</aop:config> -->
+
+
 
 </beans>

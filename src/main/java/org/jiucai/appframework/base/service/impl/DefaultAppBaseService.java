@@ -1,15 +1,22 @@
 package org.jiucai.appframework.base.service.impl;
 
+import java.io.PrintWriter;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.jiucai.appframework.base.util.ConfigUtil;
 import org.jiucai.appframework.base.web.BaseController;
 import org.jiucai.appframework.base.web.render.JsonRender;
 import org.jiucai.appframework.base.web.render.XmlRender;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.SerializationConfig;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 public abstract class DefaultAppBaseService  extends AbstractBaseService {
 
@@ -66,20 +73,20 @@ public abstract class DefaultAppBaseService  extends AbstractBaseService {
 		jsonRender.setEncoding(encoding);
 		
 		//设置bean里没有的属性不解析,否则没有此项设置会出现异常
-		jsonRender.getObjectMapper().getDeserializationConfig().without(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
-		jsonRender.getObjectMapper().getSerializationConfig().without(SerializationConfig.Feature.WRAP_ROOT_VALUE);
+		jsonRender.getObjectMapper().getDeserializationConfig().without(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+		jsonRender.getObjectMapper().getSerializationConfig().without(SerializationFeature.WRAP_ROOT_VALUE);
 		
 		//日期序列化需要 get方法加 @JsonSerialize(using=JsonDateSerializer.class)
-		jsonRender.getObjectMapper().getSerializationConfig().without(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS);
+		jsonRender.getObjectMapper().getSerializationConfig().without(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 		// 不格式化输出
-		jsonRender.getObjectMapper().getSerializationConfig().without(SerializationConfig.Feature.INDENT_OUTPUT);
+		jsonRender.getObjectMapper().getSerializationConfig().without(SerializationFeature.INDENT_OUTPUT);
 		// 不输出null值
-		jsonRender.getObjectMapper().getSerializationConfig().without(SerializationConfig.Feature.WRITE_NULL_MAP_VALUES);
+		jsonRender.getObjectMapper().getSerializationConfig().without(SerializationFeature.WRITE_NULL_MAP_VALUES);
 		
 
-		SerializationConfig sConfig = jsonRender.getObjectMapper().getSerializationConfig().withSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
+		SerializationConfig sConfig = jsonRender.getObjectMapper().getSerializationConfig().withSerializationInclusion(JsonInclude.Include.NON_NULL);
 		
-		jsonRender.getObjectMapper().setSerializationConfig(sConfig);
+		jsonRender.getObjectMapper().setSerializationInclusion(sConfig.getSerializationInclusion());
 		
 		return jsonRender;
 	}
@@ -143,6 +150,42 @@ public abstract class DefaultAppBaseService  extends AbstractBaseService {
 	@Override
 	public String getContentType() {
 		return getJsonRender().getContentType();
+	}
+	
+	
+	
+	public void output(HttpServletResponse response, String msg,
+			String contentType) {
+		PrintWriter out = null;
+		try {
+			// 必须放在 response.getWriter(); 之前否则不起作用
+			response.setHeader("Content-Type", contentType);
+			response.setHeader("Pragma", "no-cache");
+
+			response.addHeader("Cache-Control", "must-revalidate");
+			response.addHeader("Cache-Control", "no-cache");
+			response.addHeader("Cache-Control", "no-store");
+
+			response.setDateHeader("Expires", 0);
+
+			out = response.getWriter();
+
+			if (null != out) {
+				if (null == msg) {
+					msg = "";
+				}
+				out.write(msg);
+			}
+
+		} catch (Exception e) {
+			log.error("output failed: " + ExceptionUtils.getFullStackTrace(e));
+		} finally {
+			if (null != out) {
+				out.close();
+			}
+
+		}
+
 	}
 	
 

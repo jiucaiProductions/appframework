@@ -17,7 +17,7 @@ import test.dao.UserDaoTestContext;
 public class TestUserMbt extends UserDaoTestContext {
 
 	@Autowired
-	private UserDao UserDaoMbt;
+	private UserDao userDaoMbt;
 
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
@@ -29,7 +29,7 @@ public class TestUserMbt extends UserDaoTestContext {
 
 	@Override
 	public UserDao getUserDao() {
-		return UserDaoMbt;
+		return userDaoMbt;
 	}
 	
 	

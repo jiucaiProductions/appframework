@@ -88,9 +88,9 @@ public abstract class UserDaoTestContext extends TestContext  {
 				getUserDao().insertUser(u);
 				
 //				if (i < 2) {
-//					userMapper.insertUser(u);
+//					getUserDao().insertUser(u);
 //				} else {
-//					//throw new RuntimeException("more than 2 is not supported.");
+//					throw new RuntimeException("more than 2 is not supported.");
 //				}
 				
 				log.info("user inserted: " + u);

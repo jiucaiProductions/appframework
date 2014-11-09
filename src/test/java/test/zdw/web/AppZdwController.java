@@ -9,30 +9,64 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.jiucai.appframework.base.web.AbstractBaseController;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import test.web.TestAppController;
-
 
 @Controller
 @RequestMapping("/zdw")
 public class AppZdwController extends AbstractBaseController {
-    
+
+    @RequestMapping("/binary/{serviceId}")
+    @Override
+    public void binary(@PathVariable("serviceId") String serviceId, HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
+        super.binary(serviceId, request, response);
+    }
+
+    @RequestMapping("/d/{serviceId}")
+    @Override
+    public void data(@PathVariable("serviceId") String serviceId, Map<String, Object> model,
+            HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
+        super.data(serviceId, model, request, response);
+
+    }
+
+    @RequestMapping("/download/{serviceId}")
+    @Override
+    public void download(@PathVariable("serviceId") String serviceId, HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
+        super.download(serviceId, request, response);
+    }
+
+    @Override
+    public String getDefaultMapperId() {
+        return TestAppController.DEFAULT_MAPPER_ID;
+    }
+
     @Override
     public String getReqPrefix() {
         return TestAppController.REQ_PREFIX;
     }
-    
-    public  String getDefaultMapperId(){
-    	return TestAppController.DEFAULT_MAPPER_ID;
+
+    @RequestMapping("/p/{serviceId}")
+    @Override
+    public String page(@PathVariable("serviceId") String serviceId, Map<String, Object> model,
+            HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
+        return super.page(serviceId, model, request, response);
+
     }
 
-    @RequestMapping("/p")
+    @RequestMapping("/upload/{serviceId}")
     @Override
-    public String page(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response)
+    public void upload(@PathVariable("serviceId") String serviceId,
+            MultipartHttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-		return super.page(model, request, response);
-		
+        super.upload(serviceId, request, response);
     }
 
 }

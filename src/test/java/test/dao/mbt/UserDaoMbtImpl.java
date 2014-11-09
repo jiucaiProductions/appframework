@@ -8,7 +8,7 @@ import test.TestBaseDao;
 import test.dao.UserDao;
 import test.domain.User;
 
-@Repository("UserDaoMbt")
+@Repository("userDaoMbt")
 public class UserDaoMbtImpl  extends TestBaseDao implements UserDao{
 
 	@Override

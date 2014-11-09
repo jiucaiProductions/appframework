@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import test.domain.TestDomain;
 
 
-@Service("testZdwPageService")
-public class TestZdwPageService extends DefaultAppBaseService implements PageService {
+@Service("zdwTestPageService")
+public class ZdwTestPageService extends DefaultAppBaseService implements PageService {
 
     @Override
     public String handleRequest(ParameterMapper paramMapper, Map<String, Object> view) {

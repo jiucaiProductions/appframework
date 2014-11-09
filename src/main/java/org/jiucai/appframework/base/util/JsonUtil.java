@@ -1,9 +1,10 @@
 package org.jiucai.appframework.base.util;
 
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationConfig;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
  * JsonUtil: json的操作方法
@@ -18,20 +19,19 @@ public class JsonUtil {
 		// /////// mapper 输出格式配置定义 /////////
 		
 		//设置bean里没有的属性不解析,否则没有此项设置会出现异常
-		mapper.getDeserializationConfig().without(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
-		mapper.getSerializationConfig().without(SerializationConfig.Feature.WRAP_ROOT_VALUE);
+		mapper.getDeserializationConfig().without(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+		mapper.getSerializationConfig().without(SerializationFeature.WRAP_ROOT_VALUE);
 		
 		//日期序列化需要 get方法加 @JsonSerialize(using=JsonDateSerializer.class)
-		mapper.getSerializationConfig().without(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS);
+		mapper.getSerializationConfig().without(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 		// 不格式化输出
-		mapper.getSerializationConfig().without(SerializationConfig.Feature.INDENT_OUTPUT);
+		mapper.getSerializationConfig().without(SerializationFeature.INDENT_OUTPUT);
 		// 不输出null值
-		mapper.getSerializationConfig().without(SerializationConfig.Feature.WRITE_NULL_MAP_VALUES);
-		
+		mapper.getSerializationConfig().without(SerializationFeature.WRITE_NULL_MAP_VALUES);
 
-		SerializationConfig sConfig = mapper.getSerializationConfig().withSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
+		SerializationConfig sConfig = mapper.getSerializationConfig().withSerializationInclusion(JsonInclude.Include.NON_NULL);
 		
-		mapper.setSerializationConfig(sConfig);
+		mapper.setSerializationInclusion(sConfig.getSerializationInclusion());
 	
 	}
 
