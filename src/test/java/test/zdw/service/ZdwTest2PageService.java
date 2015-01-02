@@ -2,17 +2,20 @@ package test.zdw.service;
 
 import java.util.Map;
 
+import org.jiucai.appframework.base.annotation.PageServiceMapping;
 import org.jiucai.appframework.base.mapper.ParameterMapper;
-import org.jiucai.appframework.base.service.PageService;
-import org.jiucai.appframework.base.service.impl.DefaultAppBaseService;
+import org.jiucai.appframework.common.util.LogUtil;
+import org.jiucai.appframework.common.util.Logs;
 import org.springframework.stereotype.Service;
 
 import test.domain.TestDomain;
 
-@Service("zdwTestPageService")
-public class ZdwTestPageService extends DefaultAppBaseService implements PageService {
+@Service("zdwTest2PageService")
+public class ZdwTest2PageService {
 
-    @Override
+    protected Logs log = LogUtil.getLog(getClass());
+
+    @PageServiceMapping("/zdwTest2")
     public String handleRequest(ParameterMapper paramMapper, Map<String, Object> view) {
 
         Map<String, String> reqParam = paramMapper.getParamMap();

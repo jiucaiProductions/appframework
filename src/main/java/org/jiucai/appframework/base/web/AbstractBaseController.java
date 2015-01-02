@@ -28,10 +28,10 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 /**
  * 应用前端统一控制器
  *
- * <pre>
- * 页面请求 /ControllerPATH/p?sid=pageServiceId&mid=mapperId&pid=1
- * 数据请求 /ControllerPATH/d?sid=dataServiceId&mid=mapperId&pid=1
- * </pre>
+ * <p>
+ * 页面请求 /ControllerPATH/page/pageServiceId <br>
+ * 数据请求 /ControllerPATH/data/dataServiceId
+ * </p>
  *
  * @author zhaidw
  *
@@ -56,10 +56,16 @@ public abstract class AbstractBaseController extends BaseController {
     /**
      * 二进制请求
      *
+     * @param serviceId
+     *            serviceId
      * @param request
+     *            request
      * @param response
+     *            response
      * @throws ServletException
+     *             ServletException
      * @throws IOException
+     *             IOException
      */
     public void binary(final String serviceId, HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
@@ -158,11 +164,18 @@ public abstract class AbstractBaseController extends BaseController {
     /**
      * 数据请求
      *
+     * @param serviceId
+     *            serviceId
      * @param model
+     *            Map
      * @param request
+     *            request
      * @param response
+     *            response
      * @throws ServletException
+     *             ServletException
      * @throws IOException
+     *             IOException
      */
     public void data(final String serviceId, Map<String, Object> model, HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
@@ -231,10 +244,16 @@ public abstract class AbstractBaseController extends BaseController {
     /**
      * 下载请求
      *
+     * @param serviceId
+     *            serviceId
      * @param request
+     *            request
      * @param response
+     *            response
      * @throws ServletException
+     *             ServletException
      * @throws IOException
+     *             IOException
      */
     public void download(final String serviceId, HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
@@ -355,7 +374,7 @@ public abstract class AbstractBaseController extends BaseController {
 
     /**
      * app default ParameterMapper beanId
-     * 
+     *
      * @return 返回接口 {@link org.jiucai.appframework.base.mapper.ParameterMapper }
      *         的实现类的 beanId
      */
@@ -369,7 +388,7 @@ public abstract class AbstractBaseController extends BaseController {
 
     /**
      * request attribute 中的请求参数的前缀
-     * 
+     *
      * @return 放在 request attribute 中的请求参数的前缀
      */
     public abstract String getReqPrefix();
@@ -381,12 +400,19 @@ public abstract class AbstractBaseController extends BaseController {
     /**
      * 页面请求
      *
+     * @param serviceId
+     *            serviceId
      * @param model
+     *            model
      * @param request
+     *            request
      * @param response
+     *            response
      * @return view path
      * @throws ServletException
+     *             ServletException
      * @throws IOException
+     *             IOException
      */
     public String page(final String serviceId, Map<String, Object> model,
             HttpServletRequest request, HttpServletResponse response) throws ServletException,
@@ -464,10 +490,16 @@ public abstract class AbstractBaseController extends BaseController {
     /**
      * 下载请求
      *
+     * @param serviceId
+     *            serviceId
      * @param request
+     *            request
      * @param response
+     *            response
      * @throws ServletException
+     *             ServletException
      * @throws IOException
+     *             IOException
      */
     public void upload(final String serviceId, MultipartHttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {

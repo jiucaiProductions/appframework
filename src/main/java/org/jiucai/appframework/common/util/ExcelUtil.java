@@ -103,7 +103,9 @@ public class ExcelUtil {
      *            读取数据忽略的行数，比喻行头不需要读入 忽略的行数为1
      * @return 读出的Excel中数据的内容
      * @throws FileNotFoundException
+     *             FileNotFoundException
      * @throws IOException
+     *             IOException
      *
      */
     public static String[][] readExcel(File file, int ignoreRows) throws FileNotFoundException,
@@ -313,7 +315,9 @@ public class ExcelUtil {
      * 设置单元格格式和数据类型转换
      *
      * @param cell
+     *            cell
      * @param value
+     *            value
      */
     protected static void setCellValue(HSSFCell cell, Object value) {
 

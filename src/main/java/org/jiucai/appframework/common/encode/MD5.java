@@ -6,7 +6,7 @@ package org.jiucai.appframework.common.encode;
  *
  * <pre>
  *
- * Copyright: Ma Bingyao <andot@ujn.edu.cn>
+ * Copyright: Ma Bingyao[andot@ujn.edu.cn]
  * Version: 3.0.2
  * LastModified: Apr 12, 2010
  * This library is free.  You can redistribute it and/or modify it under GPL.
@@ -14,7 +14,7 @@ package org.jiucai.appframework.common.encode;
  *
  * </pre>
  *
- * @author Ma Bingyao <andot@ujn.edu.cn>
+ * @author Ma Bingyao
  *
  */
 public class MD5 {
@@ -22,7 +22,7 @@ public class MD5 {
      *
      * 对字符串进行 MD5 散列计算
      *
-     * @param inbuf
+     * @param data
      *            要处理的字符串
      * @return MD5 散列的字符串
      */

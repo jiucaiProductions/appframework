@@ -15,7 +15,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * properties 属性文件加载器，支持动态加载
- * 
+ *
  * <pre>
  * 1.properties 编码 UTF-8 方可支持中文;
  * 2.默认加载的配置文件支持热加载，修改后即时生效;
@@ -23,151 +23,156 @@ import org.apache.commons.logging.LogFactory;
  * 		a. 配置 config.properties 中的include 项，Config第一次初始化时将加载其中的配置文件;
  * 		b. 调用 Config.addConfig(配置文件名)，然后使用返回值的方法获取配置项数据;
  * </pre>
- * 
+ *
  * @author zhaidw at 2010-11-9
- * 
+ *
  */
 public class ConfigUtil {
 
-	protected static Log log = LogFactory.getLog(ConfigUtil.class);
-	protected static CompositeConfiguration config;
+    /**
+     * 每次加载同名配置时，自动移除旧的同名配置
+     *
+     * @param configFileName
+     *            configFileName
+     * @return Configuration Configuration
+     */
+    public synchronized static Configuration addConfig(String configFileName) {
+        try {
 
-	private static String FILE_ENCODING = "UTF-8";
-	private static String SUFFIX_PERPERTIES = ".properties";
-	// 配置项列表
-	private static Map<String, Configuration> cfgMap;
+            if (configFileName.toLowerCase().lastIndexOf(SUFFIX_PERPERTIES) == -1) {
+                configFileName = configFileName + SUFFIX_PERPERTIES;
+            }
 
-	static {
-		init();
-	}
+            if (null != cfgMap.get(configFileName)) {
+                config.removeConfiguration(cfgMap.get(configFileName));
+                cfgMap.remove(configFileName);
+                log.debug("removing config: " + configFileName);
+            }
 
-	private synchronized static void init() {
-		try {
-			config = new CompositeConfiguration();
-			config.setLogger(log);
+            PropertiesConfiguration configApp = new PropertiesConfiguration();
+            configApp.setEncoding(FILE_ENCODING);
+            configApp.load(configFileName);
+            configApp.setReloadingStrategy(new FileChangedReloadingStrategy());
 
-			// 1 SystemConfiguration
-			SystemConfiguration configSys = new SystemConfiguration();
+            log.debug("adding config file: " + configFileName);
+            cfgMap.put(configFileName, configApp);
+            config.addConfiguration(configApp);
 
-			cfgMap = new HashMap<String, Configuration>();
+            log.debug("Config item count: " + cfgMap.size());
 
-			cfgMap.put("system", configSys);
-			config.addConfiguration(configSys);
-			log.debug("loading System Properties");
+        } catch (ConfigurationException e) {
+            log.error("load config file failed: " + ExceptionUtils.getFullStackTrace(e));
+        }
 
-		} catch (Exception e) {
-			log.error("load config file failed: "
-					+ ExceptionUtils.getFullStackTrace(e));
-		}
-	}
+        return config;
+    }
 
-	/**
-	 * 获取最原始的 Configuration
-	 * 
-	 * @return Configuration
-	 */
-	public synchronized static Configuration getConfiguration() {
+    /**
+     * 获取最原始的 Configuration
+     *
+     * @return Configuration Configuration
+     */
+    public synchronized static Configuration getConfiguration() {
 
-		if (null == config) {
-			init();
-		}
-		return config;
-	}
+        if (null == config) {
+            init();
+        }
+        return config;
+    }
 
-	/**
-	 * 设置配置文件编码
-	 * 
-	 * @param encoding
-	 * @return String
-	 */
-	public synchronized static String setEncoding(final String encoding) {
+    /**
+     * 获取字符串配置值 无法获取时返回null
+     *
+     * @param key
+     *            config key
+     * @return String config value
+     */
+    public synchronized static String getString(String key) {
+        String value = null;
+        try {
+            value = config.getString(key);
+            if (null == value) {
+                log.warn("config value of " + key + " is null. ");
+            }
+        } catch (Exception e) {
+            log.error("can not find config key[" + key + "]. ");
+            log.error(ExceptionUtils.getFullStackTrace(e));
+        }
 
-		FILE_ENCODING = encoding;
+        return value;
+    }
 
-		return FILE_ENCODING;
-	}
+    public static void main(String[] args) {
 
-	/**
-	 * 设置配置文件名扩展名，包含. 比如 .properties
-	 * 
-	 * @param suffix
-	 * @return String
-	 */
-	public synchronized static String setSuffix(final String suffix) {
+        String key = "mail.from_name";
+        ConfigUtil.addConfig("mail");
 
-		SUFFIX_PERPERTIES = suffix;
+        String s = ConfigUtil.getString(key);
 
-		return SUFFIX_PERPERTIES;
-	}
+        System.out.println("s = " + s);
 
-	/**
-	 * 每次加载同名配置时，自动移除旧的同名配置
-	 * 
-	 * @param configFileName
-	 * @return Configuration
-	 */
-	public synchronized static Configuration addConfig(String configFileName) {
-		try {
+    }
 
-			if (configFileName.toLowerCase().lastIndexOf(SUFFIX_PERPERTIES) == -1) {
-				configFileName = configFileName + SUFFIX_PERPERTIES;
-			}
+    /**
+     * 设置配置文件编码
+     *
+     * @param encoding
+     *            encoding
+     * @return String setted encoding
+     */
+    public synchronized static String setEncoding(final String encoding) {
 
-			if (null != cfgMap.get(configFileName)) {
-				config.removeConfiguration(cfgMap.get(configFileName));
-				cfgMap.remove(configFileName);
-				log.debug("removing config: " + configFileName);
-			}
+        FILE_ENCODING = encoding;
 
-			PropertiesConfiguration configApp = new PropertiesConfiguration();
-			configApp.setEncoding(FILE_ENCODING);
-			configApp.load(configFileName);
-			configApp.setReloadingStrategy(new FileChangedReloadingStrategy());
+        return FILE_ENCODING;
+    }
 
-			log.debug("adding config file: " + configFileName);
-			cfgMap.put(configFileName, configApp);
-			config.addConfiguration(configApp);
+    /**
+     * 设置配置文件名扩展名，包含. 比如 .properties
+     *
+     * @param suffix
+     *            file suffix
+     * @return String suffix
+     */
+    public synchronized static String setSuffix(final String suffix) {
 
-			log.debug("Config item count: " + cfgMap.size());
+        SUFFIX_PERPERTIES = suffix;
 
-		} catch (ConfigurationException e) {
-			log.error("load config file failed: "
-					+ ExceptionUtils.getFullStackTrace(e));
-		}
+        return SUFFIX_PERPERTIES;
+    }
 
-		return config;
-	}
+    private synchronized static void init() {
+        try {
+            config = new CompositeConfiguration();
+            config.setLogger(log);
 
-	/**
-	 * 获取字符串配置值 无法获取时返回null
-	 * 
-	 * @param key
-	 * @return String
-	 */
-	public synchronized static String getString(String key) {
-		String value = null;
-		try {
-			value = config.getString(key);
-			if (null == value) {
-				log.warn("config value of " + key + " is null. ");
-			}
-		} catch (Exception e) {
-			log.error("can not find config key[" + key + "]. ");
-			log.error(ExceptionUtils.getFullStackTrace(e));
-		}
+            // 1 SystemConfiguration
+            SystemConfiguration configSys = new SystemConfiguration();
 
-		return value;
-	}
+            cfgMap = new HashMap<String, Configuration>();
 
-	public static void main(String[] args) {
+            cfgMap.put("system", configSys);
+            config.addConfiguration(configSys);
+            log.debug("loading System Properties");
 
-		String key = "mail.from_name";
-		ConfigUtil.addConfig("mail");
+        } catch (Exception e) {
+            log.error("load config file failed: " + ExceptionUtils.getFullStackTrace(e));
+        }
+    }
 
-		String s = ConfigUtil.getString(key);
+    protected static Log log = LogFactory.getLog(ConfigUtil.class);
 
-		System.out.println("s = " + s);
+    protected static CompositeConfiguration config;
 
-	}
+    private static String FILE_ENCODING = "UTF-8";
+
+    private static String SUFFIX_PERPERTIES = ".properties";
+
+    // 配置项列表
+    private static Map<String, Configuration> cfgMap;
+
+    static {
+        init();
+    }
 
 }

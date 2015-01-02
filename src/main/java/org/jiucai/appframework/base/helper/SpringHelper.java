@@ -12,53 +12,55 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  * 从 ServletContext 或 Bean初始化时 获取 spring 上下文
- * 
+ *
  * @author zhaidw
- * 
+ *
  */
 public class SpringHelper implements ApplicationContextAware {
 
-	protected Logs log = LogUtil.getLog(getClass());
+    /**
+     * 返回 Bean初始化时 的 ApplicationContext
+     *
+     * @return ApplicationContext ApplicationContext
+     */
+    public static ApplicationContext getApplicationContext() {
+        return context;
+    }
 
-	protected static ApplicationContext context;
+    /**
+     * 从 ServletContext 获取 ApplicationContext
+     *
+     * @param request
+     *            HttpServletRequest
+     * @return ApplicationContext ApplicationContext
+     */
+    public static ApplicationContext getApplicationContext(HttpServletRequest request) {
 
-	/**
-	 * 从 ServletContext 获取 ApplicationContext
-	 * 
-	 * @param request
-	 * @return ApplicationContext
-	 */
-	public static ApplicationContext getApplicationContext(HttpServletRequest request) {
+        ServletContext servletContext = request.getSession().getServletContext();
+        ApplicationContext context = WebApplicationContextUtils
+                .getWebApplicationContext(servletContext);
 
-		ServletContext servletContext = request.getSession().getServletContext();
-		ApplicationContext context = WebApplicationContextUtils.getWebApplicationContext(servletContext);
+        return context;
 
-		return context;
+    }
 
-	}
+    public static Object getBean(String name) {
+        return context.getBean(name);
+    }
 
-	/**
-	 * 返回 Bean初始化时 的 ApplicationContext
-	 * 
-	 * @return ApplicationContext
-	 */
-	public static ApplicationContext getApplicationContext() {
-		return context;
-	}
+    public static <T> T getBean(String name, Class<T> requiredType) {
+        return context.getBean(name, requiredType);
+    }
 
-	public static Object getBean(String name) {
-		return context.getBean(name);
-	}
+    protected Logs log = LogUtil.getLog(getClass());
 
-	public static <T> T getBean(String name, Class<T> requiredType) {
-		return context.getBean(name, requiredType);
-	}
+    protected static ApplicationContext context;
 
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext)
-			throws BeansException {
-		context = applicationContext;
-		log.info("ApplicationContext[" + applicationContext.getClass().getName() + "] inited: " + applicationContext);
-	}
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        context = applicationContext;
+        log.info("ApplicationContext[" + applicationContext.getClass().getName() + "] inited: "
+                + applicationContext);
+    }
 
 }

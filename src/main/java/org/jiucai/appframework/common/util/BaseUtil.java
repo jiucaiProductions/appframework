@@ -10,88 +10,86 @@ import org.joda.time.DateTime;
 
 public abstract class BaseUtil {
 
-	protected static Logs log = LogUtil.getLog(BaseUtil.class);
-	
-	/**
-	 * 把 Map 中的 Object 对象转换成可 显示字符串
-	 * 
-	 * @param val
-	 * @return String
-	 */
-	public static String convertMapValue(Object val) {
-		String result = "";
+    /**
+     * 把 Map 中的 Object 对象转换成可 显示字符串
+     * 
+     * @param val
+     *            val
+     * @return String
+     */
+    public static String convertMapValue(Object val) {
+        String result = "";
 
-		if (val instanceof Long || val instanceof Integer ||  val instanceof BigInteger
-				|| val instanceof String || val instanceof Character || val instanceof Short ) {
+        if (val instanceof Long || val instanceof Integer || val instanceof BigInteger
+                || val instanceof String || val instanceof Character || val instanceof Short) {
 
-			result = String.valueOf(val);
+            result = String.valueOf(val);
 
-		} else if (val instanceof Float || val instanceof Double) {
+        } else if (val instanceof Float || val instanceof Double) {
 
-			Double d = (Double) val;
+            Double d = (Double) val;
 
-			BigDecimal bd = new BigDecimal(d);
+            BigDecimal bd = new BigDecimal(d);
 
-			int scale = bd.scale();
+            int scale = bd.scale();
 
-			scale = scale > 0 ? 4 : 0;
+            scale = scale > 0 ? 4 : 0;
 
-			bd = bd.setScale(scale, BigDecimal.ROUND_HALF_UP);
+            bd = bd.setScale(scale, BigDecimal.ROUND_HALF_UP);
 
-			StringBuffer tempValue = new StringBuffer();
-			tempValue.append(bd.toString());
+            StringBuffer tempValue = new StringBuffer();
+            tempValue.append(bd.toString());
 
-			// 没有小数位数的，末尾添加
-//			if (tempValue.toString().indexOf(".") == -1) {
-//				tempValue.append(".00");
-//
-//			}
+            // 没有小数位数的，末尾添加
+            // if (tempValue.toString().indexOf(".") == -1) {
+            // tempValue.append(".00");
+            //
+            // }
 
-			result = tempValue.toString();
+            result = tempValue.toString();
 
-		} else if (val instanceof BigDecimal ) {
+        } else if (val instanceof BigDecimal) {
 
-			// BigDecimal scale 属性是小数位数，有则说明是小数，否则可能是整型
+            // BigDecimal scale 属性是小数位数，有则说明是小数，否则可能是整型
 
-			BigDecimal bd = (BigDecimal) val;
+            BigDecimal bd = (BigDecimal) val;
 
-			int scale = bd.scale();
+            int scale = bd.scale();
 
-			scale = scale > 0 ? 4 : 0;
+            scale = scale > 0 ? 4 : 0;
 
-			bd = bd.setScale(scale, BigDecimal.ROUND_HALF_UP);
+            bd = bd.setScale(scale, BigDecimal.ROUND_HALF_UP);
 
-			result = bd.toString();
+            result = bd.toString();
 
-		} else if (val instanceof Date) {
+        } else if (val instanceof Date) {
 
-			Date dt = (Date) val;
+            Date dt = (Date) val;
 
-			DateTime d = new DateTime(dt.getTime());
+            DateTime d = new DateTime(dt.getTime());
 
-			if (d.getHourOfDay() == 0 && d.getMinuteOfHour() == 0 && d.getSecondOfMinute() == 0) {
-				result = FastDateFormat.getInstance("yyyy-MM-dd").format(dt);
-			} else {
-				result = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss")
-						.format(dt);
-			}
+            if (d.getHourOfDay() == 0 && d.getMinuteOfHour() == 0 && d.getSecondOfMinute() == 0) {
+                result = FastDateFormat.getInstance("yyyy-MM-dd").format(dt);
+            } else {
+                result = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss").format(dt);
+            }
 
-		} else {
+        } else {
 
-			if (null != val) {
-				result = (String) val;
-				log.warn("convertMapValue()无法转换的对象: " + val.getClass().getName() + " , 值: " + val);
-			}
+            if (null != val) {
+                result = (String) val;
+                log.warn("convertMapValue()无法转换的对象: " + val.getClass().getName() + " , 值: " + val);
+            }
 
-		}
+        }
 
-		if (StringUtils.isBlank(result) || "null".equalsIgnoreCase(result)) {
-			return "";
-		}
+        if (StringUtils.isBlank(result) || "null".equalsIgnoreCase(result)) {
+            return "";
+        }
 
-		return result;
-	}
-	
-	
-	
+        return result;
+    }
+
+    protected static Logs log = LogUtil.getLog(BaseUtil.class);
+
 }

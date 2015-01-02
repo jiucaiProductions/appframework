@@ -11,230 +11,227 @@ import org.jiucai.appframework.common.util.BaseUtil;
 
 /**
  * 获取本机IP的工具类
- * 
+ *
  * @author zhaidw
- * 
+ *
  */
 public class LocalIPUtil extends BaseUtil {
 
-	public static void main(String[] args) {
+    /**
+     * 根据网卡名获取 ip
+     * 
+     * @param networkInterfaceName
+     *            networkInterfaceName
+     * @return String
+     */
+    public static String getIpByNetworkInterfaceName(String networkInterfaceName) {
 
-		// System.out.println("eth0: " + getIpByNetworkInterfaceName("eth0"));
-		// System.out.println("eth1: " + getIpByNetworkInterfaceName("eth1"));
+        String ipValue = null;
 
-		String serverIP = getLocalIP();
-		System.out.println("LocalIP : " + serverIP);
-	}
+        NetworkInterface ni;
+        try {
+            ni = NetworkInterface.getByName(networkInterfaceName);
+            ipValue = getNetworkInterface(ni);
 
-	/**
-	 * 判断当前操作是否Windows.
-	 * 
-	 * @return true---是Windows操作系统
-	 */
-	protected static boolean isWindowsOS() {
-		boolean isWindowsOS = false;
-		String osName = System.getProperty("os.name");
-		if (osName.toLowerCase().indexOf("windows") > -1) {
-			isWindowsOS = true;
-		}
-		return isWindowsOS;
-	}
+        } catch (SocketException e) {
+            log.error("获取 NetworkInterface[" + networkInterfaceName + "] IP失败: ", e);
+        }
 
-	protected static InetAddress[] getAllInetAddress() {
-		InetAddress[] addrArr = null;
-		if (addrArr == null) {
+        return ipValue;
 
-			try {
-				InetAddress address = InetAddress.getLocalHost();
-				String hostName = null;
-				if (null != address) {
-					hostName = address.getHostName();
-				}
-				addrArr = InetAddress.getAllByName(hostName);
-			} catch (Exception e) {
-				log.error("getHostIP   error", e);
-			}
-		}
-		return addrArr;
-	}
+    }
 
-	protected static List<String> getIPList(boolean isIpV4) {
-		List<String> ipList = new ArrayList<String>();
+    public static List<String> getIPv4() {
+        if (isWindowsOS()) {
+            return getIPList(true);
+        } else {
+            log.error("only supported by Windows OS");
+            return null;
+        }
 
-		InetAddress[] adds = getAllInetAddress();
+    }
 
-		if (null != adds) {
-			for (int i = 0; i < adds.length; i++) {
+    public static List<String> getIPv6() {
+        if (isWindowsOS()) {
+            return getIPList(false);
+        } else {
+            log.error("only supported by Windows OS");
+            return null;
+        }
+    }
 
-				String ip = adds[i].getHostAddress();
-				boolean ipTypeWanted = (isIpV4 == true) ? ip.indexOf(":") == -1
-						: ip.indexOf(":") > -1;
-				if (null != ip && ipTypeWanted) {
-					ipList.add(ip);
-				}
-			}
-		}
+    /**
+     * 获取本机IP地址，并自动区分Windows还是Linux操作系统
+     * 
+     * @return String
+     */
+    public static String getLocalIP() {
 
-		return ipList;
+        return isWindowsOS() ? getWindowsIp() : getLinuxIp();
 
-	}
+    }
 
-	public static List<String> getIPv4() {
-		if (isWindowsOS()) {
-			return getIPList(true);
-		} else {
-			log.error("only supported by Windows OS");
-			return null;
-		}
+    public static void main(String[] args) {
 
-	}
+        // System.out.println("eth0: " + getIpByNetworkInterfaceName("eth0"));
+        // System.out.println("eth1: " + getIpByNetworkInterfaceName("eth1"));
 
-	public static List<String> getIPv6() {
-		if (isWindowsOS()) {
-			return getIPList(false);
-		} else {
-			log.error("only supported by Windows OS");
-			return null;
-		}
-	}
+        String serverIP = getLocalIP();
+        System.out.println("LocalIP : " + serverIP);
+    }
 
-	private static String getNetworkInterface(NetworkInterface ni) {
+    private static String getNetworkInterface(NetworkInterface ni) {
 
-		String ipValue = null;
+        String ipValue = null;
 
-		InetAddress ip = null;
+        InetAddress ip = null;
 
-		if (null == ni) {
-			return ipValue;
-		}
+        if (null == ni) {
+            return ipValue;
+        }
 
-		try {
+        try {
 
-			// 虚拟网卡或未使用网卡，直接跳过
-			if (ni.isLoopback() || ni.isVirtual() || !ni.isUp()) {
-				return ipValue;
-			}
-			// ----------特定情况，可以考虑用ni.getName判断
-			// 遍历所有ip
-			Enumeration<InetAddress> addrEnum = ni.getInetAddresses();
-			while (addrEnum.hasMoreElements()) {
-				ip = (InetAddress) addrEnum.nextElement();
+            // 虚拟网卡或未使用网卡，直接跳过
+            if (ni.isLoopback() || ni.isVirtual() || !ni.isUp()) {
+                return ipValue;
+            }
+            // ----------特定情况，可以考虑用ni.getName判断
+            // 遍历所有ip
+            Enumeration<InetAddress> addrEnum = ni.getInetAddresses();
+            while (addrEnum.hasMoreElements()) {
+                ip = addrEnum.nextElement();
 
-				log.debug("HostName: " + ip.getHostName() + " HostAddress: "
-						+ ip.getHostAddress());
+                log.debug("HostName: " + ip.getHostName() + " HostAddress: " + ip.getHostAddress());
 
-				if (ip.isSiteLocalAddress() && !ip.isLoopbackAddress() // 127.开头的都是lookback地址
-						&& ip.getHostAddress().indexOf(":") == -1) {
-					break;
-				}
-			}
-		} catch (Exception e) {
-			log.error("获取 HostName[" + ip.getHostName() + "] IP失败: ", e);
-		}
+                if (ip.isSiteLocalAddress() && !ip.isLoopbackAddress() // 127.开头的都是lookback地址
+                        && ip.getHostAddress().indexOf(":") == -1) {
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            log.error("获取 HostName[" + ip.getHostName() + "] IP失败: ", e);
+        }
 
-		if (null != ip) {
-			ipValue = ip.getHostAddress();
-		}
+        if (null != ip) {
+            ipValue = ip.getHostAddress();
+        }
 
-		return ipValue;
-	}
+        return ipValue;
+    }
 
-	/**
-	 * 根据网卡名获取 ip
-	 * 
-	 * @param networkInterfaceName
-	 * @return String
-	 */
-	public static String getIpByNetworkInterfaceName(String networkInterfaceName) {
+    protected static InetAddress[] getAllInetAddress() {
+        InetAddress[] addrArr = null;
+        if (addrArr == null) {
 
-		String ipValue = null;
+            try {
+                InetAddress address = InetAddress.getLocalHost();
+                String hostName = null;
+                if (null != address) {
+                    hostName = address.getHostName();
+                }
+                addrArr = InetAddress.getAllByName(hostName);
+            } catch (Exception e) {
+                log.error("getHostIP   error", e);
+            }
+        }
+        return addrArr;
+    }
 
-		NetworkInterface ni;
-		try {
-			ni = NetworkInterface.getByName(networkInterfaceName);
-			ipValue = getNetworkInterface(ni);
+    protected static List<String> getIPList(boolean isIpV4) {
+        List<String> ipList = new ArrayList<String>();
 
-		} catch (SocketException e) {
-			log.error("获取 NetworkInterface[" + networkInterfaceName
-					+ "] IP失败: ", e);
-		}
+        InetAddress[] adds = getAllInetAddress();
 
-		return ipValue;
+        if (null != adds) {
+            for (int i = 0; i < adds.length; i++) {
 
-	}
+                String ip = adds[i].getHostAddress();
+                boolean ipTypeWanted = (isIpV4 == true) ? ip.indexOf(":") == -1
+                        : ip.indexOf(":") > -1;
+                if (null != ip && ipTypeWanted) {
+                    ipList.add(ip);
+                }
+            }
+        }
 
-	protected static String getWindowsIp() {
-		String ipValue = "";
-		try {
-			InetAddress addr = InetAddress.getLocalHost();
+        return ipList;
 
-			if (null != addr) {
-				ipValue = addr.getHostAddress();
-			}
-		} catch (Exception e) {
-			log.error("获取Windows本机IP失败: ", e);
-		}
-		return ipValue;
-	}
+    }
 
-	protected static String getLinuxIp() {
-		String ipValue = "";
-		try {
-			boolean bFindIP = false;
+    protected static String getLinuxIp() {
+        String ipValue = "";
+        try {
+            boolean bFindIP = false;
 
-			Enumeration<NetworkInterface> netInterfaces = (Enumeration<NetworkInterface>) NetworkInterface
-					.getNetworkInterfaces();
-			while (netInterfaces.hasMoreElements()) {
-				if (bFindIP) {
-					break;
-				}
-				NetworkInterface ni = (NetworkInterface) netInterfaces
-						.nextElement();
+            Enumeration<NetworkInterface> netInterfaces = NetworkInterface.getNetworkInterfaces();
+            while (netInterfaces.hasMoreElements()) {
+                if (bFindIP) {
+                    break;
+                }
+                NetworkInterface ni = netInterfaces.nextElement();
 
-				log.debug("NetworkInterface Name: " + ni.getName());
+                log.debug("NetworkInterface Name: " + ni.getName());
 
-				if (null != ni) {
-					ipValue = getNetworkInterface(ni);
-					if (null != ipValue) {
-						bFindIP = true;
+                if (null != ni) {
+                    ipValue = getNetworkInterface(ni);
+                    if (null != ipValue) {
+                        bFindIP = true;
 
-						log.debug(ni.getName() + ": " + ipValue);
+                        log.debug(ni.getName() + ": " + ipValue);
 
-						break;
-					}
-				}
+                        break;
+                    }
+                }
 
-			}
+            }
 
-			if (null == ipValue) {
-				ipValue = getIpByNetworkInterfaceName("eth0");
-				log.debug("eth0: " + ipValue);
-			}
+            if (null == ipValue) {
+                ipValue = getIpByNetworkInterfaceName("eth0");
+                log.debug("eth0: " + ipValue);
+            }
 
-			if (null == ipValue) {
-				ipValue = getIpByNetworkInterfaceName("eth1");
-				log.debug("eth1: " + ipValue);
-			}
+            if (null == ipValue) {
+                ipValue = getIpByNetworkInterfaceName("eth1");
+                log.debug("eth1: " + ipValue);
+            }
 
-			if (null == ipValue) {
-				ipValue = getIpByNetworkInterfaceName("em1");
-				log.debug("eth1: " + ipValue);
-			}
+            if (null == ipValue) {
+                ipValue = getIpByNetworkInterfaceName("em1");
+                log.debug("eth1: " + ipValue);
+            }
 
-		} catch (Exception e) {
-			log.error("获取Linux本机IP失败: ", e);
-		}
-		return ipValue;
-	}
+        } catch (Exception e) {
+            log.error("获取Linux本机IP失败: ", e);
+        }
+        return ipValue;
+    }
 
-	/**
-	 * 获取本机IP地址，并自动区分Windows还是Linux操作系统
-	 * 
-	 * @return String
-	 */
-	public static String getLocalIP() {
+    protected static String getWindowsIp() {
+        String ipValue = "";
+        try {
+            InetAddress addr = InetAddress.getLocalHost();
 
-		return isWindowsOS() ? getWindowsIp() : getLinuxIp();
+            if (null != addr) {
+                ipValue = addr.getHostAddress();
+            }
+        } catch (Exception e) {
+            log.error("获取Windows本机IP失败: ", e);
+        }
+        return ipValue;
+    }
 
-	}
+    /**
+     * 判断当前操作是否Windows.
+     * 
+     * @return true---是Windows操作系统
+     */
+    protected static boolean isWindowsOS() {
+        boolean isWindowsOS = false;
+        String osName = System.getProperty("os.name");
+        if (osName.toLowerCase().indexOf("windows") > -1) {
+            isWindowsOS = true;
+        }
+        return isWindowsOS;
+    }
 }

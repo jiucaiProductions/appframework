@@ -17,284 +17,295 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 /**
  * This class will read just enough of a SWF file's header to glean the
  * essential meta-data about the animation.
- * 
+ *
  * This is based on <a href="http://www.adobe.com/devnet/swf.html"> SWF File
  * Format Specification (version 10)</a>.
- * 
+ *
  * @author Resnbl Software
  * @since Mar 22, 2011
  */
 public class SwfUtil extends BaseUtil {
 
-	// Instantiate through getInfo() methods
-	private SwfUtil() {
-	}
+    /**
+     * Read an arbitrary number of bits from a byte[].
+     * 
+     * This should be turned into a full-featured independant class
+     * (someday...).
+     */
+    static class BitReader {
+        private byte[] bytes;
+        private int byteIdx;
+        private int bitIdx = 0;
 
-	/**
-	 * Get the header info for a (potential) SWF file specified by a file path String.
-	 * @param path containing path to file.
-	 * @return SWFinfo object or null if file not found or not SWF.
-	 * @throws FileNotFoundException
-	 */
-	public static SwfInfo getInfo(String path) throws FileNotFoundException {
+        /**
+         * Start reading from the beginning of the supplied array.
+         * 
+         * @param bytes
+         *            byte[] to process
+         */
+        public BitReader(byte[] bytes) {
+            this(bytes, 0);
+        }
 
-		return getInfo(new File(path));
-	}
+        /**
+         * Start reading from an arbitrary index into the array.
+         * 
+         * @param bytes
+         *            byte[] to process
+         * @param startIndex
+         *            byte # to start at
+         */
+        public BitReader(byte[] bytes, int startIndex) {
+            this.bytes = bytes;
+            byteIdx = startIndex;
+        }
 
-	private static SwfInfo getSwfUtilInternal(byte[] hdr) {
-		if (hdr == null) {
-			return null;
-		}
+        /**
+         * Fetch the next <code>bitCount</code> bits as a <em>signed</em> int.
+         * 
+         * @param bitCount
+         *            # bits to read
+         * @return int int
+         */
+        public int sBits(int bitCount) {
+            // First bit is the "sign" bit
+            int value = getBit() == 0 ? 0 : -1;
+            --bitCount;
 
-		SwfInfo info = new SwfInfo();
+            while (--bitCount >= 0) {
+                value = value << 1 | getBit();
+            }
+            return value;
+        }
 
-		if ('C' == hdr[0]) {
-			info.setCompressed(true);
-		} else {
-			info.setCompressed(false);
-		}
+        /**
+         * Bump indexes to the next byte boundary.
+         */
+        public void sync() {
+            if (bitIdx > 0) {
+                ++byteIdx;
+                bitIdx = 0;
+            }
+        }
 
-		info.setVersion(hdr[3]);
+        /**
+         * Fetch the next <code>bitCount</code> bits as an unsigned int.
+         * 
+         * @param bitCount
+         *            # bits to read
+         * @return int
+         */
+        public int uBits(int bitCount) {
+            int value = 0;
 
-		info.setSize(hdr[4] & 0xFF | (hdr[5] & 0xFF) << 8
-				| (hdr[6] & 0xFF) << 16 | hdr[7] << 24);
+            while (--bitCount >= 0) {
+                value = value << 1 | getBit();
+            }
+            return value;
+        }
 
-		BitReader rdr = new BitReader(hdr, SwfInfo.UNCOMP_HDR_LEN);
+        /**
+         * Fetch the next 2 "whole" bytes as an unsigned int (little-endian).
+         * 
+         * @return int int
+         */
+        public int uI16() {
+            sync(); // back to "byte-aligned" mode
+            return (bytes[byteIdx++] & 0xff) | (bytes[byteIdx++] & 0xff) << 8;
+        }
 
-		int[] dims = decodeRect(rdr);
+        // Get the next bit in the array
+        private int getBit() {
+            int value = (bytes[byteIdx] >> (7 - bitIdx)) & 0x01;
 
-		info.setWidth((dims[1] - dims[0]) / 20); // convert twips to pixels
-		info.setHeight((dims[3] - dims[2]) / 20);
+            if (++bitIdx == 8) {
+                bitIdx = 0;
+                ++byteIdx;
+            }
 
-		info.setFps((float) rdr.uI16() / 256f); // 8.8 fixed-point format
-		info.setFrameCount(rdr.uI16());
+            return value;
+        }
+    }
 
-		return info;
-	}
+    /**
+     * Get the header info for a (potential) SWF file specified by a File
+     * object.
+     * 
+     * @param file
+     *            File pointing to the desired SWF file.
+     * 
+     * @return SWFinfo object or null if file not found or not SWF.
+     * @throws FileNotFoundException
+     *             FileNotFoundException
+     */
+    public static SwfInfo getInfo(File file) throws FileNotFoundException {
+        SwfInfo info = null;
+        try {
+            info = getInfo(new FileInputStream(file));
+        } catch (IOException e) {
+            log.error("IOException: " + ExceptionUtils.getFullStackTrace(e));
+        }
 
-	/*
-	 * Read just enough of the file for our purposes
-	 */
-	private static byte[] getByteInternal(InputStream fis) throws IOException {
+        return info;
+    }
 
-		byte[] bytes = new byte[128]; // should be enough...
+    /**
+     * 获取文件输入流
+     * 
+     * @param fis
+     *            InputStream
+     * @return SwfInfo SwfInfo
+     * @throws IOException
+     *             IOException
+     */
+    public static SwfInfo getInfo(InputStream fis) throws IOException {
+        SwfInfo info = null;
+        byte[] hdr = getByteInternal(fis);
+        info = getSwfUtilInternal(hdr);
 
-		if (fis.read(bytes) < bytes.length) {
-			bytes = null; // too few bytes to be a SWF
-		} else if (bytes[0] == 'C' && bytes[1] == 'W' && bytes[2] == 'S') {
-			bytes = expand(bytes, SwfInfo.UNCOMP_HDR_LEN); // compressed SWF
-		} else if (bytes[0] != 'F' || bytes[1] != 'W' || bytes[2] != 'S') {
-			bytes = null; // not a SWF
-		} else {
-			// else uncompressed SWF
-		}
+        return info;
+    }
 
-		return bytes;
+    /**
+     * Get the header info for a (potential) SWF file specified by a file path
+     * String.
+     * 
+     * @param path
+     *            containing path to file.
+     * @return SWFinfo object or null if file not found or not SWF.
+     * @throws FileNotFoundException
+     *             FileNotFoundException
+     */
+    public static SwfInfo getInfo(String path) throws FileNotFoundException {
 
-	}
+        return getInfo(new File(path));
+    }
 
-	/**
-	 * Get the header info for a (potential) SWF file specified by a File object.
-	 * 
-	 * @param file File pointing to the desired SWF file.
-	 * 
-	 * @return SWFinfo object or null if file not found or not SWF.
-	 * @throws FileNotFoundException
-	 */
-	public static SwfInfo getInfo(File file) throws FileNotFoundException {
-		SwfInfo info = null;
-		try {
-			info = getInfo(new FileInputStream(file));
-		} catch (IOException e) {
-			log.error("IOException: " + ExceptionUtils.getFullStackTrace(e));
-		}
+    /**
+     * Return Stage frame rectangle as 4 <code>int</code>s: LRTB
+     * 
+     * Note the values are in TWIPS (= 1/20th of a pixel)
+     * 
+     * I do this to avoid a loading the <code>Rect</code> class which is an
+     * <code>android.graphics</code> class, and not available if you want to
+     * test this with desktop Java.
+     * 
+     * @param rdr
+     *            BitReader
+     * @return decodeRect data
+     */
+    private static int[] decodeRect(BitReader rdr) {
+        int[] dims = new int[4];
+        int nBits = rdr.uBits(5);
 
-		return info;
-	}
+        dims[0] = rdr.sBits(nBits); // X min = left always 0
+        dims[1] = rdr.sBits(nBits); // X max = right
+        dims[2] = rdr.sBits(nBits); // Y min = top always 0
+        dims[3] = rdr.sBits(nBits); // Y max = bottom
 
-	/**
-	 * 获取文件输入流
-	 * 
-	 * @param fis
-	 * @return SwfInfo
-	 * @throws IOException
-	 */
-	public static SwfInfo getInfo(InputStream fis) throws IOException {
-		SwfInfo info = null;
-		byte[] hdr = getByteInternal(fis);
-		info = getSwfUtilInternal(hdr);
+        return dims;
+    }
 
-		return info;
-	}
+    /*
+     * All of the file past the initial {@link UNCOMP_HDR_LEN} bytes are
+     * compressed. Decompress as much as is in the buffer already read and
+     * return them, overlaying the original uncompressed data.
+     * 
+     * Fortunately, the compression algorithm used by Flash is the ZLIB
+     * standard, i.e., the same algorithms used to compress .jar files
+     */
+    private static byte[] expand(byte[] bytes, int skip) {
+        byte[] newBytes = new byte[bytes.length - skip];
+        Inflater inflater = new Inflater();
 
-	/*
-	 * All of the file past the initial {@link UNCOMP_HDR_LEN} bytes are
-	 * compressed. Decompress as much as is in the buffer already read and
-	 * return them, overlaying the original uncompressed data.
-	 * 
-	 * Fortunately, the compression algorithm used by Flash is the ZLIB
-	 * standard, i.e., the same algorithms used to compress .jar files
-	 */
-	private static byte[] expand(byte[] bytes, int skip) {
-		byte[] newBytes = new byte[bytes.length - skip];
-		Inflater inflater = new Inflater();
+        inflater.setInput(bytes, skip, newBytes.length);
+        try {
+            int outCount = inflater.inflate(newBytes);
+            System.arraycopy(newBytes, 0, bytes, skip, outCount);
+            Arrays.fill(bytes, skip + outCount, bytes.length, (byte) 0);
+            return bytes;
+        } catch (DataFormatException e) {
+        }
 
-		inflater.setInput(bytes, skip, newBytes.length);
-		try {
-			int outCount = inflater.inflate(newBytes);
-			System.arraycopy(newBytes, 0, bytes, skip, outCount);
-			Arrays.fill(bytes, skip + outCount, bytes.length, (byte) 0);
-			return bytes;
-		} catch (DataFormatException e) {
-		}
+        return null;
+    }
 
-		return null;
-	}
+    /*
+     * Read just enough of the file for our purposes
+     */
+    private static byte[] getByteInternal(InputStream fis) throws IOException {
 
-	/**
-	 * Return Stage frame rectangle as 4 <code>int</code>s: LRTB
-	 * 
-	 * Note the values are in TWIPS (= 1/20th of a pixel)
-	 * 
-	 * I do this to avoid a loading the <code>Rect</code> class which is an
-	 * <code>android.graphics</code> class, and not available if you want to
-	 * test this with desktop Java.
-	 * 
-	 * @param rdr
-	 * @return decodeRect data
-	 */
-	private static int[] decodeRect(BitReader rdr) {
-		int[] dims = new int[4];
-		int nBits = rdr.uBits(5);
+        byte[] bytes = new byte[128]; // should be enough...
 
-		dims[0] = rdr.sBits(nBits); // X min = left always 0
-		dims[1] = rdr.sBits(nBits); // X max = right
-		dims[2] = rdr.sBits(nBits); // Y min = top always 0
-		dims[3] = rdr.sBits(nBits); // Y max = bottom
+        if (fis.read(bytes) < bytes.length) {
+            bytes = null; // too few bytes to be a SWF
+        } else if (bytes[0] == 'C' && bytes[1] == 'W' && bytes[2] == 'S') {
+            bytes = expand(bytes, SwfInfo.UNCOMP_HDR_LEN); // compressed SWF
+        } else if (bytes[0] != 'F' || bytes[1] != 'W' || bytes[2] != 'S') {
+            bytes = null; // not a SWF
+        } else {
+            // else uncompressed SWF
+        }
 
-		return dims;
-	}
+        return bytes;
 
-	// commented out to prevent Eclipse from thinkg this is a standard Java app
-	// when used for Android!
-	// public static void main(String[] args)
-	// {
-	// if (args.length == 0)
-	// throw new IllegalArgumentException("No swf_file parameter given");
-	//
-	// File file = new File(args[0]);
-	// SWFInfo info = SWFInfo.getInfo(file);
-	//
-	// if (info != null)
-	// {
-	// System.out.println("File: " + file);
-	// System.out.println("Flash ver: " + info.version + " FPS: " + info.fps +
-	// " Frames: " + info.frameCount);
-	// System.out.println("File size: " + file.length() + " Compressed: " +
-	// info.isCompressed + " Uncompressed size: " + info.size);
-	// System.out.println("Dimensions: " + info.width + "x" + info.height);
-	// }
-	// else
-	// System.out.println("File not a .SWF: " + file);
-	// }
+    }
 
-	/**
-	 * Read an arbitrary number of bits from a byte[].
-	 * 
-	 * This should be turned into a full-featured independant class
-	 * (someday...).
-	 */
-	static class BitReader {
-		private byte[] bytes;
-		private int byteIdx;
-		private int bitIdx = 0;
+    private static SwfInfo getSwfUtilInternal(byte[] hdr) {
+        if (hdr == null) {
+            return null;
+        }
 
-		/**
-		 * Start reading from the beginning of the supplied array.
-		 * 
-		 * @param bytes
-		 *            byte[] to process
-		 */
-		public BitReader(byte[] bytes) {
-			this(bytes, 0);
-		}
+        SwfInfo info = new SwfInfo();
 
-		/**
-		 * Start reading from an arbitrary index into the array.
-		 * 
-		 * @param bytes
-		 *            byte[] to process
-		 * @param startIndex
-		 *            byte # to start at
-		 */
-		public BitReader(byte[] bytes, int startIndex) {
-			this.bytes = bytes;
-			byteIdx = startIndex;
-		}
+        if ('C' == hdr[0]) {
+            info.setCompressed(true);
+        } else {
+            info.setCompressed(false);
+        }
 
-		/**
-		 * Fetch the next <code>bitCount</code> bits as an unsigned int.
-		 * 
-		 * @param bitCount
-		 *            # bits to read
-		 * @return int
-		 */
-		public int uBits(int bitCount) {
-			int value = 0;
+        info.setVersion(hdr[3]);
 
-			while (--bitCount >= 0)
-				value = value << 1 | getBit();
-			return value;
-		}
+        info.setSize(hdr[4] & 0xFF | (hdr[5] & 0xFF) << 8 | (hdr[6] & 0xFF) << 16 | hdr[7] << 24);
 
-		/**
-		 * Fetch the next <code>bitCount</code> bits as a <em>signed</em> int.
-		 * 
-		 * @param bitCount
-		 *            # bits to read
-		 * @return int
-		 */
-		public int sBits(int bitCount) {
-			// First bit is the "sign" bit
-			int value = getBit() == 0 ? 0 : -1;
-			--bitCount;
+        BitReader rdr = new BitReader(hdr, SwfInfo.UNCOMP_HDR_LEN);
 
-			while (--bitCount >= 0)
-				value = value << 1 | getBit();
-			return value;
-		}
+        int[] dims = decodeRect(rdr);
 
-		// Get the next bit in the array
-		private int getBit() {
-			int value = (bytes[byteIdx] >> (7 - bitIdx)) & 0x01;
+        info.setWidth((dims[1] - dims[0]) / 20); // convert twips to pixels
+        info.setHeight((dims[3] - dims[2]) / 20);
 
-			if (++bitIdx == 8) {
-				bitIdx = 0;
-				++byteIdx;
-			}
+        info.setFps(rdr.uI16() / 256f); // 8.8 fixed-point format
+        info.setFrameCount(rdr.uI16());
 
-			return value;
-		}
+        return info;
+    }
 
-		/**
-		 * Fetch the next 2 "whole" bytes as an unsigned int (little-endian).
-		 * 
-		 * @return int
-		 */
-		public int uI16() {
-			sync(); // back to "byte-aligned" mode
-			return (bytes[byteIdx++] & 0xff) | (bytes[byteIdx++] & 0xff) << 8;
-		}
+    // commented out to prevent Eclipse from thinkg this is a standard Java app
+    // when used for Android!
+    // public static void main(String[] args)
+    // {
+    // if (args.length == 0)
+    // throw new IllegalArgumentException("No swf_file parameter given");
+    //
+    // File file = new File(args[0]);
+    // SWFInfo info = SWFInfo.getInfo(file);
+    //
+    // if (info != null)
+    // {
+    // System.out.println("File: " + file);
+    // System.out.println("Flash ver: " + info.version + " FPS: " + info.fps +
+    // " Frames: " + info.frameCount);
+    // System.out.println("File size: " + file.length() + " Compressed: " +
+    // info.isCompressed + " Uncompressed size: " + info.size);
+    // System.out.println("Dimensions: " + info.width + "x" + info.height);
+    // }
+    // else
+    // System.out.println("File not a .SWF: " + file);
+    // }
 
-		/**
-		 * Bump indexes to the next byte boundary.
-		 */
-		public void sync() {
-			if (bitIdx > 0) {
-				++byteIdx;
-				bitIdx = 0;
-			}
-		}
-	}
+    // Instantiate through getInfo() methods
+    private SwfUtil() {
+    }
 
 }

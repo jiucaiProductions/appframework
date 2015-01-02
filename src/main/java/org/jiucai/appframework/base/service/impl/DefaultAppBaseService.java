@@ -18,175 +18,173 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-public abstract class DefaultAppBaseService  extends AbstractBaseService {
+public abstract class DefaultAppBaseService extends AbstractBaseService {
 
-	/**
-	 * xml 或 json 响应的默认编码
-	 */
-	protected static String encoding = BaseController.CHARSET;
+    public static Configuration getConfig() {
+        return config;
+    }
 
-	/**
-	 * XML 字符串生成器
-	 */
-	@Autowired
-	private XmlRender xmlRender;
+    /**
+     * xml 或 json 响应的默认编码
+     */
+    protected static String encoding = BaseController.CHARSET;
 
-	/**
-	 * json 字符串生成器
-	 */
-	@Autowired
-	private JsonRender jsonRender;
-	
-	
-	/**
-	 * 配置项读取类
-	 */
-	protected static Configuration config;
-	
-	static{
-		config = ConfigUtil.addConfig("config");
-		config = ConfigUtil.addConfig("mail");
-		
-	}
-	
-	public static Configuration getConfig(){
-		return config;
-	}
-	
-	
-	/**
-	 * 返回转换 xml 的工具对象
-	 * 
-	 * @return XmlRender
-	 */
-	public XmlRender getXmlRender() {
-		xmlRender.setEncoding(encoding);
-		return xmlRender;
-	}
+    /**
+     * XML 字符串生成器
+     */
+    @Autowired
+    private XmlRender xmlRender;
 
-	/**
-	 * 返回转换 json 工具对象
-	 * 
-	 * @return JsonRender
-	 */
-	public JsonRender getJsonRender() {
-		jsonRender.setEncoding(encoding);
-		
-		//设置bean里没有的属性不解析,否则没有此项设置会出现异常
-		jsonRender.getObjectMapper().getDeserializationConfig().without(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-		jsonRender.getObjectMapper().getSerializationConfig().without(SerializationFeature.WRAP_ROOT_VALUE);
-		
-		//日期序列化需要 get方法加 @JsonSerialize(using=JsonDateSerializer.class)
-		jsonRender.getObjectMapper().getSerializationConfig().without(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-		// 不格式化输出
-		jsonRender.getObjectMapper().getSerializationConfig().without(SerializationFeature.INDENT_OUTPUT);
-		// 不输出null值
-		jsonRender.getObjectMapper().getSerializationConfig().without(SerializationFeature.WRITE_NULL_MAP_VALUES);
-		
+    /**
+     * json 字符串生成器
+     */
+    @Autowired
+    private JsonRender jsonRender;
 
-		SerializationConfig sConfig = jsonRender.getObjectMapper().getSerializationConfig().withSerializationInclusion(JsonInclude.Include.NON_NULL);
-		
-		jsonRender.getObjectMapper().setSerializationInclusion(sConfig.getSerializationInclusion());
-		
-		return jsonRender;
-	}
-	
-	/**
-	 * 返回 json 格式的成功或错误信息
-	 * 
-	 * @param isSuccess
-	 *            true 表示成功消息 false 表示错误消息
-	 * @param msg
-	 * @return json string
-	 */
-	protected String getJsonMsg(Boolean isSuccess, String msg) {
-		StringBuffer result = new StringBuffer("");
+    /**
+     * 配置项读取类
+     */
+    protected static Configuration config;
 
-		if (isSuccess) {
-			if (StringUtils.isBlank(msg)) {
-				msg = "ok";
-			}
-			result.append("{\"success\":\"").append(msg).append("\"}");
-		} else {
-			if (StringUtils.isBlank(msg)) {
-				msg = "failed";
-			}
-			result.append("{\"error\":\"").append(msg).append("\"}");
-		}
+    static {
+        config = ConfigUtil.addConfig("config");
+        config = ConfigUtil.addConfig("mail");
 
-		return result.toString();
-	}
+    }
 
-	/**
-	 * 返回 chartXML 格式的成功或错误信息
-	 * 
-	 * @param isSuccess
-	 *            true 表示成功消息 false 表示错误消息
-	 * @param msg
-	 * @return xml string
-	 */
-	protected String getXmlMsg(Boolean isSuccess, String msg) {
+    @Override
+    public String getContentType() {
+        return getJsonRender().getContentType();
+    }
 
-		StringBuffer result = new StringBuffer("");
+    /**
+     * 返回转换 json 工具对象
+     * 
+     * @return JsonRender
+     */
+    public JsonRender getJsonRender() {
+        jsonRender.setEncoding(encoding);
 
-		if (isSuccess) {
-			if (StringUtils.isBlank(msg)) {
-				msg = "ok";
-			}
-			result.append("<chart><success>").append(msg)
-					.append("</success></chart>");
-		} else {
-			if (StringUtils.isBlank(msg)) {
-				msg = "failed";
-			}
-			result.append("<chart><error>").append(msg)
-					.append("</error></chart>");
-		}
+        // 设置bean里没有的属性不解析,否则没有此项设置会出现异常
+        jsonRender.getObjectMapper().getDeserializationConfig()
+                .without(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        jsonRender.getObjectMapper().getSerializationConfig()
+                .without(SerializationFeature.WRAP_ROOT_VALUE);
 
-		return result.toString();
-	}
-	
-	
-	@Override
-	public String getContentType() {
-		return getJsonRender().getContentType();
-	}
-	
-	
-	
-	public void output(HttpServletResponse response, String msg,
-			String contentType) {
-		PrintWriter out = null;
-		try {
-			// 必须放在 response.getWriter(); 之前否则不起作用
-			response.setHeader("Content-Type", contentType);
-			response.setHeader("Pragma", "no-cache");
+        // 日期序列化需要 get方法加 @JsonSerialize(using=JsonDateSerializer.class)
+        jsonRender.getObjectMapper().getSerializationConfig()
+                .without(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        // 不格式化输出
+        jsonRender.getObjectMapper().getSerializationConfig()
+                .without(SerializationFeature.INDENT_OUTPUT);
+        // 不输出null值
+        jsonRender.getObjectMapper().getSerializationConfig()
+                .without(SerializationFeature.WRITE_NULL_MAP_VALUES);
 
-			response.addHeader("Cache-Control", "must-revalidate");
-			response.addHeader("Cache-Control", "no-cache");
-			response.addHeader("Cache-Control", "no-store");
+        SerializationConfig sConfig = jsonRender.getObjectMapper().getSerializationConfig()
+                .withSerializationInclusion(JsonInclude.Include.NON_NULL);
 
-			response.setDateHeader("Expires", 0);
+        jsonRender.getObjectMapper().setSerializationInclusion(sConfig.getSerializationInclusion());
 
-			out = response.getWriter();
+        return jsonRender;
+    }
 
-			if (null != out) {
-				if (null == msg) {
-					msg = "";
-				}
-				out.write(msg);
-			}
+    /**
+     * 返回转换 xml 的工具对象
+     * 
+     * @return XmlRender
+     */
+    public XmlRender getXmlRender() {
+        xmlRender.setEncoding(encoding);
+        return xmlRender;
+    }
 
-		} catch (Exception e) {
-			log.error("output failed: " + ExceptionUtils.getFullStackTrace(e));
-		} finally {
-			if (null != out) {
-				out.close();
-			}
+    public void output(HttpServletResponse response, String msg, String contentType) {
+        PrintWriter out = null;
+        try {
+            // 必须放在 response.getWriter(); 之前否则不起作用
+            response.setHeader("Content-Type", contentType);
+            response.setHeader("Pragma", "no-cache");
 
-		}
+            response.addHeader("Cache-Control", "must-revalidate");
+            response.addHeader("Cache-Control", "no-cache");
+            response.addHeader("Cache-Control", "no-store");
 
-	}
-	
+            response.setDateHeader("Expires", 0);
+
+            out = response.getWriter();
+
+            if (null != out) {
+                if (null == msg) {
+                    msg = "";
+                }
+                out.write(msg);
+            }
+
+        } catch (Exception e) {
+            log.error("output failed: " + ExceptionUtils.getFullStackTrace(e));
+        } finally {
+            if (null != out) {
+                out.close();
+            }
+
+        }
+
+    }
+
+    /**
+     * 返回 json 格式的成功或错误信息
+     * 
+     * @param isSuccess
+     *            true 表示成功消息 false 表示错误消息
+     * @param msg
+     *            string which wants to convert to json
+     * @return json string
+     */
+    protected String getJsonMsg(Boolean isSuccess, String msg) {
+        StringBuffer result = new StringBuffer("");
+
+        if (isSuccess) {
+            if (StringUtils.isBlank(msg)) {
+                msg = "ok";
+            }
+            result.append("{\"success\":\"").append(msg).append("\"}");
+        } else {
+            if (StringUtils.isBlank(msg)) {
+                msg = "failed";
+            }
+            result.append("{\"error\":\"").append(msg).append("\"}");
+        }
+
+        return result.toString();
+    }
+
+    /**
+     * 返回 chartXML 格式的成功或错误信息
+     * 
+     * @param isSuccess
+     *            true 表示成功消息 false 表示错误消息
+     * @param msg
+     *            tring which wants to convert to xml
+     * @return xml string
+     */
+    protected String getXmlMsg(Boolean isSuccess, String msg) {
+
+        StringBuffer result = new StringBuffer("");
+
+        if (isSuccess) {
+            if (StringUtils.isBlank(msg)) {
+                msg = "ok";
+            }
+            result.append("<chart><success>").append(msg).append("</success></chart>");
+        } else {
+            if (StringUtils.isBlank(msg)) {
+                msg = "failed";
+            }
+            result.append("<chart><error>").append(msg).append("</error></chart>");
+        }
+
+        return result.toString();
+    }
 
 }

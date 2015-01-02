@@ -9,97 +9,98 @@ import org.apache.commons.lang.StringUtils;
 
 /***
  * 请求监听器，对 request 所有参数进行安全处理
- * 
+ *
  * @author zhaidw
- * 
+ *
  */
 public abstract class AbstractSecureRequestListener extends AbstractRequestListener {
 
-	public AbstractSecureRequestListener() {
-		super();
-		log.info("AbstractSecureRequestListener inited.");
+    public AbstractSecureRequestListener() {
+        super();
+        log.info("AbstractSecureRequestListener inited.");
 
-	}
+    }
 
-	@Override
-	public void requestInitialized(ServletRequestEvent event) {
+    /**
+     * 应用可自行实现的扩展方法
+     * 
+     * @param request
+     *            HttpServletRequest
+     */
+    public abstract void doSecureRequest(HttpServletRequest request);
 
-		super.requestInitialized(event);
+    /**
+     * 放在 reqesut attribute 中的 parameter 的前缀
+     * 
+     * @return String
+     */
+    public abstract String getReqPrefix();
 
-		HttpServletRequest request = (HttpServletRequest) event
-				.getServletRequest();
+    @Override
+    public void requestDestroyed(ServletRequestEvent event) {
 
-		trimRequestParam(request);
-		doSecureRequest(request);
+        super.requestDestroyed(event);
 
-	}
+    }
 
-	@Override
-	public void requestDestroyed(ServletRequestEvent event) {
+    @Override
+    public void requestInitialized(ServletRequestEvent event) {
 
-		super.requestDestroyed(event);
+        super.requestInitialized(event);
 
-	}
+        HttpServletRequest request = (HttpServletRequest) event.getServletRequest();
 
-	/**
-	 * 过滤请求参数中的左右空格
-	 * 
-	 * @param request
-	 */
-	protected synchronized void trimRequestParam(HttpServletRequest request) {
+        trimRequestParam(request);
+        doSecureRequest(request);
 
+    }
 
-		Enumeration<String> paramNames = (Enumeration<String>) request.getParameterNames();
+    /**
+     * 过滤请求参数中的左右空格
+     * 
+     * @param request
+     *            HttpServletRequest
+     */
+    protected synchronized void trimRequestParam(HttpServletRequest request) {
 
-		if (null != paramNames) {
-			String paramName;
-			String[] paramValues;
-			while (paramNames.hasMoreElements()) {
-				paramName = paramNames.nextElement();
+        Enumeration<String> paramNames = request.getParameterNames();
 
-				paramValues = request.getParameterValues(paramName);
+        if (null != paramNames) {
+            String paramName;
+            String[] paramValues;
+            while (paramNames.hasMoreElements()) {
+                paramName = paramNames.nextElement();
 
-				if (null != paramValues && paramValues.length > 0) {
-					
-					if(paramValues.length >  1){
+                paramValues = request.getParameterValues(paramName);
 
-				        StringBuffer b = new StringBuffer();
-				        for (int i = 0; i< paramValues.length; i++) {
-				        	String tempVal = StringUtils.isBlank(paramValues[i]) ? "" : paramValues[i].trim();
-				            b.append(tempVal);
-				            if(i !=paramValues.length - 1){
-				            	 b.append(",");
-				            }
-				        }
-						request.setAttribute(getReqPrefix() + paramName,b.toString());
-					}else{
-						if(StringUtils.isNotBlank(paramValues[0])){
-							request.setAttribute(getReqPrefix() + paramName,paramValues[0].trim());
-						}else{
-							request.setAttribute(getReqPrefix() + paramName,"");
-						}
-						
-					}
+                if (null != paramValues && paramValues.length > 0) {
 
-				}
+                    if (paramValues.length > 1) {
 
-			}
-		}
+                        StringBuffer b = new StringBuffer();
+                        for (int i = 0; i < paramValues.length; i++) {
+                            String tempVal = StringUtils.isBlank(paramValues[i]) ? ""
+                                    : paramValues[i].trim();
+                            b.append(tempVal);
+                            if (i != paramValues.length - 1) {
+                                b.append(",");
+                            }
+                        }
+                        request.setAttribute(getReqPrefix() + paramName, b.toString());
+                    } else {
+                        if (StringUtils.isNotBlank(paramValues[0])) {
+                            request.setAttribute(getReqPrefix() + paramName, paramValues[0].trim());
+                        } else {
+                            request.setAttribute(getReqPrefix() + paramName, "");
+                        }
 
-	}
+                    }
 
-	/**
-	 * 应用可自行实现的扩展方法
-	 * 
-	 * @param request
-	 */
-	public abstract void doSecureRequest(HttpServletRequest request);
+                }
 
-	/**
-	 * 放在 reqesut attribute 中的 parameter 的前缀
-	 * 
-	 * @return String
-	 */
-	public abstract String getReqPrefix();
+            }
+        }
+
+    }
 
 }
