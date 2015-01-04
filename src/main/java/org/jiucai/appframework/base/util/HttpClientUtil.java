@@ -328,9 +328,9 @@ public class HttpClientUtil {
         if (httpclient != null) {
             // httpclient.getConnectionManager().shutdown();
             try {
-                logger.info("closing httpclient ...");
+                logger.debug("closing httpclient ...");
                 httpclient.close();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 logger.error("failed to close httpclient", e);
             }
 
