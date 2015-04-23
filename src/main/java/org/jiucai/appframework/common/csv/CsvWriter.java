@@ -61,7 +61,7 @@ public class CsvWriter {
 
         public char Delimiter;
 
-        public char RecordDelimiter;
+        public String RecordDelimiter;
 
         public char Comment;
 
@@ -73,12 +73,24 @@ public class CsvWriter {
             TextQualifier = Letters.QUOTE;
             UseTextQualifier = true;
             Delimiter = Letters.COMMA;
-            RecordDelimiter = Letters.NULL;
+            RecordDelimiter = "";
             Comment = Letters.POUND;
             EscapeMode = ESCAPE_MODE_DOUBLED;
             ForceQualifier = false;
         }
     }
+
+    /**
+     * Double up the text qualifier to represent an occurrence of the text
+     * qualifier.
+     */
+    public static final int ESCAPE_MODE_DOUBLED = 1;
+
+    /**
+     * Use a backslash character before the text qualifier to represent an
+     * occurrence of the text qualifier.
+     */
+    public static final int ESCAPE_MODE_BACKSLASH = 2;
 
     public static String replace(String original, String pattern, String replace) {
         final int len = pattern.length();
@@ -123,21 +135,9 @@ public class CsvWriter {
     private String systemRecordDelimiter = System.getProperty("line.separator");
 
     /**
-     * Double up the text qualifier to represent an occurrence of the text
-     * qualifier.
-     */
-    public static final int ESCAPE_MODE_DOUBLED = 1;
-
-    /**
-     * Use a backslash character before the text qualifier to represent an
-     * occurrence of the text qualifier.
-     */
-    public static final int ESCAPE_MODE_BACKSLASH = 2;
-
-    /**
      * Creates a {@link org.jiucai.appframework.common.csv.CsvWriter CsvWriter}
      * object using an OutputStream to write data to.
-     * 
+     *
      * @param outputStream
      *            The stream to write the column delimited data to.
      * @param delimiter
@@ -155,7 +155,7 @@ public class CsvWriter {
      * object using a file as the data destination.&nbsp;Uses a comma as the
      * column delimiter and ISO-8859-1 as the {@link java.nio.charset.Charset
      * Charset}.
-     * 
+     *
      * @param fileName
      *            The path to the file to output the data.
      */
@@ -166,7 +166,7 @@ public class CsvWriter {
     /**
      * Creates a {@link org.jiucai.appframework.common.csv.CsvWriter CsvWriter}
      * object using a file as the data destination.
-     * 
+     *
      * @param fileName
      *            The path to the file to output the data.
      * @param delimiter
@@ -192,7 +192,7 @@ public class CsvWriter {
     /**
      * Creates a {@link org.jiucai.appframework.common.csv.CsvWriter CsvWriter}
      * object using a Writer to write data to.
-     * 
+     *
      * @param outputStream
      *            The stream to write the column delimited data to.
      * @param delimiter
@@ -221,7 +221,7 @@ public class CsvWriter {
 
     /**
      * Ends the current record by sending the record delimiter.
-     * 
+     *
      * @exception IOException
      *                Thrown if an error occurs while writing data to the
      *                destination stream.
@@ -243,7 +243,7 @@ public class CsvWriter {
     /**
      * Clears all buffers for the current writer and causes any buffered data to
      * be written to the underlying device.
-     * 
+     *
      * @exception IOException
      *                Thrown if an error occurs while writing data to the
      *                destination stream.
@@ -258,7 +258,7 @@ public class CsvWriter {
 
     /**
      * Gets the character being used as the column delimiter.
-     * 
+     *
      * @return The character being used as the column delimiter.
      */
     public char getDelimiter() {
@@ -272,20 +272,20 @@ public class CsvWriter {
     /**
      * Whether fields will be surrounded by the text qualifier even if the
      * qualifier is not necessarily needed to escape this field.
-     * 
+     *
      * @return Whether fields will be forced to be qualified or not.
      */
     public boolean getForceQualifier() {
         return userSettings.ForceQualifier;
     }
 
-    public char getRecordDelimiter() {
+    public String getRecordDelimiter() {
         return userSettings.RecordDelimiter;
     }
 
     /**
      * Gets the character to use as a text qualifier in the data.
-     * 
+     *
      * @return The character to use as a text qualifier in the data.
      */
     public char getTextQualifier() {
@@ -294,7 +294,7 @@ public class CsvWriter {
 
     /**
      * Whether text qualifiers will be used while writing data or not.
-     * 
+     *
      * @return Whether text qualifiers will be used while writing data or not.
      */
     public boolean getUseTextQualifier() {
@@ -307,7 +307,7 @@ public class CsvWriter {
 
     /**
      * Sets the character to use as the column delimiter.
-     * 
+     *
      * @param delimiter
      *            The character to use as the column delimiter.
      */
@@ -323,7 +323,7 @@ public class CsvWriter {
      * Use this to force all fields to be surrounded by the text qualifier even
      * if the qualifier is not necessarily needed to escape this field. Default
      * is false.
-     * 
+     *
      * @param forceQualifier
      *            Whether to force the fields to be qualified or not.
      */
@@ -333,20 +333,20 @@ public class CsvWriter {
 
     /**
      * Sets the character to use as the record delimiter.
-     * 
+     *
      * @param recordDelimiter
      *            The character to use as the record delimiter. Default is
      *            combination of standard end of line characters for Windows,
      *            Unix, or Mac.
      */
-    public void setRecordDelimiter(char recordDelimiter) {
+    public void setRecordDelimiter(String recordDelimiter) {
         useCustomRecordDelimiter = true;
         userSettings.RecordDelimiter = recordDelimiter;
     }
 
     /**
      * Sets the character to use as a text qualifier in the data.
-     * 
+     *
      * @param textQualifier
      *            The character to use as a text qualifier in the data.
      */
@@ -356,7 +356,7 @@ public class CsvWriter {
 
     /**
      * Sets whether text qualifiers will be used while writing data or not.
-     * 
+     *
      * @param useTextQualifier
      *            Whether to use a text qualifier while writing data or not.
      */
@@ -367,7 +367,7 @@ public class CsvWriter {
     /**
      * Writes another column of data to this record.&nbsp;Does not preserve
      * leading and trailing whitespace in this column of data.
-     * 
+     *
      * @param content
      *            The data for the new column.
      * @exception IOException
@@ -380,7 +380,7 @@ public class CsvWriter {
 
     /**
      * Writes another column of data to this record.
-     * 
+     *
      * @param content
      *            The data for the new column.
      * @param preserveSpaces
@@ -504,10 +504,10 @@ public class CsvWriter {
 
     /**
      * Writes a new record using the passed in array of values.
-     * 
+     *
      * @param values
      *            Values to be written.
-     * 
+     *
      * @throws IOException
      *             Thrown if an error occurs while writing data to the
      *             destination stream.
@@ -518,14 +518,14 @@ public class CsvWriter {
 
     /**
      * Writes a new record using the passed in array of values.
-     * 
+     *
      * @param values
      *            Values to be written.
-     * 
+     *
      * @param preserveSpaces
      *            Whether to preserver leading and trailing spaces in columns
      *            while writing out to the record or not.
-     * 
+     *
      * @throws IOException
      *             Thrown if an error occurs while writing data to the
      *             destination stream.
@@ -536,6 +536,34 @@ public class CsvWriter {
                 write(values[i], preserveSpaces);
             }
 
+            endRecord();
+        }
+    }
+
+    /**
+     * Writes a new record using the passed in array of values.
+     *
+     * @param values
+     *            Values to be written.
+     *
+     * @param preserveSpaces
+     *            Whether to preserver leading and trailing spaces in columns
+     *            while writing out to the record or not.
+     * @param preserveReturn
+     *            Whether to preserver return char after data line
+     * @throws IOException
+     *             Thrown if an error occurs while writing data to the
+     *             destination stream.
+     */
+    public void writeRecord(String[] values, boolean preserveSpaces, boolean preserveReturn)
+            throws IOException {
+        if (values != null && values.length > 0) {
+            for (int i = 0; i < values.length; i++) {
+                write(values[i], preserveSpaces);
+            }
+        }
+
+        if (preserveReturn) {
             endRecord();
         }
     }
