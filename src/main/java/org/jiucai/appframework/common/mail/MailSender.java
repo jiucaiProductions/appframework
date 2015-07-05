@@ -22,8 +22,6 @@ public class MailSender {
 
     protected static Logs log = LogUtil.getLog(MailSender.class);
 
-    private final JavaMailSenderImpl javaMailSender;
-    private final MimeMessageHelper mimeMessageHelper;
     // 邮件服务器信息
     private static String host;
     private static String protocol;
@@ -32,7 +30,6 @@ public class MailSender {
     private static String userName;
     private static String password;
     private static Boolean isNeedAuth;
-
     static {
 
         Configuration config = ConfigUtil.addConfig("mail");
@@ -46,6 +43,9 @@ public class MailSender {
         isNeedAuth = config.getBoolean("mail.smtp.is_need_auth", true);
 
     }
+    private final JavaMailSenderImpl javaMailSender;
+
+    private final MimeMessageHelper mimeMessageHelper;
 
     /**
      * 使用默认参数发送邮件
@@ -309,7 +309,7 @@ public class MailSender {
                 log.info("邮件发送成功");
                 break;
             } catch (Throwable e) {
-                log.error("邮件发送失败 " + retryTime + " 秒后重试...", e);
+                log.error("邮件发送失败 " + retryTime + " 毫秒后重试...", e);
                 Thread.sleep(retryTime);
             }
 

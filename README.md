@@ -50,16 +50,16 @@ Eclispe 4.4+ with [m2eclipse plugins](http://www.eclipse.org/m2e/download/)
 
 Releases are available in the central repository.
 
-The current stable release of appframework: *2.1.1*
+The current stable release of appframework: *2.1.2*
 
-The dev version now is: 2.1.2-SNAPSHOT
+The dev version now is: 2.1.3-SNAPSHOT
 
 ##Download links:
-source: http://hg.jiucai.org/appframework/src
+source: https://bitbucket.org/jiucai/appframework/src
 
-download: http://hg.jiucai.org/appframework/download
+download: https://bitbucket.org/jiucai/appframework/download
 
-JAR package: http://repo2.maven.org/maven2/org/jiucai/appframework/2.1.1/appframework-2.1.1.jar
+JAR package: http://repo2.maven.org/maven2/org/jiucai/appframework/2.1.2/appframework-2.1.2.jar
 
 Repository: http://search.maven.org/#search|ga|1|org.jiucai
 
@@ -72,7 +72,7 @@ Edit your project pom.xml and add :
     <dependency>
         <groupId>org.jiucai</groupId>
         <artifactId>appframework</artifactId>
-        <version>2.1.1</version>
+        <version>2.1.2</version>
     </dependency>
 ```
 
@@ -82,14 +82,14 @@ Maven Site URL:  http://appframework.jiucai.org/
 
 You may check out the appframework source code from appframework [HG repository](https://bitbucket.org/jiucai/appframework).
 
-You may also [browse](http://hg.jiucai.org/appframework/src) the lastest appframework source code.
+You may also [browse](https://bitbucket.org/jiucai/appframework/src) the lastest appframework source code.
 
-If you find a bug in appframework, please [report a bug](http://hg.jiucai.org/appframework/issues/new).
+If you find a bug in appframework, please [report a bug](https://bitbucket.org/jiucai/appframework/issues/new).
 
-You may review open bugs through [the list of open issues](http://hg.jiucai.org/appframework/issues?status=new&status=open).
+You may review open bugs through [the list of open issues](https://bitbucket.org/jiucai/appframework/issues?status=new&status=open).
 
 
-Feel free to improve the [documentation](http://hg.jiucai.org/appframework/wiki) .
+Feel free to improve the [documentation](https://bitbucket.org/jiucai/appframework/wiki) .
 
 
 And you can [contact me on weibo.com](http://weibo.com/forcer521)
@@ -98,7 +98,9 @@ Anyone interested is welcome to join in QQ group: 56883769 (JAVA&SSH&SSI)
 
 #History
 
-2.1.1 Stable version based spring-framework 4.1.4 (*Recommand upgrade to this version*)
+2.1.2 Stable version based spring-framework 4.1.7 (*Recommand upgrade to this version*)
+
+2.1.1 Stable version based spring-framework 4.1.4
 
 2.1.0 Stable version based spring-framework 4.1.1 
 

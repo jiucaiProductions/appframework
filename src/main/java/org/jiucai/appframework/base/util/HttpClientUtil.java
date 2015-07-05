@@ -1,28 +1,24 @@
 package org.jiucai.appframework.base.util;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import javax.net.ssl.SSLContext;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
@@ -35,10 +31,7 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.config.ConnectionConfig;
 import org.apache.http.conn.HttpClientConnectionManager;
-import org.apache.http.conn.socket.LayeredConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLContextBuilder;
-import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultServiceUnavailableRetryStrategy;
@@ -56,6 +49,95 @@ import org.apache.http.util.EntityUtils;
  *
  */
 public class HttpClientUtil {
+    public static final String CHARSET_UTF8 = "UTF-8";
+    // public static final String CHARSET_GBK = "GBK";
+    // public static final String SSL_DEFAULT_SCHEME = "https";
+    // public static final int SSL_DEFAULT_PORT = 443;
+
+    protected static Log logger = LogFactory.getLog(HttpClientUtil.class);
+
+    // 使用ResponseHandler接口处理响应，HttpClient使用ResponseHandler会自动管理连接的释放，解决了对连接的释放管理
+    private static ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+        // 自定义响应处理
+        @Override
+        public String handleResponse(HttpResponse response) throws ClientProtocolException,
+                IOException {
+
+            int code = response.getStatusLine().getStatusCode();
+
+            // 如果不是200，则返回状态码
+            if (HttpStatus.SC_OK != code) {
+                return String.valueOf(code);
+            }
+
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                Charset charset = ContentType.getOrDefault(entity).getCharset();
+                if (null != charset) {
+                    return new String(EntityUtils.toByteArray(entity), charset);
+                } else {
+                    return new String(EntityUtils.toByteArray(entity));
+                }
+
+            } else {
+                return null;
+            }
+        }
+    };
+
+    /**
+     * 释放HttpClient连接
+     *
+     * @param hrb
+     *            请求对象
+     * @param CloseableHttpClient
+     *            对象
+     */
+    public static void abortConnection(final HttpUriRequest hrb,
+            final CloseableHttpClient httpclient) {
+        if (hrb != null) {
+            hrb.abort();
+        }
+        if (httpclient != null) {
+            // httpclient.getConnectionManager().shutdown();
+            try {
+                // logger.debug("closing httpclient ...");
+                httpclient.close();
+            } catch (IOException e) {
+                logger.error("failed to close httpclient", e);
+            }
+
+        }
+    }
+
+    /**
+     * 从给定的路径中加载此 KeyStore
+     *
+     * @param url
+     *            keystore URL路径
+     * @param password
+     *            keystore访问密钥
+     * @return keystore 对象
+     */
+    public static KeyStore createKeyStore(final URL url, final String password)
+            throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
+        if (url == null) {
+            throw new IllegalArgumentException("Keystore url may not be null");
+        }
+        KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+        InputStream is = null;
+        try {
+            is = url.openStream();
+            keystore.load(is, password != null ? password.toCharArray() : null);
+        } finally {
+            if (is != null) {
+                is.close();
+                is = null;
+            }
+        }
+        return keystore;
+    }
+
     /**
      * Get方式提交,URL中包含查询参数
      *
@@ -159,7 +241,7 @@ public class HttpClientUtil {
                 3, 3000);
         builder.setServiceUnavailableRetryStrategy(serviceUnavailableRetryStrategy);
         // 模拟浏览器，解决一些服务器程序只允许浏览器访问的问题
-        builder.setUserAgent("Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1)");
+        builder.setUserAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36");
 
         builder.setDefaultRequestConfig(reqBuilder.build());
         builder.setDefaultConnectionConfig(connBuilder.build());
@@ -167,6 +249,24 @@ public class HttpClientUtil {
 
         return builder;
 
+    }
+
+    /**
+     * 将传入的键/值对参数转换为NameValuePair参数集
+     *
+     * @param paramsMap
+     *            参数集, 键/值对
+     * @return NameValuePair参数集
+     */
+    public static List<NameValuePair> getParamsList(Map<String, String> paramsMap) {
+        if (paramsMap == null || paramsMap.size() == 0) {
+            return null;
+        }
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        for (Map.Entry<String, String> map : paramsMap.entrySet()) {
+            params.add(new BasicNameValuePair(map.getKey(), map.getValue()));
+        }
+        return params;
     }
 
     /**
@@ -202,15 +302,23 @@ public class HttpClientUtil {
         UrlEncodedFormEntity formEntity = null;
         try {
             if (charset == null || StringUtils.isEmpty(charset)) {
-                formEntity = new UrlEncodedFormEntity(getParamsList(params));
+                if (null != params && params.size() > 0) {
+                    formEntity = new UrlEncodedFormEntity(getParamsList(params));
+                }
             } else {
-                formEntity = new UrlEncodedFormEntity(getParamsList(params), charset);
+                if (null != params && params.size() > 0) {
+                    formEntity = new UrlEncodedFormEntity(getParamsList(params), charset);
+                }
             }
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException("不支持的编码集", e);
         }
         HttpPost hp = new HttpPost(url);
-        hp.setEntity(formEntity);
+
+        if (null != formEntity) {
+            hp.setEntity(formEntity);
+        }
+
         // 发送请求，得到响应
         String responseStr = null;
         try {
@@ -223,6 +331,20 @@ public class HttpClientUtil {
             abortConnection(hp, httpclient);
         }
         return responseStr;
+    }
+
+    public static String post(String url, Map<String, String> params, String charset,
+            boolean isSecure) {
+        String result = null;
+        if (isSecure) {
+
+            result = post(url, params, charset, null, "");
+
+        } else {
+            result = post(url, params, charset);
+        }
+
+        return result;
     }
 
     /**
@@ -242,6 +364,7 @@ public class HttpClientUtil {
      * @throws RuntimeException
      *             RuntimeException
      */
+    @Deprecated
     public static String post(String url, Map<String, String> params, String charset,
             final URL keystoreUrl, final String keystorePassword) {
         if (url == null || StringUtils.isEmpty(url)) {
@@ -250,9 +373,15 @@ public class HttpClientUtil {
         UrlEncodedFormEntity formEntity = null;
         try {
             if (charset == null || StringUtils.isEmpty(charset)) {
-                formEntity = new UrlEncodedFormEntity(getParamsList(params));
+
+                if (null != params && params.size() > 0) {
+                    formEntity = new UrlEncodedFormEntity(getParamsList(params));
+                }
+
             } else {
-                formEntity = new UrlEncodedFormEntity(getParamsList(params), charset);
+                if (null != params && params.size() > 0) {
+                    formEntity = new UrlEncodedFormEntity(getParamsList(params), charset);
+                }
             }
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException("不支持的编码集", e);
@@ -262,24 +391,31 @@ public class HttpClientUtil {
         HttpPost hp = null;
         String responseStr = null;
         try {
-            KeyStore keyStore = createKeyStore(keystoreUrl, keystorePassword);
+            // KeyStore keyStore = createKeyStore(keystoreUrl,
+            // keystorePassword);
             // KeyStore trustStore = createKeyStore(truststoreUrl,
             // keystorePassword);
 
             HttpClientBuilder builder = getHttpClientBuilder(charset);
-            TrustStrategy trustStrategy = new TrustStrategy() {
+            // TrustStrategy trustStrategy = new TrustStrategy() {
+            //
+            // @Override
+            // public boolean isTrusted(X509Certificate[] chain, String
+            // authType)
+            // throws CertificateException {
+            // return true;
+            // }
+            // };
 
-                @Override
-                public boolean isTrusted(X509Certificate[] chain, String authType)
-                        throws CertificateException {
-                    return true;
-                }
-            };
+            // SSLContext sslContext = new
+            // SSLContextBuilder().loadTrustMaterial(keyStore,
+            // trustStrategy).build();
+            // LayeredConnectionSocketFactory sslSocketFactory = new
+            // SSLConnectionSocketFactory(
+            // sslContext);
 
-            SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(keyStore,
-                    trustStrategy).build();
-            LayeredConnectionSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(
-                    sslContext);
+            SSLConnectionSocketFactory sslSocketFactory = SSLConnectionSocketFactory
+                    .getSocketFactory();
 
             builder.setSSLSocketFactory(sslSocketFactory);
 
@@ -292,122 +428,26 @@ public class HttpClientUtil {
             // httpclient.getConnectionManager().getSchemeRegistry().register(scheme);
 
             hp = new HttpPost(url);
-            hp.setEntity(formEntity);
+            if (null != formEntity) {
+                hp.setEntity(formEntity);
+            }
+
             responseStr = httpclient.execute(hp, responseHandler);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("指定的加密算法不可用", e);
-        } catch (KeyStoreException e) {
-            throw new RuntimeException("keytore解析异常", e);
-        } catch (CertificateException e) {
-            throw new RuntimeException("信任证书过期或解析异常", e);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("keystore文件不存在", e);
+            // } catch (NoSuchAlgorithmException e) {
+            // throw new RuntimeException("指定的加密算法不可用", e);
+            // } catch (KeyStoreException e) {
+            // throw new RuntimeException("keytore解析异常", e);
+            // } catch (CertificateException e) {
+            // throw new RuntimeException("信任证书过期或解析异常", e);
+            // } catch (FileNotFoundException e) {
+            // throw new RuntimeException("keystore文件不存在", e);
         } catch (IOException e) {
             throw new RuntimeException("I/O操作失败或中断 ", e);
-        } catch (KeyManagementException e) {
-            throw new RuntimeException("处理密钥管理的操作异常", e);
+            // } catch (KeyManagementException e) {
+            // throw new RuntimeException("处理密钥管理的操作异常", e);
         } finally {
             abortConnection(hp, httpclient);
         }
         return responseStr;
     }
-
-    /**
-     * 释放HttpClient连接
-     *
-     * @param hrb
-     *            请求对象
-     * @param CloseableHttpClient
-     *            对象
-     */
-    private static void abortConnection(final HttpUriRequest hrb,
-            final CloseableHttpClient httpclient) {
-        if (hrb != null) {
-            hrb.abort();
-        }
-        if (httpclient != null) {
-            // httpclient.getConnectionManager().shutdown();
-            try {
-                logger.debug("closing httpclient ...");
-                httpclient.close();
-            } catch (Exception e) {
-                logger.error("failed to close httpclient", e);
-            }
-
-        }
-    }
-
-    /**
-     * 从给定的路径中加载此 KeyStore
-     *
-     * @param url
-     *            keystore URL路径
-     * @param password
-     *            keystore访问密钥
-     * @return keystore 对象
-     */
-    private static KeyStore createKeyStore(final URL url, final String password)
-            throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
-        if (url == null) {
-            throw new IllegalArgumentException("Keystore url may not be null");
-        }
-        KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
-        InputStream is = null;
-        try {
-            is = url.openStream();
-            keystore.load(is, password != null ? password.toCharArray() : null);
-        } finally {
-            if (is != null) {
-                is.close();
-                is = null;
-            }
-        }
-        return keystore;
-    }
-
-    /**
-     * 将传入的键/值对参数转换为NameValuePair参数集
-     *
-     * @param paramsMap
-     *            参数集, 键/值对
-     * @return NameValuePair参数集
-     */
-    private static List<NameValuePair> getParamsList(Map<String, String> paramsMap) {
-        if (paramsMap == null || paramsMap.size() == 0) {
-            return null;
-        }
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        for (Map.Entry<String, String> map : paramsMap.entrySet()) {
-            params.add(new BasicNameValuePair(map.getKey(), map.getValue()));
-        }
-        return params;
-    }
-
-    public static final String CHARSET_UTF8 = "UTF-8";
-    // public static final String CHARSET_GBK = "GBK";
-    // public static final String SSL_DEFAULT_SCHEME = "https";
-    // public static final int SSL_DEFAULT_PORT = 443;
-
-    protected static Log logger = LogFactory.getLog(HttpClientUtil.class);
-
-    // 使用ResponseHandler接口处理响应，HttpClient使用ResponseHandler会自动管理连接的释放，解决了对连接的释放管理
-    private static ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-        // 自定义响应处理
-        @Override
-        public String handleResponse(HttpResponse response) throws ClientProtocolException,
-                IOException {
-            HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                Charset charset = ContentType.getOrDefault(entity).getCharset();
-                if (null != charset) {
-                    return new String(EntityUtils.toByteArray(entity), charset);
-                } else {
-                    return new String(EntityUtils.toByteArray(entity));
-                }
-
-            } else {
-                return null;
-            }
-        }
-    };
 }
