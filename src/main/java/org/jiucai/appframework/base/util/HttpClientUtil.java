@@ -90,7 +90,7 @@ public class HttpClientUtil {
      *
      * @param hrb
      *            请求对象
-     * @param CloseableHttpClient
+     * @param httpclient
      *            对象
      */
     public static void abortConnection(final HttpUriRequest hrb,

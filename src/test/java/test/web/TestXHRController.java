@@ -1,4 +1,4 @@
-package org.jiucai.test.web;
+package test.web;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/xhr")
-public class XHRController extends BaseController {
+public class TestXHRController extends BaseController {
 
 	@RequestMapping(value = "req")
 	public void req(HttpServletRequest request, HttpServletResponse response) {

@@ -15,9 +15,13 @@ limitations under the License.
  */
 package org.jiucai.appframework.base;
 
+import javax.swing.JOptionPane;
+
+import org.jiucai.appframework.Version;
+
 /**
  * base lib main class
- * 
+ *
  * @author zhaidw
  *
  */
@@ -25,12 +29,14 @@ public class Main {
 
     /**
      * Main
-     * 
+     *
      * @param args
      *            args
      */
     public static void main(String[] args) {
         System.out.println("This is base lib for org.jiucai.appframework");
+        JOptionPane.showMessageDialog(null, "This is appframework from org.jiucai.appframework",
+                "appframework " + Version.VersionNumber, JOptionPane.INFORMATION_MESSAGE);
 
     }
 

@@ -50,7 +50,7 @@ Eclispe 4.4+ with [m2eclipse plugins](http://www.eclipse.org/m2e/download/)
 
 Releases are available in the central repository.
 
-The current stable release of appframework: *2.1.2*
+The current stable release of appframework: *2.1.3*
 
 The dev version now is: 2.1.3-SNAPSHOT
 
@@ -59,7 +59,7 @@ source: https://bitbucket.org/jiucai/appframework/src
 
 download: https://bitbucket.org/jiucai/appframework/download
 
-JAR package: http://repo2.maven.org/maven2/org/jiucai/appframework/2.1.2/appframework-2.1.2.jar
+JAR package: http://repo2.maven.org/maven2/org/jiucai/appframework/2.1.3/appframework-2.1.3.jar
 
 Repository: http://search.maven.org/#search|ga|1|org.jiucai
 
@@ -72,7 +72,7 @@ Edit your project pom.xml and add :
     <dependency>
         <groupId>org.jiucai</groupId>
         <artifactId>appframework</artifactId>
-        <version>2.1.2</version>
+        <version>2.1.3</version>
     </dependency>
 ```
 
@@ -98,7 +98,7 @@ Anyone interested is welcome to join in QQ group: 56883769 (JAVA&SSH&SSI)
 
 #History
 
-2.1.2 Stable version based spring-framework 4.1.7 (*Recommand upgrade to this version*)
+2.1.3 Stable version based spring-framework 4.1.7 (*Recommand upgrade to this version*)
 
 2.1.1 Stable version based spring-framework 4.1.4
 

@@ -77,7 +77,9 @@ public class PGPDecryptor extends AbstractPGPEncryptor {
      *
      * @param encrypted
      *            The message to be decrypted.
-     * @param passPhrase
+     * @param keyIn
+     *            InputStream for key
+     * @param password
      *            Pass phrase (key)
      *
      * @return Clear text as a byte array. I18N considerations are not handled
