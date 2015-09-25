@@ -23,6 +23,8 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * require apache poi 3.2+
@@ -31,6 +33,8 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
  *
  */
 public class ExcelUtil {
+
+    protected static Logger log = LoggerFactory.getLogger(ExcelUtil.class);
 
     public static void createExcel(String sheetName, List<Map<String, Object>> list,
             String[] titles, String[] fieldNames, OutputStream output) {
@@ -282,6 +286,8 @@ public class ExcelUtil {
 
         }
 
+        wb.close();
+
         return returnArray;
 
     }
@@ -345,7 +351,5 @@ public class ExcelUtil {
         }
 
     }
-
-    protected static Logs log = LogUtil.getLog(ExcelUtil.class);
 
 }

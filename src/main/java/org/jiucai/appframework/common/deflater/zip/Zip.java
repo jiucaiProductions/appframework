@@ -20,8 +20,8 @@ import java.util.zip.ZipInputStream;
 import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipFile;
 import org.apache.tools.zip.ZipOutputStream;
-import org.jiucai.appframework.common.util.LogUtil;
-import org.jiucai.appframework.common.util.Logs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -30,6 +30,12 @@ import org.jiucai.appframework.common.util.Logs;
  * @author jzj
  */
 public class Zip {
+
+    private static boolean isCreateSrcDir = true;// 是否创建源目录
+
+    private static String encoding = "UTF-8";// 是否创建源目录
+
+    protected static Logger logger = LoggerFactory.getLogger(Zip.class);
 
     public static void doUncompressFile(String inFileName) {
 
@@ -207,13 +213,13 @@ public class Zip {
             String entryName = ze.getName();
             String path = decompressDir + "/" + entryName;
             if (ze.isDirectory()) {
-                log.debug("正在创建解压目录 - " + entryName);
+                logger.debug("正在创建解压目录 - " + entryName);
                 File decompressDirFile = new File(path);
                 if (!decompressDirFile.exists()) {
                     decompressDirFile.mkdirs();
                 }
             } else {
-                log.debug("正在创建解压文件 - " + entryName);
+                logger.debug("正在创建解压文件 - " + entryName);
                 String fileDir = path.substring(0, path.lastIndexOf("/"));
                 File fileDirFile = new File(fileDir);
                 if (!fileDirFile.exists()) {
@@ -258,7 +264,7 @@ public class Zip {
             throws FileNotFoundException, IOException {
         BufferedInputStream bi;
         // ----解压文件(ZIP文件的解压缩实质上就是从输入流中读取数据):
-        log.debug("开始读压缩文件");
+        logger.debug("开始读压缩文件");
 
         FileInputStream fi = new FileInputStream(archive);
         CheckedInputStream csumi = new CheckedInputStream(fi, new CRC32());
@@ -269,13 +275,13 @@ public class Zip {
         while ((ze = in2.getNextEntry()) != null) {
             String entryName = ze.getName();
             if (ze.isDirectory()) {
-                log.debug("正在创建解压目录 - " + entryName);
+                logger.debug("正在创建解压目录 - " + entryName);
                 File decompressDirFile = new File(decompressDir + "/" + entryName);
                 if (!decompressDirFile.exists()) {
                     decompressDirFile.mkdirs();
                 }
             } else {
-                log.debug("正在创建解压文件 - " + entryName);
+                logger.debug("正在创建解压文件 - " + entryName);
                 BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(
                         decompressDir + "/" + entryName));
                 byte[] buffer = new byte[1024];
@@ -289,7 +295,7 @@ public class Zip {
             }
         }
         bi.close();
-        log.debug("Checksum: " + csumi.getChecksum().getValue());
+        logger.debug("Checksum: " + csumi.getChecksum().getValue());
     }
 
     public synchronized static void zip(String src, String archive) throws FileNotFoundException,
@@ -356,7 +362,7 @@ public class Zip {
 
         out.close();
         // 注：校验和要在流关闭后才准备，一定要放在流被关闭后使用
-        log.debug("Checksum: " + csum.getChecksum().getValue());
+        logger.debug("Checksum: " + csum.getChecksum().getValue());
 
     }
 
@@ -390,7 +396,7 @@ public class Zip {
         String entryName = filePath.replace(prefixDir, "").replaceAll("/$", "");
         if (srcFile.isDirectory()) {
             if (!"".equals(entryName)) {
-                log.debug("正在创建目录 - " + srcFile.getAbsolutePath() + "  entryName=" + entryName);
+                logger.debug("正在创建目录 - " + srcFile.getAbsolutePath() + "  entryName=" + entryName);
 
                 // 如果是目录，则需要在写目录后面加上 /
                 zipEntry = new ZipEntry(entryName + "/");
@@ -402,7 +408,7 @@ public class Zip {
                 saveZipFile(zos, bo, srcFiles[i], prefixDir);
             }
         } else {
-            log.debug("正在写文件 - " + srcFile.getAbsolutePath() + "  entryName=" + entryName);
+            logger.debug("正在写文件 - " + srcFile.getAbsolutePath() + "  entryName=" + entryName);
             BufferedInputStream bi = new BufferedInputStream(new FileInputStream(srcFile));
 
             // 开始写入新的ZIP文件条目并将流定位到条目数据的开始处
@@ -422,11 +428,5 @@ public class Zip {
             bi.close();
         }
     }
-
-    private static boolean isCreateSrcDir = true;// 是否创建源目录
-
-    private static String encoding = "UTF-8";// 是否创建源目录
-
-    protected static Logs log = LogUtil.getLog(Zip.class);
 
 }

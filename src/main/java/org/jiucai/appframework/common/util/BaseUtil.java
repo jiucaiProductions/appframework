@@ -7,12 +7,16 @@ import java.util.Date;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class BaseUtil {
 
+    protected static Logger log = LoggerFactory.getLogger(BaseUtil.class);
+
     /**
      * 把 Map 中的 Object 对象转换成可 显示字符串
-     * 
+     *
      * @param val
      *            val
      * @return String
@@ -89,7 +93,5 @@ public abstract class BaseUtil {
 
         return result;
     }
-
-    protected static Logs log = LogUtil.getLog(BaseUtil.class);
 
 }

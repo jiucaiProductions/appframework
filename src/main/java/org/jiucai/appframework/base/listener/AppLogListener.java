@@ -6,42 +6,40 @@ import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jiucai.appframework.base.util.IpUtil;
-import org.slf4j.impl.Log4jMDCAdapter;
-import org.slf4j.spi.MDCAdapter;
+import org.slf4j.MDC;
 
 /**
- * a listener to save user ip to log4j ,
- * you can override it
+ * a listener to save user ip to log4j , you can override it
+ *
  * @author jiucai
  *
  */
 @WebListener("a listener to save user ip to log4j ")
 public class AppLogListener extends AbstractBaseListener implements ServletRequestListener {
 
-	protected MDCAdapter adapter;
+    // protected MDCAdapter adapter;
 
-	public AppLogListener() {
-		super();
-		log.info("AppLogListener inited.");
-		adapter = new Log4jMDCAdapter();
-	}
+    public AppLogListener() {
+        super();
+        log.info("AppLogListener inited.");
+        // adapter = new LogbackMDCAdapter();
+    }
 
-	@Override
-	public void requestInitialized(ServletRequestEvent event) {
-		HttpServletRequest request = (HttpServletRequest) event
-				.getServletRequest();
+    @Override
+    public void requestDestroyed(ServletRequestEvent event) {
 
-		String ip = IpUtil.getIp(request);
+        MDC.remove("ip");
 
-		adapter.put("ip", ip);
+    }
 
-	}
+    @Override
+    public void requestInitialized(ServletRequestEvent event) {
+        HttpServletRequest request = (HttpServletRequest) event.getServletRequest();
 
-	@Override
-	public void requestDestroyed(ServletRequestEvent event) {
+        String ip = IpUtil.getIp(request);
 
-		adapter.remove("ip");
+        MDC.put("ip", ip);
 
-	}
+    }
 
 }

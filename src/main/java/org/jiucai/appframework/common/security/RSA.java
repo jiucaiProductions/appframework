@@ -14,160 +14,164 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jiucai.appframework.common.encode.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * RSA 非对称加密解码算法, JDK 实现的封装
- * 
+ *
  * @author jiucai
- * 
+ *
  */
 public class RSA extends AsymmetricEncryptor {
 
-	private static final String algorithmKey = "RSA";
-	private static final String algorithmSignatureKey = "MD5withRSA";
+    private static final String algorithmKey = "RSA";
+    private static final String algorithmSignatureKey = "MD5withRSA";
 
-	/**
-	 * 用私钥对信息生成数字签名
-	 * 
-	 * @param data
-	 *            加密数据
-	 * @param privateKey
-	 *            私钥
-	 * @return 数据签名
-	 */
-	public static String sign(byte[] data, String privateKey) {
-		try {
-			// 解密由base64编码的私钥
+    protected static Logger log = LoggerFactory.getLogger(RSA.class);
 
-			byte[] keyBytes = Base64.decode(privateKey);
+    /**
+     * 生成密钥
+     * 
+     * @param seed
+     *            种子
+     * @return 密钥对象
+     */
+    public static Map<String, Object> initKey(String seed) {
+        KeyPairGenerator keygen = null;
+        try {
+            keygen = KeyPairGenerator.getInstance(algorithmKey);
+        } catch (NoSuchAlgorithmException e) {
+            log.error("invalid algorithmKey" + algorithmKey, e);
+            return null;
+        }
+        // 初始化随机产生器
+        SecureRandom secureRandom = new SecureRandom();
+        secureRandom.setSeed(seed.getBytes());
+        keygen.initialize(1024, secureRandom);
 
-			// 构造PKCS8EncodedKeySpec对象
-			PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(keyBytes);
-			// algorithmKey 指定的加密算法
-			KeyFactory keyFactory = KeyFactory.getInstance(algorithmKey);
+        KeyPair keys = keygen.genKeyPair();
 
-			// 取私钥匙对象
-			PrivateKey priKey = keyFactory.generatePrivate(pkcs8KeySpec);
+        PublicKey publicKey = keys.getPublic();
+        PrivateKey privateKey = keys.getPrivate();
 
-			// 用私钥对信息生成数字签名
-			Signature signature = Signature.getInstance(algorithmSignatureKey);
-			signature.initSign(priKey);
-			signature.update(data);
+        Map<String, Object> map = new HashMap<String, Object>(2);
+        map.put(PUBLIC_KEY, publicKey);
+        map.put(PRIVATE_KEY, privateKey);
 
-			return Base64.encode(signature.sign());
+        return map;
+    }
 
-		} catch (Throwable e) {
-			log.error("sign failed", e);
-		}
-		return null;
-	}
+    public static void main(String[] args) throws Exception {
+        String inputStr = "RSA加密字符串测试by-jiucai";
+        byte[] data = inputStr.getBytes();
 
-	/**
-	 * 校验数字签名
-	 * 
-	 * @param data
-	 *            加密数据
-	 * @param publicKey
-	 *            公钥
-	 * @param sign
-	 *            待校验的数字签名
-	 * @return 校验成功返回 true 失败返回 false
-	 */
-	public static boolean verify(byte[] data, String publicKey, String sign) {
-		try {
-			log.info("using algorithmKey: " + algorithmKey
-					+ " , algorithmSignatureKey: " + algorithmSignatureKey);
-			// 解密由base64编码的公钥
-			byte[] keyBytes = Base64.decode(publicKey);
+        String algorithmSeed = DSA.class.getName() + ".rsa.by.jiucai.20140705";
+        // 构建密钥
+        Map<String, Object> keyMap = initKey(algorithmSeed);
 
-			if (null == keyBytes) {
-				log.error("invalid Base64 publicKey.");
-				return false;
-			}
+        // 获得密钥
+        String publicKey = getPublicKey(keyMap);
+        String privateKey = getPrivateKey(keyMap);
 
-			// 构造X509EncodedKeySpec对象
-			X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
+        System.out.println("公钥:\r" + publicKey);
+        System.out.println("私钥:\r" + privateKey);
 
-			// algorithmKey 指定的加密算法
-			KeyFactory keyFactory = KeyFactory.getInstance(algorithmKey);
+        // 产生签名
+        String sign = sign(data, privateKey);
+        System.out.println("签名:\r" + sign);
 
-			// 取公钥匙对象
-			PublicKey pubKey = keyFactory.generatePublic(keySpec);
+        // 验证签名
+        boolean status = verify(data, publicKey, sign);
+        System.out.println("状态:\r" + status);
+    }
 
-			Signature signature = Signature.getInstance(algorithmSignatureKey);
-			signature.initVerify(pubKey);
-			signature.update(data);
+    /**
+     * 用私钥对信息生成数字签名
+     * 
+     * @param data
+     *            加密数据
+     * @param privateKey
+     *            私钥
+     * @return 数据签名
+     */
+    public static String sign(byte[] data, String privateKey) {
+        try {
+            // 解密由base64编码的私钥
 
-			byte[] signVal = Base64.decode(sign);
+            byte[] keyBytes = Base64.decode(privateKey);
 
-			if (null != signVal) {
-				// 验证签名是否正常
-				return signature.verify(signVal);
-			} else {
-				log.error("invalid Base64 sign.");
-				return false;
-			}
+            // 构造PKCS8EncodedKeySpec对象
+            PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(keyBytes);
+            // algorithmKey 指定的加密算法
+            KeyFactory keyFactory = KeyFactory.getInstance(algorithmKey);
 
-		} catch (Throwable e) {
-			log.error("verify failed", e);
-		}
-		return false;
-	}
+            // 取私钥匙对象
+            PrivateKey priKey = keyFactory.generatePrivate(pkcs8KeySpec);
 
-	/**
-	 * 生成密钥
-	 * 
-	 * @param seed
-	 *            种子
-	 * @return 密钥对象
-	 */
-	public static Map<String, Object> initKey(String seed) {
-		KeyPairGenerator keygen = null;
-		try {
-			keygen = KeyPairGenerator.getInstance(algorithmKey);
-		} catch (NoSuchAlgorithmException e) {
-			log.error("invalid algorithmKey" + algorithmKey, e);
-			return null;
-		}
-		// 初始化随机产生器
-		SecureRandom secureRandom = new SecureRandom();
-		secureRandom.setSeed(seed.getBytes());
-		keygen.initialize(1024, secureRandom);
+            // 用私钥对信息生成数字签名
+            Signature signature = Signature.getInstance(algorithmSignatureKey);
+            signature.initSign(priKey);
+            signature.update(data);
 
-		KeyPair keys = keygen.genKeyPair();
+            return Base64.encode(signature.sign());
 
-		PublicKey publicKey = keys.getPublic();
-		PrivateKey privateKey = keys.getPrivate();
+        } catch (Throwable e) {
+            log.error("sign failed", e);
+        }
+        return null;
+    }
 
-		Map<String, Object> map = new HashMap<String, Object>(2);
-		map.put(PUBLIC_KEY, publicKey);
-		map.put(PRIVATE_KEY, privateKey);
+    /**
+     * 校验数字签名
+     * 
+     * @param data
+     *            加密数据
+     * @param publicKey
+     *            公钥
+     * @param sign
+     *            待校验的数字签名
+     * @return 校验成功返回 true 失败返回 false
+     */
+    public static boolean verify(byte[] data, String publicKey, String sign) {
+        try {
+            log.info("using algorithmKey: " + algorithmKey + " , algorithmSignatureKey: "
+                    + algorithmSignatureKey);
+            // 解密由base64编码的公钥
+            byte[] keyBytes = Base64.decode(publicKey);
 
-		return map;
-	}
+            if (null == keyBytes) {
+                log.error("invalid Base64 publicKey.");
+                return false;
+            }
 
-	public static void main(String[] args) throws Exception {
-		String inputStr = "RSA加密字符串测试by-jiucai";
-		byte[] data = inputStr.getBytes();
+            // 构造X509EncodedKeySpec对象
+            X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
 
-		String algorithmSeed = DSA.class.getName() + ".rsa.by.jiucai.20140705";
-		// 构建密钥
-		Map<String, Object> keyMap = initKey(algorithmSeed);
+            // algorithmKey 指定的加密算法
+            KeyFactory keyFactory = KeyFactory.getInstance(algorithmKey);
 
-		// 获得密钥
-		String publicKey = getPublicKey(keyMap);
-		String privateKey = getPrivateKey(keyMap);
+            // 取公钥匙对象
+            PublicKey pubKey = keyFactory.generatePublic(keySpec);
 
-		System.out.println("公钥:\r" + publicKey);
-		System.out.println("私钥:\r" + privateKey);
+            Signature signature = Signature.getInstance(algorithmSignatureKey);
+            signature.initVerify(pubKey);
+            signature.update(data);
 
-		// 产生签名
-		String sign = sign(data, privateKey);
-		System.out.println("签名:\r" + sign);
+            byte[] signVal = Base64.decode(sign);
 
-		// 验证签名
-		boolean status = verify(data, publicKey, sign);
-		System.out.println("状态:\r" + status);
-	}
+            if (null != signVal) {
+                // 验证签名是否正常
+                return signature.verify(signVal);
+            } else {
+                log.error("invalid Base64 sign.");
+                return false;
+            }
+
+        } catch (Throwable e) {
+            log.error("verify failed", e);
+        }
+        return false;
+    }
 
 }

@@ -7,8 +7,8 @@ import java.util.Properties;
 
 import org.apache.commons.configuration.Configuration;
 import org.jiucai.appframework.base.util.ConfigUtil;
-import org.jiucai.appframework.common.util.LogUtil;
-import org.jiucai.appframework.common.util.Logs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
@@ -20,7 +20,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
  */
 public class MailSender {
 
-    protected static Logs log = LogUtil.getLog(MailSender.class);
+    protected static Logger log = LoggerFactory.getLogger(MailSender.class);
 
     // 邮件服务器信息
     private static String host;

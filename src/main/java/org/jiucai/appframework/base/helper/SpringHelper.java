@@ -3,8 +3,7 @@ package org.jiucai.appframework.base.helper;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
-import org.jiucai.appframework.common.util.LogUtil;
-import org.jiucai.appframework.common.util.Logs;
+import org.jiucai.appframework.base.service.BaseService;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -16,7 +15,9 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  * @author zhaidw
  *
  */
-public class SpringHelper implements ApplicationContextAware {
+public class SpringHelper extends BaseService implements ApplicationContextAware {
+
+    protected static ApplicationContext context;
 
     /**
      * 返回 Bean初始化时 的 ApplicationContext
@@ -51,10 +52,6 @@ public class SpringHelper implements ApplicationContextAware {
     public static <T> T getBean(String name, Class<T> requiredType) {
         return context.getBean(name, requiredType);
     }
-
-    protected Logs log = LogUtil.getLog(getClass());
-
-    protected static ApplicationContext context;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

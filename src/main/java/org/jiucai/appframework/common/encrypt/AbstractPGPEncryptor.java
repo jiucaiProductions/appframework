@@ -58,7 +58,6 @@ public abstract class AbstractPGPEncryptor {
         return bytes;
     }
 
-    @SuppressWarnings("unchecked")
     protected static PGPPublicKey readPublicKey(InputStream in) throws IOException, PGPException {
 
         BcPGPPublicKeyRingCollection pgpPub = new BcPGPPublicKeyRingCollection(
@@ -101,7 +100,6 @@ public abstract class AbstractPGPEncryptor {
      * @throws PGPException
      *             if there is an issue parsing the input stream.
      */
-    @SuppressWarnings("unchecked")
     protected static PGPSecretKey readSecretKey(InputStream input) throws IOException, PGPException {
         PGPSecretKeyRingCollection pgpSec = new PGPSecretKeyRingCollection(
                 PGPUtil.getDecoderStream(input), new BcKeyFingerprintCalculator());

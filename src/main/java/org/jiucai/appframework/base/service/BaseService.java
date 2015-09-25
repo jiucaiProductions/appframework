@@ -1,10 +1,10 @@
 package org.jiucai.appframework.base.service;
 
-import org.jiucai.appframework.common.util.LogUtil;
-import org.jiucai.appframework.common.util.Logs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class BaseService {
 
-	protected Logs log = LogUtil.getLog(getClass());
-	
+    protected Logger log = LoggerFactory.getLogger(getClass());
+
 }

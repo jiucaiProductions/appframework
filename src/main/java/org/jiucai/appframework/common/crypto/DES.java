@@ -24,6 +24,8 @@ import org.jiucai.appframework.common.encrypt.AbstractEncryptor;
  */
 public class DES extends AbstractEncryptor {
 
+    protected static String algorithmKey = "DES";
+
     public static String decode(final String encryptResult, final String password) {
         String result = null;
 
@@ -33,7 +35,7 @@ public class DES extends AbstractEncryptor {
             try {
                 result = new String(decryptResult, charsetName);
             } catch (UnsupportedEncodingException e) {
-                log.error("decode failed", e);
+                logger.error("decode failed", e);
             }
         }
         return result;
@@ -57,7 +59,7 @@ public class DES extends AbstractEncryptor {
             // 真正开始解密操作
             return cipher.doFinal(src);
         } catch (Throwable e) {
-            log.error("decrypt failed", e);
+            logger.error("decrypt failed", e);
         }
         return null;
     }
@@ -87,7 +89,7 @@ public class DES extends AbstractEncryptor {
             // 正式执行加密操作
             return cipher.doFinal(datasource);
         } catch (Throwable e) {
-            log.error("decrypt failed", e);
+            logger.error("decrypt failed", e);
         }
         return null;
     }
@@ -107,7 +109,5 @@ public class DES extends AbstractEncryptor {
         System.out.println("解密后：" + decode(encodeStr, password));
 
     }
-
-    protected static String algorithmKey = "DES";
 
 }

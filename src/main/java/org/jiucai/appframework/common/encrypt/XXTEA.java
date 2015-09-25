@@ -15,9 +15,13 @@ package org.jiucai.appframework.common.encrypt;
  * </pre>
  *
  * @author Ma Bingyao
+ * @deprecated please use {@link org.xxtea.XXTEA}
  *
  */
+@Deprecated
 public final class XXTEA {
+
+    private static final int delta = 0x9E3779B9;
 
     /**
      * Decrypt data with key.
@@ -178,8 +182,6 @@ public final class XXTEA {
         }
         return result;
     }
-
-    private static final int delta = 0x9E3779B9;
 
     private XXTEA() {
     }

@@ -4,17 +4,15 @@ import java.util.Map;
 
 import org.jiucai.appframework.base.annotation.PageServiceMapping;
 import org.jiucai.appframework.base.mapper.ParameterMapper;
-import org.jiucai.appframework.common.util.LogUtil;
-import org.jiucai.appframework.common.util.Logs;
+import org.jiucai.appframework.base.service.impl.DefaultAppBaseService;
 import org.springframework.stereotype.Service;
 
 import test.domain.TestDomain;
 
 @Service("zdwTest2PageService")
-public class ZdwTest2PageService {
+public class ZdwTest2PageService extends DefaultAppBaseService {
 
-    protected Logs log = LogUtil.getLog(getClass());
-
+    @Override
     @PageServiceMapping("/zdwTest2")
     public String handleRequest(ParameterMapper paramMapper, Map<String, Object> view) {
 

@@ -17,6 +17,10 @@ import org.jiucai.appframework.common.security.RSA;
 
 public class TestRSA {
 
+    final public static int RAW = 1;
+
+    final public static int PKCS1 = 2;
+
     public static void main(String[] args) throws Throwable {
 
         Map<String, Object> keyMap = RSA.initKey("test123");
@@ -25,8 +29,6 @@ public class TestRSA {
 
         System.out.println("publicKey:" + publicKey);
         System.out.println("privateKey:" + privateKey);
-
-        byte[] bs = new byte[] { 1, 2, 3, 1, 2, 3 };
 
     }
 
@@ -141,8 +143,4 @@ public class TestRSA {
             return null;
         }
     }
-
-    final public static int RAW = 1;
-
-    final public static int PKCS1 = 2;
 }

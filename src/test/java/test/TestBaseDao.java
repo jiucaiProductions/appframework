@@ -3,17 +3,17 @@ package test;
 import org.apache.ibatis.session.SqlSession;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.jiucai.appframework.base.dao.BaseDao;
+import org.jiucai.appframework.base.dao.impl.AbstractBaseDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 
 /**
  * your dao base class
- * 
+ *
  * @author jiucai
  *
  */
-public abstract class TestBaseDao extends BaseDao {
+public abstract class TestBaseDao extends AbstractBaseDao {
 
     // @Autowired
     // protected SqlSessionFactory mbtSqlSessionFactory;

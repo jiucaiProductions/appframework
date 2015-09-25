@@ -34,7 +34,7 @@
 	<context:component-scan base-package="org.jiucai.test.*" />
 	<context:component-scan base-package="test.*" />
 	
-	<context:property-placeholder location="classpath:config.properties,classpath:db_app.properties" />
+	<context:property-placeholder location="classpath:config.properties,classpath:db.properties" />
 	
 	
 	

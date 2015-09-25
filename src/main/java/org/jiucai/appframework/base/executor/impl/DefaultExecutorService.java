@@ -6,8 +6,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.jiucai.appframework.base.executor.AppExecutorServiceFactory;
-import org.jiucai.appframework.common.util.LogUtil;
-import org.jiucai.appframework.common.util.Logs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 默认 线程池
@@ -17,9 +17,21 @@ import org.jiucai.appframework.common.util.Logs;
  */
 public class DefaultExecutorService {
 
+    protected static Logger logger = LoggerFactory.getLogger(DefaultExecutorService.class);
+
+    // 线程池名称
+    private static String name = "Default";
+
+    // 线程池大小
+    private static int maxThreads = 20;
+
+    private volatile static DefaultExecutorService uniqueInstance;
+
+    private volatile static ExecutorService executorService;
+
     /**
      * 获取 ExecutorService 单例对象
-     * 
+     *
      * @return ExecutorService 单例对象
      */
     public static ExecutorService getExecutorService() {
@@ -55,7 +67,7 @@ public class DefaultExecutorService {
 
     /**
      * 获取 DefaultExecutorService 单例对象
-     * 
+     *
      * @return DefaultExecutorService 单例对象
      */
     public static DefaultExecutorService getInstance() {
@@ -73,7 +85,7 @@ public class DefaultExecutorService {
 
     /**
      * 设置线程池参数
-     * 
+     *
      * @param name
      *            线程池名称
      * @param maxThreads
@@ -85,18 +97,6 @@ public class DefaultExecutorService {
         DefaultExecutorService.maxThreads = maxThreads;
         return getInstance();
     }
-
-    protected static Logs logger = LogUtil.getLog(DefaultExecutorService.class);
-
-    // 线程池名称
-    private static String name = "Default";
-
-    // 线程池大小
-    private static int maxThreads = 20;
-
-    private volatile static DefaultExecutorService uniqueInstance;
-
-    private volatile static ExecutorService executorService;
 
     private DefaultExecutorService() {
     }

@@ -21,13 +21,15 @@ import java.security.spec.RSAPublicKeySpec;
 import javax.crypto.Cipher;
 
 import org.jiucai.appframework.common.encode.Base64;
-import org.jiucai.appframework.common.util.LogUtil;
-import org.jiucai.appframework.common.util.Logs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * RSA 工具类。 提供加密，解密，生成密钥对等方法。 非对称加密， 2011年1月18日 16:45:28 漆艾林
  */
 public class RSAUtil {
+    protected static Logger logger = LoggerFactory.getLogger(RSAUtil.class);
+
     /**
      * 解密
      *
@@ -217,5 +219,4 @@ public class RSAUtil {
         logger.info("end ....");
     }
 
-    protected static Logs logger = LogUtil.getLog(RSAUtil.class);
 }

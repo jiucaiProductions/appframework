@@ -17,8 +17,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jiucai.appframework.base.util.DateTimeUtil;
-import org.jiucai.appframework.common.util.LogUtil;
-import org.jiucai.appframework.common.util.Logs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -28,6 +28,14 @@ import org.jiucai.appframework.common.util.Logs;
  *
  */
 public class ExcelReader {
+
+    protected static Logger logger = LoggerFactory.getLogger(ExcelReader.class);
+
+    protected static final String dateTimeFmtPattern = "yyyy-MM-dd HH:mm:ss";
+
+    protected static final String dateFmtPattern = "yyyy-MM-dd";
+
+    protected static final DataFormatter formatter = new DataFormatter();
 
     public static void main(String[] args) throws Exception {
         List<Map<String, String>> list = read("e:/test1.xls");
@@ -239,13 +247,5 @@ public class ExcelReader {
 
         return list;
     }
-
-    protected static Logs logger = LogUtil.getLogger(ExcelReader.class);
-
-    protected static final String dateTimeFmtPattern = "yyyy-MM-dd HH:mm:ss";
-
-    protected static final String dateFmtPattern = "yyyy-MM-dd";
-
-    protected static final DataFormatter formatter = new DataFormatter();
 
 }

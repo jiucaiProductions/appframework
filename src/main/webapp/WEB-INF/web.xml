@@ -36,12 +36,6 @@
 	<listener>
 		<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
 	</listener>
-	
-	<listener>
-		<listener-class>test.listener.TestRequestListener</listener-class>
-	</listener>
-	
-	
 
 
 	<filter>
@@ -56,6 +50,19 @@
 		<filter-name>encodingFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
+
+    <filter>
+        <filter-name>mdcFilter</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+        <init-param>
+            <param-name>targetBeanName</param-name>
+            <param-value>MDCInsertingServletFilterBean</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>mdcFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
 
 	<servlet>

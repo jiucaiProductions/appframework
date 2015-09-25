@@ -3,18 +3,40 @@
  */
 package org.jiucai.appframework.common.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * service call speed limit client util
- * 
+ *
  * @author wangbo
  * @author jiucai
  *
  */
 public class InvokeSpeedLimitUtil {
+    protected static Logger log = LoggerFactory.getLogger(InvokeSpeedLimitUtil.class);
+
+    /** 速度限制每个时间周期内的调用次数 */
+    protected static int speedLimitCount = 0;
+
+    /** 速度限制的时间周期,单位秒 */
+    protected static long speedLimitInterval = 0;
+
+    /** 等待周期,单位秒 */
+    protected static int sleepTimeInSeconds = 10;
+
+    private static int executedCount = 0;
+
+    private static long lastRunTime = 0;
+
+    static {
+        speedLimitCount = 22;
+        speedLimitInterval = 60000;
+    }
+
     /**
      * 限制调用速度
-     * 
+     *
      * @param updateCount
      *            传入本次调用的条数
      */
@@ -57,7 +79,7 @@ public class InvokeSpeedLimitUtil {
 
     /**
      * 设置限制参数
-     * 
+     *
      * @param limitCount
      *            调用次数
      * @param limitInterval
@@ -88,26 +110,6 @@ public class InvokeSpeedLimitUtil {
             executedCount = 0;
         }
         return false;
-    }
-
-    protected static Logs log = LogUtil.getLog(InvokeSpeedLimitUtil.class);
-
-    /** 速度限制每个时间周期内的调用次数 */
-    protected static int speedLimitCount = 0;
-
-    /** 速度限制的时间周期,单位秒 */
-    protected static long speedLimitInterval = 0;
-
-    /** 等待周期,单位秒 */
-    protected static int sleepTimeInSeconds = 10;
-
-    private static int executedCount = 0;
-
-    private static long lastRunTime = 0;
-
-    static {
-        speedLimitCount = 22;
-        speedLimitInterval = 60000;
     }
 
 }

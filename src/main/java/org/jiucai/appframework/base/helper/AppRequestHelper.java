@@ -7,10 +7,14 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.jiucai.appframework.common.util.LogUtil;
-import org.jiucai.appframework.common.util.Logs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AppRequestHelper extends SpringHelper {
+
+    protected static Logger log = LoggerFactory.getLogger(AppRequestHelper.class);
+
+    protected static final String REQ_PREFIX = "__req_app_";
 
     /**
      * 获取应用的 http 绝对路径 <br>
@@ -160,9 +164,5 @@ public class AppRequestHelper extends SpringHelper {
 
         return result;
     }
-
-    protected static Logs log = LogUtil.getLog(AppRequestHelper.class);
-
-    protected static final String REQ_PREFIX = "__req_app_";
 
 }

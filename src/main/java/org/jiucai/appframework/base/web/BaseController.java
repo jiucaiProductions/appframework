@@ -7,82 +7,78 @@ import java.net.URL;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.jiucai.appframework.common.util.LogUtil;
-import org.jiucai.appframework.common.util.Logs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 控制器的基类
- * 
+ *
  * @author zhaidw
- * 
+ *
  */
 public abstract class BaseController {
 
+    protected static ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
-	protected static ClassLoader loader = Thread.currentThread().getContextClassLoader();
-	
-	protected Logs log = LogUtil.getLog(getClass());
+    /**
+     * 操作成功标识
+     */
+    public static final String SUCCESS = "1";
 
-	/**
-	 * 操作成功标识
-	 */
-	public static final String SUCCESS = "1";
+    /**
+     * 操作失败标识
+     */
+    public static final String FAILED = "0";
 
-	/**
-	 * 操作失败标识
-	 */
-	public static final String FAILED = "0";
+    /**
+     * 直接输出时的字符编码
+     */
+    public static final String CHARSET = "UTF-8";
 
-	/**
-	 * 直接输出时的字符编码
-	 */
-	public static final String CHARSET = "UTF-8";
-	
-	
-	protected void output(HttpServletResponse response, String msg,
-			String contentType) {
-		PrintWriter out = null;
-		try {
-			// 必须放在 response.getWriter(); 之前否则不起作用
-			response.setHeader("Content-Type", contentType);
-			response.setHeader("Pragma", "no-cache");
+    protected static File getFileFromClasspath(String classpathFileName) {
 
-			response.addHeader("Cache-Control", "must-revalidate");
-			response.addHeader("Cache-Control", "no-cache");
-			response.addHeader("Cache-Control", "no-store");
+        String cp = new StringBuffer(classpathFileName).toString();
+        URL url = loader.getResource(cp);
 
-			response.setDateHeader("Expires", 0);
+        File file = new File(url.getFile());
 
-			out = response.getWriter();
+        return file;
 
-			if (null != out) {
-				if (null == msg) {
-					msg = "";
-				}
-				out.write(msg);
-			}
+    }
 
-		} catch (Exception e) {
-			log.error("output failed: " + ExceptionUtils.getFullStackTrace(e));
-		} finally {
-			if (null != out) {
-				out.close();
-			}
+    protected Logger log = LoggerFactory.getLogger(getClass());
 
-		}
+    protected void output(HttpServletResponse response, String msg, String contentType) {
+        PrintWriter out = null;
+        try {
+            // 必须放在 response.getWriter(); 之前否则不起作用
+            response.setHeader("Content-Type", contentType);
+            response.setHeader("Pragma", "no-cache");
 
-	}
+            response.addHeader("Cache-Control", "must-revalidate");
+            response.addHeader("Cache-Control", "no-cache");
+            response.addHeader("Cache-Control", "no-store");
 
-	protected static File getFileFromClasspath(String classpathFileName) {
+            response.setDateHeader("Expires", 0);
 
-		String cp = new StringBuffer(classpathFileName).toString();
-		URL url = loader.getResource(cp);
+            out = response.getWriter();
 
-		File file = new File(url.getFile());
+            if (null != out) {
+                if (null == msg) {
+                    msg = "";
+                }
+                out.write(msg);
+            }
 
-		return file;
+        } catch (Exception e) {
+            log.error("output failed: " + ExceptionUtils.getFullStackTrace(e));
+        } finally {
+            if (null != out) {
+                out.close();
+            }
 
-	}
+        }
 
+    }
 
 }

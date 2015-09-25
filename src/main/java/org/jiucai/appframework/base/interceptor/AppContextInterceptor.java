@@ -4,40 +4,40 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jiucai.appframework.base.helper.AppContextHolder;
-import org.jiucai.appframework.common.util.LogUtil;
-import org.jiucai.appframework.common.util.Logs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 /**
  * AppContextInterceptor
+ *
  * @author jiucai
  *
  */
 public class AppContextInterceptor extends HandlerInterceptorAdapter {
 
-	protected Logs log = LogUtil.getLog(getClass());
+    protected Logger log = LoggerFactory.getLogger(getClass());
 
-	@Override
-	public boolean preHandle(HttpServletRequest request,
-			HttpServletResponse response, Object handler) throws Exception {
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
+            Object handler, Exception ex) throws Exception {
+        log.debug("afterCompletion entered..." + handler);
 
-		log.debug("preHandle entered..." + handler);
+        AppContextHolder.removeRequest();
+        AppContextHolder.removeResponse();
+    }
 
-		AppContextHolder.setRequest(request);
-		AppContextHolder.setResponse(response);
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
+            Object handler) throws Exception {
 
-		return true;
+        log.debug("preHandle entered..." + handler);
 
-	}
+        AppContextHolder.setRequest(request);
+        AppContextHolder.setResponse(response);
 
-	@Override
-	public void afterCompletion(HttpServletRequest request,
-			HttpServletResponse response, Object handler, Exception ex)
-			throws Exception {
-		log.debug("afterCompletion entered..." + handler);
+        return true;
 
-		AppContextHolder.removeRequest();
-		AppContextHolder.removeResponse();
-	}
+    }
 
 }

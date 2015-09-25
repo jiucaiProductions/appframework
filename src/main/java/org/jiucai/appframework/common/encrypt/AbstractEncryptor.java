@@ -1,19 +1,23 @@
 package org.jiucai.appframework.common.encrypt;
 
-import org.jiucai.appframework.common.util.LogUtil;
-import org.jiucai.appframework.common.util.Logs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 加密解密基类
- * 
+ *
  * @author jiucai
  *
  */
 public abstract class AbstractEncryptor {
 
+    protected static String charsetName = "UTF-8";
+
+    protected static Logger logger = LoggerFactory.getLogger(AbstractEncryptor.class);
+
     /**
      * 将二进制转换成16进制
-     * 
+     *
      * @param buf
      *            buf betes
      * @return String
@@ -32,7 +36,7 @@ public abstract class AbstractEncryptor {
 
     /**
      * 将16进制转换为二进制
-     * 
+     *
      * @param hexStr
      *            hexStr
      * @return byte[]
@@ -49,9 +53,5 @@ public abstract class AbstractEncryptor {
         }
         return result;
     }
-
-    protected static String charsetName = "UTF-8";
-
-    protected static Logs log = LogUtil.getLog(AbstractEncryptor.class);
 
 }
