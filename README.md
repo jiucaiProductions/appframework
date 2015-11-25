@@ -59,6 +59,8 @@ download: https://bitbucket.org/jiucai/appframework/download
 
 JAR package: http://repo2.maven.org/maven2/org/jiucai/appframework/2.2.1/appframework-2.2.1.jar
 
+JAR package（Before Sync to Central Repository）:  http://oss.sonatype.org/service/local/repositories/releases/content/org/jiucai/appframework/2.2.1/appframework-2.2.1.jar
+
 Repository: http://search.maven.org/#search|ga|1|org.jiucai
 
 
