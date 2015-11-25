@@ -8,5 +8,5 @@ package org.jiucai.appframework;
  */
 public class Version {
 
-    public static final String VersionNumber = "2.2.0";
+    public static final String VersionNumber = "2.2.1";
 }

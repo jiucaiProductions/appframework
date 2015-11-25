@@ -3,6 +3,7 @@ package org.jiucai.appframework.common.encrypt;
 import org.apache.commons.lang.StringUtils;
 import org.jiucai.appframework.common.encode.Base64;
 import org.jiucai.appframework.common.encode.MD5;
+import org.xxtea.XXTEA;
 
 /**
  * 动态密钥的加密解密算法

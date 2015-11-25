@@ -5,8 +5,8 @@ import javax.servlet.ServletRequestListener;
 import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.logging.log4j.ThreadContext;
 import org.jiucai.appframework.base.util.IpUtil;
-import org.slf4j.MDC;
 
 /**
  * a listener to save user ip to log4j , you can override it
@@ -28,7 +28,7 @@ public class AppLogListener extends AbstractBaseListener implements ServletReque
     @Override
     public void requestDestroyed(ServletRequestEvent event) {
 
-        MDC.remove("ip");
+        ThreadContext.remove("ip");
 
     }
 
@@ -38,7 +38,7 @@ public class AppLogListener extends AbstractBaseListener implements ServletReque
 
         String ip = IpUtil.getIp(request);
 
-        MDC.put("ip", ip);
+        ThreadContext.put("ip", ip);
 
     }
 
