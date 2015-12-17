@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+          "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false">
+
+	<class name="test.domain.User" table="user" dynamic-update="true" dynamic-insert="true">
+    	
+		<id name="id" type="java.lang.Long" column="id">
+	 	 	<generator class="native" />
+    	</id>
+		<property name="username" type="java.lang.String" column="username" />
+		<property name="password" type="java.lang.String" column="password" />
+    </class>
+    
+    <query name="listUser">
+    <![CDATA[
+     from User
+    ]]>
+   </query>
+</hibernate-mapping>

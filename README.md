@@ -148,7 +148,5 @@ when build.gradle is ready, then run
 
 gradle build
 
-gradle build file not updated, please use maven.
-
----------- updated 2015-01-02
+---------- updated 2015-12-17
 

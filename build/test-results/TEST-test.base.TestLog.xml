@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="test.base.TestLog" tests="2" skipped="0" failures="0" errors="0" timestamp="2015-12-17T11:15:40" hostname="nb-jiucai" time="0.0">
+  <properties/>
+  <testcase name="testLog" classname="test.base.TestLog" time="0.0"/>
+  <testcase name="testLogger" classname="test.base.TestLog" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

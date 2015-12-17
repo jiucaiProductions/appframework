@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Implementation-Title: appframework
+Implementation-Version: 2.2.2-SNAPSHOT
+
