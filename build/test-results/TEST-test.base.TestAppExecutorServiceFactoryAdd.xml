@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="test.base.TestAppExecutorServiceFactoryAdd" tests="1" skipped="0" failures="0" errors="0" timestamp="2015-12-17T11:15:39" hostname="nb-jiucai" time="0.0">
-  <properties/>
-  <testcase name="doTest" classname="test.base.TestAppExecutorServiceFactoryAdd" time="0.0"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
