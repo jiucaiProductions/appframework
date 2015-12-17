@@ -39,6 +39,7 @@ appframework min requirement:
 
  * third party jar files defined in pom.xml which stored in the central repository
 
+ * [![Build Status](https://travis-ci.org/jiucai/appframework.svg)](https://travis-ci.org/jiucai/appframework)
 
 ##Develop Requirements
 
