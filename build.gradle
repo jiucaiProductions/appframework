@@ -9,8 +9,8 @@ group       = 'org.jiucai'
 version     = '2.2.2-SNAPSHOT'
 
 // JDK compile compatibility level
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 // set source encoding
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
