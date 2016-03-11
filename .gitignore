@@ -1,4 +1,7 @@
-target
 .hg
 .hgtags
+.gradle
+.git
+target
 build
+appframework.log
