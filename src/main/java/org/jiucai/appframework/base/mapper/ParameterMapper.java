@@ -19,7 +19,7 @@ public interface ParameterMapper {
      *            目标 java bean 的类
      * @return 保存了request paramter 的 java bean
      */
-    public <D> D getParamBean(Class<D> beanClass);
+    public <T> T getParamBean(Class<T> beanClass);
 
     /**
      * 返回 request paramter 对应的map

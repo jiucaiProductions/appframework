@@ -118,6 +118,14 @@ public class HttpClientUtil {
      * @param password
      *            keystore访问密钥
      * @return keystore 对象
+     * @throws KeyStoreException
+     *             KeyStoreException
+     * @throws NoSuchAlgorithmException
+     *             NoSuchAlgorithmException
+     * @throws CertificateException
+     *             CertificateException
+     * @throws IOException
+     *             IOException
      */
     public static KeyStore createKeyStore(final URL url, final String password)
             throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {

@@ -85,8 +85,11 @@ public class PGPDecryptor extends AbstractPGPEncryptor {
      * @return Clear text as a byte array. I18N considerations are not handled
      *         by this routine
      * @exception IOException
+     *                IOException
      * @exception PGPException
+     *                PGPException
      * @exception NoSuchProviderException
+     *                NoSuchProviderException
      */
     @SuppressWarnings("unchecked")
     protected static byte[] decrypt(byte[] encrypted, InputStream keyIn, char[] password)

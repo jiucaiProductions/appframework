@@ -15,19 +15,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 public abstract class DefaultAppBaseService extends AbstractBaseService {
-
-    public static Configuration getConfig() {
-        return config;
-    }
 
     /**
      * xml 或 json 响应的默认编码
      */
     protected static String encoding = BaseController.CHARSET;
+
+    /**
+     * 配置项读取类
+     */
+    protected static Configuration config;
+
+    static {
+        config = ConfigUtil.addConfig("config");
+        config = ConfigUtil.addConfig("mail");
+
+    }
+
+    public static Configuration getConfig() {
+        return config;
+    }
 
     /**
      * XML 字符串生成器
@@ -41,17 +51,6 @@ public abstract class DefaultAppBaseService extends AbstractBaseService {
     @Autowired
     private JsonRender jsonRender;
 
-    /**
-     * 配置项读取类
-     */
-    protected static Configuration config;
-
-    static {
-        config = ConfigUtil.addConfig("config");
-        config = ConfigUtil.addConfig("mail");
-
-    }
-
     @Override
     public String getContentType() {
         return getJsonRender().getContentType();
@@ -59,7 +58,7 @@ public abstract class DefaultAppBaseService extends AbstractBaseService {
 
     /**
      * 返回转换 json 工具对象
-     * 
+     *
      * @return JsonRender
      */
     public JsonRender getJsonRender() {
@@ -81,17 +80,14 @@ public abstract class DefaultAppBaseService extends AbstractBaseService {
         jsonRender.getObjectMapper().getSerializationConfig()
                 .without(SerializationFeature.WRITE_NULL_MAP_VALUES);
 
-        SerializationConfig sConfig = jsonRender.getObjectMapper().getSerializationConfig()
-                .withSerializationInclusion(JsonInclude.Include.NON_NULL);
-
-        jsonRender.getObjectMapper().setSerializationInclusion(sConfig.getSerializationInclusion());
+        jsonRender.getObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
         return jsonRender;
     }
 
     /**
      * 返回转换 xml 的工具对象
-     * 
+     *
      * @return XmlRender
      */
     public XmlRender getXmlRender() {
@@ -134,7 +130,7 @@ public abstract class DefaultAppBaseService extends AbstractBaseService {
 
     /**
      * 返回 json 格式的成功或错误信息
-     * 
+     *
      * @param isSuccess
      *            true 表示成功消息 false 表示错误消息
      * @param msg
@@ -161,7 +157,7 @@ public abstract class DefaultAppBaseService extends AbstractBaseService {
 
     /**
      * 返回 chartXML 格式的成功或错误信息
-     * 
+     *
      * @param isSuccess
      *            true 表示成功消息 false 表示错误消息
      * @param msg
