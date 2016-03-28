@@ -6,7 +6,7 @@ apply plugin: 'maven'
 
 
 group       = 'org.jiucai'
-version     = '2.3.0-SNAPSHOT'
+version     = '2.3.0'
 
 // JDK compile compatibility level
 sourceCompatibility = 1.7
@@ -93,10 +93,7 @@ dependencies {
     compile "org.aspectj:aspectjrt:${aspectjVersion}"
     compile "org.aspectj:aspectjtools:${aspectjVersion}"
 
-    //compile "cglib:cglib:3.1"
-
-    compile "com.jolbox:bonecp:${bonecpVersion}"
-    compile "com.jolbox:bonecp-spring:${bonecpVersion}"
+    compile "com.zaxxer:HikariCP:2.4.5"
 
     compile "com.google.guava:guava:19.0"
 
