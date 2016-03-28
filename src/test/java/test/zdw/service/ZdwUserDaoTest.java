@@ -1,9 +1,8 @@
 package test.zdw.service;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import test.dao.UserDao;
 import test.domain.User;
