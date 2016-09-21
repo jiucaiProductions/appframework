@@ -34,17 +34,6 @@ public class JsonUtil {
 
     }
 
-    /**
-     * 把 json 字符串转换为 bean 对象
-     *
-     * @param data
-     *            json串
-     * @param clazz
-     *            bean 的class
-     * @return 转化后的bean
-     * @throws Exception
-     *             Exception
-     */
     public static <T> T getObject(String data, Class<T> clazz) throws Exception {
         return mapper.readValue(data, clazz);
     }
