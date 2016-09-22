@@ -24,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
  * 提供对单个文件与目录的压缩，并支持是否需要创建压缩源目录、中文路径
  *
  * @author jzj
@@ -54,7 +53,7 @@ public class Zip {
 
             }
 
-            System.out.println("Open the output file.");
+            logger.debug("Open the output file.");
 
             String outFileName = getFileName(inFileName);
 
@@ -72,7 +71,7 @@ public class Zip {
 
             }
 
-            System.out.println("Transfering bytes from compressed file to the output file.");
+            logger.debug("Transfering bytes from compressed file to the output file.");
 
             byte[] buf = new byte[1024];
 
@@ -84,7 +83,7 @@ public class Zip {
 
             }
 
-            System.out.println("Closing the file and stream");
+            logger.debug("Closing the file and stream");
 
             in.close();
 
@@ -127,17 +126,17 @@ public class Zip {
 
         start = System.currentTimeMillis();
 
-        System.out.println("start zip file ...");
+        logger.debug("start zip file ...");
         // setEncoding("GBK");
         zip(src, archive);
         end = System.currentTimeMillis();
-        System.out.println("zip time:" + (end - start) + " ms");
+        logger.debug("zip time:" + (end - start) + " ms");
 
         start = System.currentTimeMillis();
-        System.out.println("start unzip file ...");
+        logger.debug("start unzip file ...");
         unzip(archive, decompressDir);
         end = System.currentTimeMillis();
-        System.out.println("unzip time:" + (end - start) + " ms");
+        logger.debug("unzip time:" + (end - start) + " ms");
 
     }
 
@@ -155,16 +154,25 @@ public class Zip {
     public synchronized static InputStream readFile(String archive, String filePath)
             throws IOException {
         InputStream in = null;
-        ZipFile zf = new ZipFile(archive, encoding);// 支持中文
+        ZipFile zf = null;
+        try {
+            // 支持中文
+            zf = new ZipFile(archive, encoding);
 
-        Enumeration<ZipEntry> e = zf.getEntries();
+            Enumeration<ZipEntry> e = zf.getEntries();
 
-        while (e.hasMoreElements()) {
-            ZipEntry ze = e.nextElement();
-            String entryName = ze.getName();
-            if (entryName.equals(filePath)) {
-                in = zf.getInputStream(ze);
-                break;
+            while (e.hasMoreElements()) {
+                ZipEntry ze = e.nextElement();
+                String entryName = ze.getName();
+                if (entryName.equals(filePath)) {
+                    in = zf.getInputStream(ze);
+                    break;
+                }
+            }
+        } finally {
+
+            if (null != zf) {
+                zf.close();
             }
         }
 
@@ -173,7 +181,6 @@ public class Zip {
 
     /**
      * 默认编码 UFT-8
-     *
      * 设置为 UTF-8 时，压缩包的注释乱码，但可以正常使用 unzip / unzip2( Java API 标准解压缩) 类解压文件 设置为
      * GBK 时，压缩包的注释正常，只能是用 unzip 方法解压缩
      *
@@ -187,7 +194,6 @@ public class Zip {
     /**
      * 使用 org.apache.tools.zip.ZipFile 解压文件，它与 java 类库中的 java.util.zip.ZipFile
      * 使用方式是一新的，只不过多了设置编码方式的 接口。
-     *
      * 注，apache 没有提供 ZipInputStream 类，所以只能使用它提供的ZipFile 来读取压缩文件。
      *
      * @param archive
@@ -201,8 +207,8 @@ public class Zip {
      * @throws ZipException
      *             ZipException
      */
-    public synchronized static void unzip(String archive, String decompressDir) throws IOException,
-            FileNotFoundException, ZipException {
+    public synchronized static void unzip(String archive, String decompressDir)
+            throws IOException, FileNotFoundException, ZipException {
         BufferedInputStream bi;
 
         ZipFile zf = new ZipFile(archive, encoding);// 支持中文
@@ -225,8 +231,8 @@ public class Zip {
                 if (!fileDirFile.exists()) {
                     fileDirFile.mkdirs();
                 }
-                BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(
-                        decompressDir + "/" + entryName));
+                BufferedOutputStream bos = new BufferedOutputStream(
+                        new FileOutputStream(decompressDir + "/" + entryName));
 
                 bi = new BufferedInputStream(zf.getInputStream(ze));
                 byte[] readContent = new byte[1024];
@@ -248,7 +254,6 @@ public class Zip {
      * java.util.zip.ZipOutputStream时，该方法不能使用，原因就是编码方 式不一致导致，运行时会抛如下异常：
      * java.lang.IllegalArgumentException at
      * java.util.zip.ZipInputStream.getUTF8String(ZipInputStream.java:290)
-     *
      * 当然，如果压缩包使用的是java类库的java.util.zip.ZipOutputStream 压缩而成是不会有问题的，但它不支持中文
      *
      * @param archive
@@ -282,8 +287,8 @@ public class Zip {
                 }
             } else {
                 logger.debug("正在创建解压文件 - " + entryName);
-                BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(
-                        decompressDir + "/" + entryName));
+                BufferedOutputStream bos = new BufferedOutputStream(
+                        new FileOutputStream(decompressDir + "/" + entryName));
                 byte[] buffer = new byte[1024];
                 int readCount = bi.read(buffer);
 
@@ -298,8 +303,8 @@ public class Zip {
         logger.debug("Checksum: " + csumi.getChecksum().getValue());
     }
 
-    public synchronized static void zip(String src, String archive) throws FileNotFoundException,
-            IOException {
+    public synchronized static void zip(String src, String archive)
+            throws FileNotFoundException, IOException {
         zip(src, archive, "");
     }
 
@@ -368,7 +373,6 @@ public class Zip {
 
     /**
      * 递归压缩
-     *
      * 使用 org.apache.tools.zip.ZipOutputStream 类进行压缩，它的好处就是支持中文路径， 而Java类库中的
      * java.util.zip.ZipOutputStream 压缩中文文件名时压缩包会出现乱码。 使用 apache 中的这个类与 java
      * 类库中的用法是一新的，只是能设置编码方式了。

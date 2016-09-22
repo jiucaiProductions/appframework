@@ -4,21 +4,12 @@ import java.util.Map;
 
 /**
  * 请求参数映射器
- *
  * 实现类的命名规则： xxxParameterMapper
  *
  * @author jiucai
- *
  */
 public interface ParameterMapper {
 
-    /**
-     * 返回 request paramter 对应的 bean 对象
-     *
-     * @param beanClass
-     *            目标 java bean 的类
-     * @return 保存了request paramter 的 java bean
-     */
     public <T> T getParamBean(Class<T> beanClass);
 
     /**
