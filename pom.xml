@@ -175,7 +175,7 @@
 				<version>2.9</version>
 				<configuration>
 					<dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-					<remoteRepositories>
+					<!-- <remoteRepositories>
 						<repository>
 							 <id>oschina</id>
 							<url>http://maven.oschina.net/content/groups/public</url>
@@ -184,7 +184,7 @@
 							 <id>repo1</id>
 							<url>http://repo1.maven.apache.org/maven2</url>
 						</repository>
-					</remoteRepositories>
+					</remoteRepositories> -->
 				</configuration>
 			</plugin>
 			<plugin>
@@ -228,7 +228,7 @@
 			<id>ossrh</id>
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
-		<downloadUrl>https://bitbucket.org/jiucai/appframework/downloads</downloadUrl>
+		<downloadUrl>https://github.com/jiucai/appframework/archive/master.zip</downloadUrl>
 		<site>
 			<id>appframework</id>
 			<name>appframework</name>
