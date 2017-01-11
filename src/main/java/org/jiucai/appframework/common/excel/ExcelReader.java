@@ -21,11 +21,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
  * ExcelReader, using apache poi 3.11+
  *
  * @author zhaidangwei
- *
  */
 public class ExcelReader {
 
@@ -131,6 +129,7 @@ public class ExcelReader {
         return value;
     }
 
+    @SuppressWarnings("deprecation")
     protected static String getCellValue(Cell cell) {
         String value = null;
         //

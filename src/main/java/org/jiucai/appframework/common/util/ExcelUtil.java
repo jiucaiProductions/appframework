@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
  * require apache poi 3.2+
  *
  * @author zhaidangwei
- *
  */
 public class ExcelUtil {
 
@@ -98,7 +97,6 @@ public class ExcelUtil {
     }
 
     /**
-     *
      * 读取Excel的内容，第一维数组存储的是一行中格列的值，二维数组存储的是多少个行
      *
      * @param file
@@ -110,10 +108,10 @@ public class ExcelUtil {
      *             FileNotFoundException
      * @throws IOException
      *             IOException
-     *
      */
-    public static String[][] readExcel(File file, int ignoreRows) throws FileNotFoundException,
-            IOException {
+    @SuppressWarnings("deprecation")
+    public static String[][] readExcel(File file, int ignoreRows)
+            throws FileNotFoundException, IOException {
 
         List<String[]> result = new ArrayList<String[]>();
 
@@ -121,7 +119,7 @@ public class ExcelUtil {
 
         BufferedInputStream in = new BufferedInputStream(new FileInputStream(
 
-        file));
+                file));
 
         // 打开HSSFWorkbook
 
@@ -193,7 +191,7 @@ public class ExcelUtil {
 
                                     value = new SimpleDateFormat("yyyy-MM-dd")
 
-                                    .format(date);
+                                            .format(date);
 
                                 } else {
 
@@ -205,7 +203,7 @@ public class ExcelUtil {
 
                                 value = new DecimalFormat("0").format(cell
 
-                                .getNumericCellValue());
+                                        .getNumericCellValue());
 
                             }
 
@@ -241,7 +239,7 @@ public class ExcelUtil {
 
                             value = (cell.getBooleanCellValue() == true ? "Y"
 
-                            : "N");
+                                    : "N");
 
                             break;
 
@@ -293,14 +291,11 @@ public class ExcelUtil {
     }
 
     /**
-     *
      * 去掉字符串右边的空格
      *
      * @param str
      *            要处理的字符串
-     *
      * @return 处理后的字符串
-     *
      */
 
     protected static String rightTrim(String str) {
@@ -325,6 +320,7 @@ public class ExcelUtil {
      * @param value
      *            value
      */
+    @SuppressWarnings("deprecation")
     protected static void setCellValue(HSSFCell cell, Object value) {
 
         cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
