@@ -80,9 +80,7 @@ If you find a bug in appframework, please [report a bug](https://bitbucket.org/j
 
 You may review open bugs through [the list of open issues](https://bitbucket.org/jiucai/appframework/issues?status=new&status=open).
 
-
 Feel free to improve the [documentation](https://bitbucket.org/jiucai/appframework/wiki) .
-
 
 And you can [contact me on weibo.com](http://weibo.com/forcer521)
 
@@ -133,13 +131,6 @@ version 2.2.0:
 - AppLogListener use static log MDC now , you can log ip with %X{ip} in logback.xml
 
 
-#Author and copyright
-
-The appframework library is developed by the team of developers and it is based on spring framework.
-
-appframework is released under the Apache 2.0 license.
-
-
 #Build Using Maven
     
     mvn -Dmaven.test.skip=true compile
@@ -161,5 +152,9 @@ when build.gradle is ready, then run
 
 	gradle build
 
-last update at 2016-09-21
+#Author and copyright
+
+The appframework library is developed by the team of developers and it is based on spring framework.
+
+appframework is released under the Apache 2.0 license.
 
