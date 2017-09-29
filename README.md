@@ -39,9 +39,9 @@ Eclispe 4.4+ with [m2eclipse plugins](http://www.eclipse.org/m2e/download/)
 
 Releases are available in the central repository.
 
-The current stable release of appframework: *2.2.3*
+The current stable release of appframework: *3.0.0*
 
-The dev version now is: 3.0.0-SNAPSHOT
+The dev version now is: 3.0.1-SNAPSHOT
 
 ##Download links:
 

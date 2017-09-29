@@ -55,305 +55,315 @@ import org.slf4j.LoggerFactory;
  */
 public class HttpClientUtil {
 
-	public static final String CHARSET_UTF8 = "UTF-8";
+    public static final String CHARSET_UTF8 = "UTF-8";
 
-	protected static Logger logger = LoggerFactory.getLogger(HttpClientUtil.class);
+    protected static Logger logger = LoggerFactory.getLogger(HttpClientUtil.class);
 
-	// 使用ResponseHandler接口处理响应，HttpClient使用ResponseHandler会自动管理连接的释放，解决了对连接的释放管理
-	private static ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-		// 自定义响应处理
-		@Override
-		public String handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
+    // 使用ResponseHandler接口处理响应，HttpClient使用ResponseHandler会自动管理连接的释放，解决了对连接的释放管理
+    private static ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+        // 自定义响应处理
+        @Override
+        public String handleResponse(HttpResponse response)
+                throws ClientProtocolException, IOException {
 
-			int code = response.getStatusLine().getStatusCode();
+            int code = response.getStatusLine().getStatusCode();
 
-			// 如果不是200，则返回状态码
-			// if (HttpStatus.SC_OK <= code && code < 500) {
-			if (code <= 200 || code >= 500) {
-				return String.valueOf(code);
-			}
+            // 如果不是200，则返回状态码
+            // if (HttpStatus.SC_OK <= code && code < 500) {
 
-			HttpEntity entity = response.getEntity();
-			if (entity != null) {
-				Charset charset = ContentType.getOrDefault(entity).getCharset();
-				if (null != charset) {
-					return new String(EntityUtils.toByteArray(entity), charset);
-				} else {
-					return new String(EntityUtils.toByteArray(entity));
-				}
+            if (code < 200 || code >= 500) {
+                return String.valueOf(code);
+            }
 
-			} else {
-				return null;
-			}
-		}
-	};
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                Charset charset = ContentType.getOrDefault(entity).getCharset();
+                if (null != charset) {
+                    return new String(EntityUtils.toByteArray(entity), charset);
+                } else {
+                    return new String(EntityUtils.toByteArray(entity));
+                }
 
-	/**
-	 * 释放HttpClient连接
-	 *
-	 * @param hrb
-	 *            请求对象
-	 * @param httpclient
-	 *            对象
-	 */
-	public static void abortConnection(final HttpUriRequest hrb, final CloseableHttpClient httpclient) {
-		if (hrb != null) {
-			hrb.abort();
-		}
-		if (httpclient != null) {
-			// httpclient.getConnectionManager().shutdown();
-			try {
-				// logger.debug("closing httpclient ...");
-				httpclient.close();
-			} catch (IOException e) {
-				logger.error("failed to close httpclient", e);
-			}
+            } else {
+                return null;
+            }
+        }
+    };
 
-		}
-	}
+    /**
+     * 释放HttpClient连接
+     *
+     * @param hrb
+     *            请求对象
+     * @param httpclient
+     *            对象
+     */
+    public static void abortConnection(final HttpUriRequest hrb,
+            final CloseableHttpClient httpclient) {
+        if (hrb != null) {
+            hrb.abort();
+        }
+        if (httpclient != null) {
+            // httpclient.getConnectionManager().shutdown();
+            try {
+                // logger.debug("closing httpclient ...");
+                httpclient.close();
+            } catch (IOException e) {
+                logger.error("failed to close httpclient", e);
+            }
 
-	/**
-	 * Get方式提交,URL中包含查询参数
-	 *
-	 * @param url
-	 *            提交地址
-	 * @return 响应消息
-	 */
-	public static String get(String url) {
-		return get(url, null, CHARSET_UTF8);
-	}
+        }
+    }
 
-	/**
-	 * Get方式提交,URL中不包含查询参数
-	 *
-	 * @param url
-	 *            提交地址
-	 * @param params
-	 *            查询参数集, 键/值对
-	 * @return 响应消息
-	 */
-	public static String get(String url, Map<String, String> params) {
-		return get(url, params, CHARSET_UTF8);
-	}
+    /**
+     * Get方式提交,URL中包含查询参数
+     *
+     * @param url
+     *            提交地址
+     * @return 响应消息
+     */
+    public static String get(String url) {
+        return get(url, null, CHARSET_UTF8);
+    }
 
-	/**
-	 * Get方式提交,URL中不包含查询参数
-	 *
-	 * @param url
-	 *            提交地址
-	 * @param params
-	 *            查询参数集, 键/值对
-	 * @param charset
-	 *            参数提交编码集
-	 * @return 响应消息
-	 */
-	public static String get(String url, Map<String, String> params, String charset) {
+    /**
+     * Get方式提交,URL中不包含查询参数
+     *
+     * @param url
+     *            提交地址
+     * @param params
+     *            查询参数集, 键/值对
+     * @return 响应消息
+     */
+    public static String get(String url, Map<String, String> params) {
+        return get(url, params, CHARSET_UTF8);
+    }
 
-		return get(url, params, charset, getHttpClient(charset));
-	}
+    /**
+     * Get方式提交,URL中不包含查询参数
+     *
+     * @param url
+     *            提交地址
+     * @param params
+     *            查询参数集, 键/值对
+     * @param charset
+     *            参数提交编码集
+     * @return 响应消息
+     */
+    public static String get(String url, Map<String, String> params, String charset) {
 
-	public static String get(String url, Map<String, String> params, String charset, CloseableHttpClient client) {
-		if (url == null || StringUtils.isEmpty(url)) {
-			return null;
-		}
-		List<NameValuePair> qparams = getParamsList(params);
-		if (qparams != null && qparams.size() > 0) {
-			charset = (charset == null ? CHARSET_UTF8 : charset);
-			String formatParams = URLEncodedUtils.format(qparams, charset);
-			url = (url.indexOf("?")) < 0 ? (url + "?" + formatParams)
-					: (url.substring(0, url.indexOf("?") + 1) + formatParams);
-		}
-		HttpGet hg = new HttpGet(url);
-		// 发送请求，得到响应
-		String responseStr = null;
-		try {
-			responseStr = client.execute(hg, responseHandler);
-		} catch (ClientProtocolException e) {
-			throw new RuntimeException("客户端连接协议错误", e);
-		} catch (IOException e) {
-			throw new RuntimeException("IO操作异常", e);
-		} finally {
-			abortConnection(hg, client);
-		}
-		return responseStr;
-	}
+        return get(url, params, charset, getHttpClient(charset));
+    }
 
-	public static HttpClientConnectionManager getConnectionManager() {
+    public static String get(String url, Map<String, String> params, String charset,
+            CloseableHttpClient client) {
+        if (url == null || StringUtils.isEmpty(url)) {
+            return null;
+        }
+        List<NameValuePair> qparams = getParamsList(params);
+        if (qparams != null && qparams.size() > 0) {
+            charset = (charset == null ? CHARSET_UTF8 : charset);
+            String formatParams = URLEncodedUtils.format(qparams, charset);
+            url = (url.indexOf("?")) < 0 ? (url + "?" + formatParams)
+                    : (url.substring(0, url.indexOf("?") + 1) + formatParams);
+        }
+        HttpGet hg = new HttpGet(url);
+        // 发送请求，得到响应
+        String responseStr = null;
+        try {
+            responseStr = client.execute(hg, responseHandler);
+        } catch (ClientProtocolException e) {
+            throw new RuntimeException("客户端连接协议错误", e);
+        } catch (IOException e) {
+            throw new RuntimeException("IO操作异常", e);
+        } finally {
+            abortConnection(hg, client);
+        }
+        return responseStr;
+    }
 
-		// ConnectionSocketFactory plainsf = null;
-		LayeredConnectionSocketFactory sslsf = null;
+    public static HttpClientConnectionManager getConnectionManager() {
 
-		RegistryBuilder<ConnectionSocketFactory> registryBuilder = RegistryBuilder.create();
+        // ConnectionSocketFactory plainsf = null;
+        LayeredConnectionSocketFactory sslsf = null;
 
-		PlainConnectionSocketFactory plainsf = PlainConnectionSocketFactory.getSocketFactory();
-		registryBuilder.register("http", plainsf);
+        RegistryBuilder<ConnectionSocketFactory> registryBuilder = RegistryBuilder.create();
 
-		try {
+        PlainConnectionSocketFactory plainsf = PlainConnectionSocketFactory.getSocketFactory();
+        registryBuilder.register("http", plainsf);
 
-			// Trust own CA and all self-signed certs
-			SSLContext sslcontext = SSLContexts.custom().loadTrustMaterial(new TrustStrategy() {
-				@Override
-				public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-					return true;
-				}
-			}).build();
+        try {
 
-			HostnameVerifier allowAllHostnameVerifier = NoopHostnameVerifier.INSTANCE;
-			sslsf = new SSLConnectionSocketFactory(sslcontext, allowAllHostnameVerifier);
+            // Trust own CA and all self-signed certs
+            SSLContext sslcontext = SSLContexts.custom().loadTrustMaterial(new TrustStrategy() {
+                @Override
+                public boolean isTrusted(X509Certificate[] chain, String authType)
+                        throws CertificateException {
+                    return true;
+                }
+            }).build();
 
-			registryBuilder.register("https", sslsf);
+            HostnameVerifier allowAllHostnameVerifier = NoopHostnameVerifier.INSTANCE;
+            sslsf = new SSLConnectionSocketFactory(sslcontext, allowAllHostnameVerifier);
 
-		} catch (Throwable e) {
+            registryBuilder.register("https", sslsf);
 
-			logger.error("https ssl init failed", e);
-		}
+        } catch (Throwable e) {
 
-		Registry<ConnectionSocketFactory> r = registryBuilder.build();
+            logger.error("https ssl init failed", e);
+        }
 
-		PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager(r);
-		connManager.setMaxTotal(100);// 连接池最大并发连接数
-		connManager.setDefaultMaxPerRoute(100);// 单路由最大并发数
-		return connManager;
+        Registry<ConnectionSocketFactory> r = registryBuilder.build();
 
-	}
+        PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager(r);
+        connManager.setMaxTotal(100);// 连接池最大并发连接数
+        connManager.setDefaultMaxPerRoute(100);// 单路由最大并发数
+        return connManager;
 
-	/**
-	 * 获取HttpClient实例
-	 *
-	 * @param charset
-	 *            参数编码集, 可空
-	 * @return HttpClient 对象
-	 */
-	public static CloseableHttpClient getHttpClient(final String charset) {
-		return getHttpClientBuilder(charset, null, 0).build();
+    }
 
-	}
+    /**
+     * 获取HttpClient实例
+     *
+     * @param charset
+     *            参数编码集, 可空
+     * @return HttpClient 对象
+     */
+    public static CloseableHttpClient getHttpClient(final String charset) {
+        return getHttpClientBuilder(charset, null, 0).build();
 
-	public static HttpClientBuilder getHttpClientBuilder(final String charset, String proxyIp, int proxyPort) {
+    }
 
-		HttpClientBuilder builder = HttpClients.custom();
+    public static HttpClientBuilder getHttpClientBuilder(final String charset, String proxyIp,
+            int proxyPort) {
 
-		Charset chartset = charset == null ? Charset.forName(CHARSET_UTF8) : Charset.forName(charset);
-		ConnectionConfig.Builder connBuilder = ConnectionConfig.custom().setCharset(chartset);
+        HttpClientBuilder builder = HttpClients.custom();
 
-		RequestConfig.Builder reqBuilder = RequestConfig.custom();
-		reqBuilder.setExpectContinueEnabled(false);
-		reqBuilder.setSocketTimeout(10 * 60 * 1000);
-		reqBuilder.setConnectTimeout(10 * 60 * 1000);
-		reqBuilder.setMaxRedirects(10);
+        Charset chartset = charset == null ? Charset.forName(CHARSET_UTF8)
+                : Charset.forName(charset);
+        ConnectionConfig.Builder connBuilder = ConnectionConfig.custom().setCharset(chartset);
 
-		if (StringUtils.isNotBlank(proxyIp) && proxyPort > 0) {
-			logger.info("using proxy {}:{} to request ", proxyIp, String.valueOf(proxyPort));
-			HttpHost proxy = new HttpHost(proxyIp, proxyPort);
-			reqBuilder.setProxy(proxy);
-		}
+        RequestConfig.Builder reqBuilder = RequestConfig.custom();
+        reqBuilder.setExpectContinueEnabled(false);
+        reqBuilder.setSocketTimeout(10 * 60 * 1000);
+        reqBuilder.setConnectTimeout(10 * 60 * 1000);
+        reqBuilder.setMaxRedirects(10);
 
-		ServiceUnavailableRetryStrategy serviceUnavailableRetryStrategy = new DefaultServiceUnavailableRetryStrategy(3,
-				3000);
-		builder.setServiceUnavailableRetryStrategy(serviceUnavailableRetryStrategy);
-		// 模拟浏览器，解决一些服务器程序只允许浏览器访问的问题
-		builder.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:50.0) Gecko/20100101 Firefox/50.0");
+        if (StringUtils.isNotBlank(proxyIp) && proxyPort > 0) {
+            logger.info("using proxy {}:{} to request ", proxyIp, String.valueOf(proxyPort));
+            HttpHost proxy = new HttpHost(proxyIp, proxyPort);
+            reqBuilder.setProxy(proxy);
+        }
 
-		builder.setDefaultRequestConfig(reqBuilder.build());
-		builder.setDefaultConnectionConfig(connBuilder.build());
-		builder.setConnectionManager(getConnectionManager());
+        ServiceUnavailableRetryStrategy serviceUnavailableRetryStrategy = new DefaultServiceUnavailableRetryStrategy(
+                3, 3000);
+        builder.setServiceUnavailableRetryStrategy(serviceUnavailableRetryStrategy);
+        // 模拟浏览器，解决一些服务器程序只允许浏览器访问的问题
+        builder.setUserAgent(
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:50.0) Gecko/20100101 Firefox/50.0");
 
-		// HostnameVerifier allowAllHostnameVerifier =
-		// NoopHostnameVerifier.INSTANCE;
-		// builder.setSSLHostnameVerifier(allowAllHostnameVerifier);
+        builder.setDefaultRequestConfig(reqBuilder.build());
+        builder.setDefaultConnectionConfig(connBuilder.build());
+        builder.setConnectionManager(getConnectionManager());
 
-		return builder;
+        // HostnameVerifier allowAllHostnameVerifier =
+        // NoopHostnameVerifier.INSTANCE;
+        // builder.setSSLHostnameVerifier(allowAllHostnameVerifier);
 
-	}
+        return builder;
 
-	/**
-	 * 将传入的键/值对参数转换为NameValuePair参数集
-	 *
-	 * @param paramsMap
-	 *            参数集, 键/值对
-	 * @return NameValuePair参数集
-	 */
-	public static List<NameValuePair> getParamsList(Map<String, String> paramsMap) {
-		if (paramsMap == null || paramsMap.size() == 0) {
-			return null;
-		}
-		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		for (Map.Entry<String, String> map : paramsMap.entrySet()) {
-			params.add(new BasicNameValuePair(map.getKey(), map.getValue()));
-		}
-		return params;
-	}
+    }
 
-	/**
-	 * Post方式提交,URL中不包含提交参数
-	 *
-	 * @param url
-	 *            提交地址
-	 * @param params
-	 *            提交参数集, 键/值对
-	 * @return 响应消息
-	 */
-	public static String post(String url, Map<String, String> params) {
-		return post(url, params, HttpClientUtil.CHARSET_UTF8);
-	}
+    /**
+     * 将传入的键/值对参数转换为NameValuePair参数集
+     *
+     * @param paramsMap
+     *            参数集, 键/值对
+     * @return NameValuePair参数集
+     */
+    public static List<NameValuePair> getParamsList(Map<String, String> paramsMap) {
+        if (paramsMap == null || paramsMap.size() == 0) {
+            return null;
+        }
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        for (Map.Entry<String, String> map : paramsMap.entrySet()) {
+            params.add(new BasicNameValuePair(map.getKey(), map.getValue()));
+        }
+        return params;
+    }
 
-	/**
-	 * Post方式提交,URL中不包含提交参数
-	 *
-	 * @param url
-	 *            提交地址
-	 * @param params
-	 *            提交参数集, 键/值对
-	 * @param charset
-	 *            参数提交编码集
-	 * @return 响应消息
-	 */
-	public static String post(String url, Map<String, String> params, String charset) {
-		return post(url, params, charset, getHttpClient(charset));
-	}
+    /**
+     * Post方式提交,URL中不包含提交参数
+     *
+     * @param url
+     *            提交地址
+     * @param params
+     *            提交参数集, 键/值对
+     * @return 响应消息
+     */
+    public static String post(String url, Map<String, String> params) {
+        return post(url, params, HttpClientUtil.CHARSET_UTF8);
+    }
 
-	public static String post(String url, Map<String, String> params, String charset, boolean isSecure) {
+    /**
+     * Post方式提交,URL中不包含提交参数
+     *
+     * @param url
+     *            提交地址
+     * @param params
+     *            提交参数集, 键/值对
+     * @param charset
+     *            参数提交编码集
+     * @return 响应消息
+     */
+    public static String post(String url, Map<String, String> params, String charset) {
+        return post(url, params, charset, getHttpClient(charset));
+    }
 
-		return post(url, params, charset);
+    public static String post(String url, Map<String, String> params, String charset,
+            boolean isSecure) {
 
-	}
+        return post(url, params, charset);
 
-	public static String post(String url, Map<String, String> params, String charset, CloseableHttpClient client) {
-		if (url == null || StringUtils.isEmpty(url)) {
-			return null;
-		}
-		UrlEncodedFormEntity formEntity = null;
-		try {
-			if (charset == null || StringUtils.isEmpty(charset)) {
-				if (null != params && params.size() > 0) {
-					formEntity = new UrlEncodedFormEntity(getParamsList(params));
-				}
-			} else {
-				if (null != params && params.size() > 0) {
-					formEntity = new UrlEncodedFormEntity(getParamsList(params), charset);
-				}
-			}
-		} catch (Exception e) {
-			throw new RuntimeException("不支持的编码集", e);
-		}
-		HttpPost hp = new HttpPost(url);
+    }
 
-		if (null != formEntity) {
-			hp.setEntity(formEntity);
-		}
+    public static String post(String url, Map<String, String> params, String charset,
+            CloseableHttpClient client) {
+        if (url == null || StringUtils.isEmpty(url)) {
+            return null;
+        }
+        UrlEncodedFormEntity formEntity = null;
+        try {
+            if (charset == null || StringUtils.isEmpty(charset)) {
+                if (null != params && params.size() > 0) {
+                    formEntity = new UrlEncodedFormEntity(getParamsList(params));
+                }
+            } else {
+                if (null != params && params.size() > 0) {
+                    formEntity = new UrlEncodedFormEntity(getParamsList(params), charset);
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("不支持的编码集", e);
+        }
+        HttpPost hp = new HttpPost(url);
 
-		// 发送请求，得到响应
-		String responseStr = null;
-		try {
-			responseStr = client.execute(hp, responseHandler);
-		} catch (ClientProtocolException e) {
-			throw new RuntimeException("客户端连接协议错误", e);
-		} catch (IOException e) {
-			throw new RuntimeException("IO操作异常", e);
-		} finally {
-			abortConnection(hp, client);
-		}
-		return responseStr;
-	}
+        if (null != formEntity) {
+            hp.setEntity(formEntity);
+        }
+
+        // 发送请求，得到响应
+        String responseStr = null;
+        try {
+            responseStr = client.execute(hp, responseHandler);
+        } catch (ClientProtocolException e) {
+            throw new RuntimeException("客户端连接协议错误", e);
+        } catch (IOException e) {
+            throw new RuntimeException("IO操作异常", e);
+        } finally {
+            abortConnection(hp, client);
+        }
+        return responseStr;
+    }
 
 }
