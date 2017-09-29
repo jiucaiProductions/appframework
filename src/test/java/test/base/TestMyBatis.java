@@ -57,7 +57,7 @@ public class TestMyBatis {
 
         String sqlContent = "";
         try {
-            sqlContent = FileUtils.readFileToString(f);
+            sqlContent = FileUtils.readFileToString(f,"UTF-8");
         } catch (IOException e) {
             e.printStackTrace();
         }
