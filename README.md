@@ -27,9 +27,7 @@ appframework min requirement:
  * servlet 3.0+ , tomcat 7+
  * third party jar files defined in pom.xml which stored in the central repository
 
-	Build Status 
-
-	[![Build Status](https://travis-ci.org/jiucai/appframework.svg)](https://travis-ci.org/jiucai/appframework)
+	Build Status :  [![Build Status](https://travis-ci.org/iucaiProductions/appframework.svg)](https://travis-ci.org/jiucaiProductions/appframework)
 
 ##Develop Requirements
 
@@ -45,9 +43,9 @@ The dev version now is: 3.0.1-SNAPSHOT
 
 ##Download links:
 
-source: https://github.com/jiucai/appframework
+source: https://github.com/jiucaiProductions/appframework
 
-download master code: https://github.com/jiucai/appframework/archive/master.zip
+download master code: https://github.com/jiucaiProductions/appframework/archive/master.zip
 
 JAR package: http://repo2.maven.org/maven2/org/jiucai/appframework/3.0.0/appframework-3.0.0.jar
 
