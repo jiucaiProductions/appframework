@@ -53,31 +53,14 @@
 			<url>http://maven.aliyun.com/nexus/content/groups/public/</url>
 		</repository>
 		<repository>
-			<id>uk</id>
-			<url>http://uk.maven.org/maven2</url>
-		</repository>
-		<repository>
 			<id>repo2</id>
 			<url>http://repo2.maven.apache.org/maven2</url>
 		</repository>
 	</repositories>
-
-	<!-- <scm> <connection>scm:svn:https://appframework.googlecode.com/svn/trunk</connection> 
-		<developerConnection>scm:svn:https://appframework.googlecode.com/svn/trunk</developerConnection> 
-		<url>https://appframework.googlecode.com/svn/trunk</url> </scm> <scm> <connection>scm:git:git@github.com:jiucai/appframework.git</connection> 
-		<developerConnection>scm:git:git@github.com:jiucai/appframework.git</developerConnection> 
-		<url>git@github.com:jiucai/appframework.git</url> </scm> -->
-
-	<!-- <scm>
-		<connection>scm:hg:https://bitbucket.org/jiucai/appframework</connection>
-		<developerConnection>scm:hg:https://bitbucket.org/jiucai/appframework</developerConnection>
-		<url>https://bitbucket.org/jiucai/appframework</url>
-	</scm> -->
-
    <scm>
-		<connection>scm:git:git@github.com:jiucai/appframework.git</connection>
-		<developerConnection>scm:git:git@github.com:jiucai/appframework.git</developerConnection>
-		<url>git@github.com:jiucai/appframework.git</url>
+		<connection>scm:git:git@github.com:jiucaiProductions/appframework.git</connection>
+		<developerConnection>scm:git:git@github.com:jiucaiProductions/appframework.git</developerConnection>
+		<url>git@github.com:jiucaiProductions/appframework.git</url>
 	</scm>
 
 	<developers>
@@ -222,7 +205,7 @@
 
 	<issueManagement>
 		<system>github</system>
-		<url>https://github.com/jiucai/appframework/issues</url>
+		<url>https://github.com/jiucaiProductions/appframework/issues</url>
 	</issueManagement>
 	<ciManagement>
 		<system>Jenkins</system>
@@ -242,7 +225,7 @@
 			<id>ossrh</id>
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
-		<downloadUrl>https://github.com/jiucai/appframework</downloadUrl>
+		<downloadUrl>https://github.com/jiucaiProductions/appframework</downloadUrl>
 		<site>
 			<id>appframework</id>
 			<name>appframework</name>
