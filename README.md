@@ -47,9 +47,9 @@ source: https://github.com/jiucaiProductions/appframework
 
 download master code: https://github.com/jiucaiProductions/appframework/archive/master.zip
 
-JAR package: http://repo2.maven.org/maven2/org/jiucai/appframework/3.0.0/appframework-3.0.0.jar
+JAR package: http://repo2.maven.org/maven2/org/jiucai/appframework/3.0.1/appframework-3.0.1.jar
 
-JAR package (Before Sync to Central Repository):  http://oss.sonatype.org/service/local/repositories/releases/content/org/jiucai/appframework/3.0.0/appframework-3.0.0.jar
+JAR package (Before Sync to Central Repository):  http://oss.sonatype.org/service/local/repositories/releases/content/org/jiucai/appframework/3.0.1/appframework-3.0.1.jar
 
 Repository: http://search.maven.org/#search|ga|1|org.jiucai
 
