@@ -27,7 +27,7 @@ appframework min requirement:
  * servlet 3.0+ , tomcat 7+
  * third party jar files defined in pom.xml which stored in the central repository
 
-	Build Status :  [![Build Status](https://travis-ci.org/iucaiProductions/appframework.svg)](https://travis-ci.org/jiucaiProductions/appframework)
+  Build Status :   [![Build Status](https://travis-ci.org/iucaiProductions/appframework.svg)](https://travis-ci.org/jiucaiProductions/appframework)
 
 ##Develop Requirements
 
@@ -75,18 +75,12 @@ Anyone interested is welcome to join in QQ group: 56883769 (JAVA&SSH&SSI)
 #History
 
 * **3.0.0 Stable version based spring-framework 5.0.0**
-
 * 2.3.3 Stable version based spring-framework 4.3.9
 * 2.3.2 Stable version based spring-framework 4.3.5
 * 2.3.1 Stable version based spring-framework 4.3.3
 * 2.3.0 Stable version based spring-framework 4.2.5
 * 2.2.1 Stable version based spring-framework 4.2.3
 * 2.2.0 Stable version based spring-framework 4.2.1
-* 2.1.3 Stable version based spring-framework 4.1.7
-* 2.1.1 Stable version based spring-framework 4.1.4
-* 2.1.0 Stable version based spring-framework 4.1.1 
-* 2.0.0 Stable version based spring-framework 4.1.0 
-* 1.2.0 Stable Release based spring-framework 3.2.11
 
 
 #Change log
@@ -135,27 +129,4 @@ version 2.2.0:
 #Build Using Maven
     
     mvn -Dmaven.test.skip=true compile
-
-
-#Build Using Gradle
-
-to convert maven project to gradle project:
-
-gradle 1:
-
-	gradle setupBuild --type pom
-
-gradle 2:
-
-	gradle init --type pom
-
-when build.gradle is ready, then run
-
-	gradle build
-
-#Author and copyright
-
-The appframework library is developed by the team of developers and it is based on spring framework.
-
-appframework is released under the Apache 2.0 license.
 
