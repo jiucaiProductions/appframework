@@ -70,18 +70,6 @@ Maven Site URL:  http://appframework.jiucai.org/
 
 #Development and bug reports
 
-You may check out the appframework source code from appframework [HG repository](https://bitbucket.org/jiucai/appframework).
-
-You may also [browse](https://bitbucket.org/jiucai/appframework/src) the lastest appframework source code.
-
-If you find a bug in appframework, please [report a bug](https://bitbucket.org/jiucai/appframework/issues/new).
-
-You may review open bugs through [the list of open issues](https://bitbucket.org/jiucai/appframework/issues?status=new&status=open).
-
-Feel free to improve the [documentation](https://bitbucket.org/jiucai/appframework/wiki) .
-
-And you can [contact me on weibo.com](http://weibo.com/forcer521)
-
 Anyone interested is welcome to join in QQ group: 56883769 (JAVA&SSH&SSI)
 
 #History
