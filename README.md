@@ -37,9 +37,9 @@ Eclispe 4.4+ with [m2eclipse plugins](http://www.eclipse.org/m2e/download/)
 
 Releases are available in the central repository.
 
-The current stable release of appframework: *3.0.0*
+The current stable release of appframework: *3.0.1*
 
-The dev version now is: 3.0.1-SNAPSHOT
+The dev version now is: 3.0.2-SNAPSHOT
 
 ##Download links:
 
@@ -62,7 +62,7 @@ Edit your project pom.xml and add :
     <dependency>
         <groupId>org.jiucai</groupId>
         <artifactId>appframework</artifactId>
-        <version>3.0.0</version>
+        <version>3.0.1</version>
     </dependency>
 ```
 
@@ -74,7 +74,7 @@ Anyone interested is welcome to join in QQ group: 56883769 (JAVA&SSH&SSI)
 
 #History
 
-* **3.0.0 Stable version based spring-framework 5.0.0**
+* **3.0.1 Stable version based spring-framework 5.0.4**
 * 2.3.3 Stable version based spring-framework 4.3.9
 * 2.3.2 Stable version based spring-framework 4.3.5
 * 2.3.1 Stable version based spring-framework 4.3.3
