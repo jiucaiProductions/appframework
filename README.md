@@ -27,8 +27,6 @@ appframework min requirement:
  * servlet 3.0+ , tomcat 7+
  * third party jar files defined in pom.xml which stored in the central repository
 
-  Build Status :   [![Build Status](https://travis-ci.org/iucaiProductions/appframework.svg)](https://travis-ci.org/jiucaiProductions/appframework)
-
 ##Develop Requirements
 
 Eclispe 4.4+ with [m2eclipse plugins](http://www.eclipse.org/m2e/download/)
